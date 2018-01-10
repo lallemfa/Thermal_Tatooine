@@ -1,10 +1,12 @@
-package engine;
+package doodles;
+
+import java.time.LocalDateTime;
 
 public class TestTime {
 
 	public static void main(String[] args)
 	{
-		/*
+		
 		LocalDateTime now 		= LocalDateTime.now();
 		LocalDateTime eventTime = now.plusMinutes(10);
 		
@@ -25,7 +27,8 @@ public class TestTime {
 				e.printStackTrace();
 			}
 		}
-		*/
+		
+		System.out.println("\n\n\n");
 		
 		Scenario[] scenarios = {new Scenario(), new Scenario("Less patients"), new Scenario()};
 		

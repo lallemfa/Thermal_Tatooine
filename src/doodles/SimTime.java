@@ -1,4 +1,4 @@
-package engine;
+package doodles;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -39,14 +39,7 @@ public class SimTime {
 	{
 		try {
 			initialTime = LocalDateTime.parse(startTime, logicalDateTimeFormatter);
-		}
-		catch(DateTimeParseException e) {
-			System.err.println(e.getMessage());
-			System.err.println("Well formatted date/time dd/MM/yyyy HH:mm (e.g. 01/01/2000 12:00");
-		}
-		
-		try {
-			finalTime = LocalDateTime.parse(endTime, logicalDateTimeFormatter);
+			finalTime 	= LocalDateTime.parse(endTime, logicalDateTimeFormatter);
 		}
 		catch(DateTimeParseException e) {
 			System.err.println(e.getMessage());
