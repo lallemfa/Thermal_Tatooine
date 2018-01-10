@@ -1,4 +1,4 @@
-package engine;
+package doodles;
 
 public class Scenario {
 
