@@ -19,7 +19,7 @@ public class SortedListScheduler implements IEventScheduler {
 	@Override
 	public IEvent popNextEvent() {
 		IEvent event = sortedList.get(0);
-		internalList.remove(event);
+		removeEvent(event);
 		return event;
 	}
 
