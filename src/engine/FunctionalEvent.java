@@ -23,8 +23,13 @@ public class FunctionalEvent<T> implements IEvent {
     @Override
     public void process() {
         action.run();
-
     }
+    
+    @Override
+    public String toString() {
+        return "Event created by : " + owner.toString();
+    }
+
 
 
 }

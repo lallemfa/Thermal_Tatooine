@@ -32,10 +32,8 @@ public class SimTime {
 	
 	private LocalDateTime now;
 	
-	private Scenario[] scenarios;
-	
 	// Constructor
-	public SimTime(String startTime, String endTime, Scenario[] scenarioList)
+	public SimTime(String startTime, String endTime)
 	{
 		try {
 			initialTime = LocalDateTime.parse(startTime, logicalDateTimeFormatter);
@@ -49,8 +47,6 @@ public class SimTime {
 		System.out.println("Duration of " + Duration.between(initialTime, finalTime).toMinutes() + " minutes.");
 		
 		now = initialTime;
-		
-		scenarios = scenarioList;
 	}
 	
 	// Print
@@ -59,11 +55,6 @@ public class SimTime {
 		String msg = "Initial Time\t" + initialTime + "\n" +
 					"Final Time\t" + finalTime + "\n" +
 					"Scenarios\n";
-		
-		for(Scenario scene : scenarios)
-		{
-			msg += "\t" + scene.toString() + "\n";
-		}
 		
 		return msg;
 	}

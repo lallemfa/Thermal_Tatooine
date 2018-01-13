@@ -1,8 +1,6 @@
 package engine;
 
 import java.time.ZonedDateTime;
-import java.time.DayOfWeek;
-import java.time.Month;
 
 import doodles.Toto;
 
@@ -36,14 +34,6 @@ public class TestEngine {
 		
 		engine.simulateUntil(startTime, endTime);
 		
-		DayOfWeek day 	= DayOfWeek.from(time);
-		Month month 	= Month.from(time);
-		
-		System.out.println(day);
-		
-		System.out.println(day.compareTo(DayOfWeek.FRIDAY));
-		
-
 	}
 
 }
