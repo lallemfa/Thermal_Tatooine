@@ -1,6 +1,6 @@
-package spa.resort;
+package spa;
 
-public class Treatment {
+public class TreatmentLegacy {
 	private String name;
 	
 	private int startHour;
@@ -13,7 +13,7 @@ public class Treatment {
 	// Manager manager
 	
 	// Constructors
-	public Treatment(String givenName, int start, int end, boolean fixedHours, boolean organizedWaiting, int maxWaiting)
+	public TreatmentLegacy(String givenName, int start, int end, boolean fixedHours, boolean organizedWaiting, int maxWaiting)
 	{
 		name = givenName;
 		
@@ -27,6 +27,7 @@ public class Treatment {
 	}
 	
 	// Print
+	@Override
 	public String toString()
 	{
 		String msg = "\t" + name + "\n" +

@@ -1,4 +1,4 @@
-package spa.resort;
+package spa;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -11,7 +11,6 @@ import engine.SortedListScheduler;
 public class SpaTest {
 
 	public static void main(String[] args) {
-		System.out.println("\t\tTEST ABOUT SPA RESORT INSTANCIATION");
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
 		
@@ -29,7 +28,10 @@ public class SpaTest {
 		
 		float[] inflowMonth = {};
 		
-		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, 180, inflowMonth);
+		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
+								Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
+		
+		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
 		
 		System.out.println(spa);
 	}

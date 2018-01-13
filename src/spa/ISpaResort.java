@@ -1,6 +1,7 @@
-package spa.resort;
+package spa;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -15,6 +16,10 @@ public interface ISpaResort {
 	LocalTime getClosingHour(ZonedDateTime time);
 	
 	float[] getInflowMonth();
+	float getInflowMonth(Month month);
+	float getInflowMonth(ZonedDateTime time);
+	
+	Duration distanceBetween(Treatment treatment1, Treatment treatment2);
 	
 	boolean isOpen(ZonedDateTime time);
 	

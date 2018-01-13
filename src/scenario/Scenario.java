@@ -2,7 +2,7 @@ package scenario;
 
 import java.time.ZonedDateTime;
 
-import spa.resort.ISpaResort;
+import spa.ISpaResort;
 
 public class Scenario implements IScenario {
 

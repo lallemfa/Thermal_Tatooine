@@ -9,7 +9,8 @@ import java.util.List;
 
 import engine.Engine;
 import engine.SortedListScheduler;
-import spa.resort.SpaResort;
+import spa.SpaResort;
+import spa.Treatment;
 
 public class ScenarioTest {
 
@@ -31,7 +32,10 @@ public class ScenarioTest {
 		
 		float[] inflowMonth = {};
 		
-		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, 180, inflowMonth);
+		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
+				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
+		
+		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
 		

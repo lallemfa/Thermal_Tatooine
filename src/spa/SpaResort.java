@@ -1,6 +1,7 @@
-package spa.resort;
+package spa;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -11,29 +12,50 @@ import engine.MessageEvent;
 import engine.SortedListScheduler;
 
 public class SpaResort implements ISpaResort {
-
+	
+	private static final int[][] distances = {{0, 1, 2, 4, 1, 2, 3},
+											{1, 0, 1, 2, 2, 2, 4},
+											{2, 1, 0, 1, 3, 3, 3},
+											{4, 2, 1, 0, 4, 4, 2},
+											{1, 2, 3, 4, 0, 1, 2},
+											{2, 2, 3, 4, 1, 0, 1},
+											{3, 4, 3, 2, 2, 1, 0}};
+										
+	private final SortedListScheduler scheduler;
+	
 	private final List<Month> openingMonths;
 	private final List<DayOfWeek> openingDays;
 	private final LocalTime[][] openingHours;
 	
+	private final Treatment[] treatments;
+	
 	private final int maxClients;
 	private final float[] inflowMonth;
 	
-	private final SortedListScheduler scheduler;
-
-	public SpaResort(SortedListScheduler scheduler, List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, int maxClients,
-			float[] inflowMonth) {
-		this.scheduler 		= scheduler;
-		this.openingMonths 	= openingMonths;
-		this.openingDays 	= openingDays;
-		this.openingHours 	= openingHours;
-		this.maxClients 	= maxClients;
-		this.inflowMonth 	= inflowMonth;
+	public SpaResort(SortedListScheduler scheduler, List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
+			int maxClients, float[] inflowMonth) {
+		this.openingMonths = openingMonths;
+		this.openingDays = openingDays;
+		this.openingHours = openingHours;
+		this.maxClients = maxClients;
+		this.inflowMonth = inflowMonth;
+		this.treatments = treatments;
+		this.scheduler = scheduler;
 	}
 
 	@Override
 	public float[] getInflowMonth() {
 		return inflowMonth;
+	}
+	
+	@Override
+	public float getInflowMonth(Month month) {
+		return inflowMonth[month.getValue()];
+	}
+
+	@Override
+	public float getInflowMonth(ZonedDateTime time) {
+		return getInflowMonth(time.getMonth());
 	}
 
 	@Override
@@ -88,6 +110,12 @@ public class SpaResort implements ISpaResort {
 		
 		return nextDay;
 	}
+	
+	@Override
+	public Duration distanceBetween(Treatment treatment1, Treatment treatment2) {
+		int duration = distances[treatment1.id][treatment2.id];
+		return Duration.ofMinutes( duration );
+	}
 
 	@Override
 	public void initEvents(ZonedDateTime startTime, ZonedDateTime endTime) {
@@ -119,11 +147,22 @@ public class SpaResort implements ISpaResort {
 
 	@Override
 	public String toString() {
-		return "\tSpa Resort\n\n" +
+		String msg = "=============== Spa Resort ===============\n\n" +
 				"Max patients : " + maxClients + "\n" +
 				"Opening months -> " + openingMonths.toString() + "\n" +
 				"Opening days   -> " + openingDays.toString() + "\n" + 
-				"Opening hours  -> " + openingHours.toString() + "\n";
+				"Opening hours  -> " + openingHours.toString() + "\n\n" +
+				"Treatments available";
+		
+		int compteur = 1;
+		
+		for(Treatment treatment : treatments) {
+			msg += "\n" + (compteur++) + " - " + treatment.toString();
+		}
+		
+		msg += "\n==========================================\n\n";
+		
+		return msg;
 	}
 	
 }
