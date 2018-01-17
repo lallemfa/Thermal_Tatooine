@@ -1,25 +1,22 @@
 package patients;
 
+import java.time.ZonedDateTime;
+
+import spa.Treatment;
+
 public class Cure {
     private int startCure;
     private int endCure;
-    // Treatment[] dueTreatments
+    Treatment[] dailyTreatments;
     private int maxPoints;
     private int curPoints;
 
     // Constructors
     public Cure() {
-        startCure = -1;
-        endCure = -1;
-
-        maxPoints = 0;
-        curPoints = 0;
     }
 
     // Starting cure
-    public void start(int time) {
-        startCure = time;
-        endCure = time + 3;
+    public void start(ZonedDateTime time) {
     }
 
     // Print

@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import engine.Engine;
-import engine.SortedListScheduler;
 import events.CloseSpaEvent;
 import events.IEvent;
 import events.MessageEvent;
