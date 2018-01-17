@@ -2,7 +2,7 @@ package events;
 
 import java.time.ZonedDateTime;
 
-import patients.Patient;
+import person.Patient;
 import spa.SpaResort;
 
 public class EndTreatmentEvent implements IEvent {

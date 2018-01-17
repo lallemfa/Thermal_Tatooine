@@ -1,4 +1,4 @@
-package patients;
+package person;
 
 public class PatientsTest {
 

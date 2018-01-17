@@ -1,6 +1,6 @@
 package events;
 
-import patients.Patient;
+import person.Patient;
 import spa.SpaResort;
 import spa.Treatment;
 
