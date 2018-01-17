@@ -4,15 +4,15 @@ import java.time.ZonedDateTime;
 
 public class EndEvent implements IEvent {
 
-	private final ZonedDateTime endTime;
+	private final ZonedDateTime scheduledTime;
 	
-	public EndEvent(ZonedDateTime endTime) {
-		this.endTime = endTime;
+	public EndEvent(ZonedDateTime scheduledTime) {
+		this.scheduledTime = scheduledTime;
 	}
 
 	@Override
 	public ZonedDateTime getScheduledTime() {
-		return endTime;
+		return scheduledTime;
 	}
 
 	@Override

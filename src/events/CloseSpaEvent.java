@@ -34,7 +34,6 @@ public class CloseSpaEvent implements IEvent {
 		while (!patientInTreatments.isEmpty()) {
 			addEndTreatmentEvent(patientInTreatments.remove(patientInTreatments.size()));
 		}
-		
 	}
 	
 	private List<Patient> findPatientsInTreatments(Treatment[] treatments){

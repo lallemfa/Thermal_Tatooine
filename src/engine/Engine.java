@@ -23,13 +23,6 @@ public class Engine {
     public static ZonedDateTime getCurrentTime() {
     	return mCurrentTime;
     }
-//    public Engine(IEventScheduler scheduler) {
-//        this.scheduler = scheduler;
-//    }
-//
-//    public IEventScheduler scheduler() {
-//        return scheduler;
-//    }
 
     public static void simulateUntil(ZonedDateTime startTime, ZonedDateTime endTime) {
         mCurrentTime = startTime;
