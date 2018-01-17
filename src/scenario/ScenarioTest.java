@@ -9,6 +9,7 @@ import java.util.List;
 
 import engine.Engine;
 import engine.SortedListScheduler;
+import logger.Logger;
 import spa.SpaResort;
 import spa.Treatment;
 
@@ -44,11 +45,11 @@ public class ScenarioTest {
 		ZonedDateTime endTime 		= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
 		
 		scenario.initScenario(startTime, endTime);
-		
-		
+
+		Logger.init(false, true);
 		Engine engine = new Engine(scheduler);
 		engine.simulateUntil(startTime, endTime);
-
+		Logger.end();
 	}
 
 }
