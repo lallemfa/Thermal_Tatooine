@@ -1,4 +1,4 @@
-package engine;
+package events;
 
 @FunctionalInterface
 public interface IEventAction {

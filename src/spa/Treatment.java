@@ -2,6 +2,10 @@ package spa;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import patients.Patient;
 
 public enum Treatment {
 
@@ -37,6 +41,10 @@ public enum Treatment {
 	private final int failureSTDD;
 	private final int failureMeanPerDay;
 	private final Duration maintenanceMeanDuration;
+	
+	private List<Patient> waitingQueue = new ArrayList<>();
+	private List<Patient> currentPatients = new ArrayList<>();
+
 	
 	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withRendezVous,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
@@ -78,6 +86,14 @@ public enum Treatment {
 				"\t\tFailure mean (in days)              -> " + failureMeanPerDay + "\n" +
 				"\t\tStandard Deviation (in days)        -> " + failureSTDD + "\n" +
 				"\t\tMaintenance Mean Duration (in days) -> " + maintenanceMeanDuration + "\n";
+	}
+	
+	public List<Patient> getCurrentPatients() {
+		return currentPatients;
+	}
+	
+	public List<Patient> getWaitingQueue() {
+		return waitingQueue;
 	}
 	
 	

@@ -1,6 +1,9 @@
-package engine;
+package events;
 
 import java.time.ZonedDateTime;
+
+import logger.LogType;
+import logger.Logger;
 
 public class MessageEvent implements IEvent {
 	
@@ -19,7 +22,7 @@ public class MessageEvent implements IEvent {
 
 	@Override
 	public void process() {
-		System.out.println(message);
+		Logger.log(LogType.INFO, eventTime, message);
 	}
 
 }

@@ -3,8 +3,8 @@ package doodles;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-import engine.FunctionalEvent;
-import engine.IEventScheduler;
+import events.FunctionalEvent;
+import events.IEventScheduler;
 
 public class Toto {
 	

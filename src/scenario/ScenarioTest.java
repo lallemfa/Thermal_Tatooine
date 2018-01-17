@@ -18,6 +18,8 @@ public class ScenarioTest {
 	public static void main(String[] args) {
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
+		Logger.init(false, true);
+		Engine.init(scheduler);
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);
@@ -36,7 +38,7 @@ public class ScenarioTest {
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
-		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
+		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
 		
@@ -45,10 +47,7 @@ public class ScenarioTest {
 		ZonedDateTime endTime 		= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
 		
 		scenario.initScenario(startTime, endTime);
-
-		Logger.init(false, true);
-		Engine engine = new Engine(scheduler);
-		engine.simulateUntil(startTime, endTime);
+		Engine.simulateUntil(startTime, endTime);
 		Logger.end();
 	}
 

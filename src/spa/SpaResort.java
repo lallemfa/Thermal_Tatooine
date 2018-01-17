@@ -7,9 +7,11 @@ import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import engine.IEvent;
-import engine.MessageEvent;
+import engine.Engine;
 import engine.SortedListScheduler;
+import events.CloseSpaEvent;
+import events.IEvent;
+import events.MessageEvent;
 
 public class SpaResort implements ISpaResort {
 	
@@ -21,8 +23,6 @@ public class SpaResort implements ISpaResort {
 											{2, 2, 3, 4, 1, 0, 1},
 											{3, 4, 3, 2, 2, 1, 0}};
 										
-	private final SortedListScheduler scheduler;
-	
 	private final List<Month> openingMonths;
 	private final List<DayOfWeek> openingDays;
 	private final LocalTime[][] openingHours;
@@ -32,7 +32,7 @@ public class SpaResort implements ISpaResort {
 	private final int maxClients;
 	private final float[] inflowMonth;
 	
-	public SpaResort(SortedListScheduler scheduler, List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
+	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
 		this.openingMonths = openingMonths;
 		this.openingDays = openingDays;
@@ -40,7 +40,6 @@ public class SpaResort implements ISpaResort {
 		this.maxClients = maxClients;
 		this.inflowMonth = inflowMonth;
 		this.treatments = treatments;
-		this.scheduler = scheduler;
 	}
 
 	@Override
@@ -85,7 +84,12 @@ public class SpaResort implements ISpaResort {
 			return null;
 		}
 	}
-
+	
+	@Override
+	public Treatment[] getTreatments() {
+		return treatments;
+	}
+	
 	@Override
 	public boolean isOpen(ZonedDateTime time) {
 		if( openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek()) ) {
@@ -126,6 +130,7 @@ public class SpaResort implements ISpaResort {
 		
 		IEvent openEvent;
 		IEvent closeEvent;
+		IEvent closeSpaEvent;
 		
 		if( !isOpen(currDay) ) {
 			currDay = nextOpenDay(currDay);
@@ -137,10 +142,12 @@ public class SpaResort implements ISpaResort {
 			
 			openEvent 	= new MessageEvent(currDay.with(openHour), "Spa opens");
 			closeEvent 	= new MessageEvent(currDay.with(closeHour), "Spa closes");
+			closeSpaEvent = new CloseSpaEvent(currDay.with(closeHour), this);
 			
-			scheduler.postEvent(openEvent);
-			scheduler.postEvent(closeEvent);
-			
+			Engine.addEvent(openEvent);
+			Engine.addEvent(closeEvent);
+			Engine.addEvent(closeSpaEvent);
+		
 			currDay = nextOpenDay(currDay);
 		}
 	}

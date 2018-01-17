@@ -3,36 +3,46 @@ package engine;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
+import events.EndEvent;
+import events.IEvent;
+import events.IEventScheduler;
+
 public class Engine {
 
-    private final IEventScheduler scheduler;
-    private ZonedDateTime currentTime;
+    private static IEventScheduler mScheduler;
     
-    public Engine(IEventScheduler scheduler) {
-        this.scheduler = scheduler;
+    public static void init(IEventScheduler scheduler) {
+    	mScheduler = scheduler;
     }
-
-    public IEventScheduler scheduler() {
-        return scheduler;
+    
+    public static void addEvent(IEvent event) {
+    	mScheduler.postEvent(event);
     }
+//    public Engine(IEventScheduler scheduler) {
+//        this.scheduler = scheduler;
+//    }
+//
+//    public IEventScheduler scheduler() {
+//        return scheduler;
+//    }
 
-    public void simulateUntil(ZonedDateTime startTime, ZonedDateTime endTime) {
-        currentTime = startTime;
+    public static void simulateUntil(ZonedDateTime startTime, ZonedDateTime endTime) {
+        ZonedDateTime currentTime = startTime;
         IEvent endEvent = new EndEvent(endTime);
-        scheduler.postEvent(endEvent);
-        IEvent currentEvent = scheduler.popNextEvent();
+        mScheduler.postEvent(endEvent);
+        IEvent currentEvent = mScheduler.popNextEvent();
         while (currentEvent != null) {
             if (currentEvent.getScheduledTime().isBefore(currentTime)) {
                 throw new IllegalStateException("Trying to simulate an event from the past");
             }
             currentTime = currentEvent.getScheduledTime();
+            currentEvent.process();           
             if (currentEvent == endEvent) break;
-            currentEvent.process();
-            currentEvent = scheduler.popNextEvent();
+            currentEvent = mScheduler.popNextEvent();
         }
     }
 
-    public void simulateFor(ZonedDateTime startTime, Duration duration) {
+    public static void simulateFor(ZonedDateTime startTime, Duration duration) {
         simulateUntil(startTime, startTime.plus(duration));
     }
 

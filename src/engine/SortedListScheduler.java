@@ -2,6 +2,8 @@ package engine;
 
 import java.util.LinkedList;
 
+import events.IEvent;
+import events.IEventScheduler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;

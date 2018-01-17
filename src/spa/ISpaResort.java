@@ -14,6 +14,7 @@ public interface ISpaResort {
 	
 	LocalTime getOpeningHour(ZonedDateTime time);
 	LocalTime getClosingHour(ZonedDateTime time);
+	Treatment[] getTreatments();
 	
 	float[] getInflowMonth();
 	float getInflowMonth(Month month);

@@ -31,7 +31,7 @@ public class SpaTest {
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 								Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
-		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
+		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
 		
 		System.out.println(spa);
 	}
