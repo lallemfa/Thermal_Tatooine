@@ -4,7 +4,8 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import patients.Patient;
+import person.Patient;
+import person.PersonState;
 import spa.SpaResort;
 import spa.Treatment;
 
@@ -36,7 +37,7 @@ public class SearchForActionEvent implements IEvent {
 		PersonState state = this.patient.getState();
 		Treatment choosenTreatment;
 		
-		if (state == PersonState.treatment) {
+		if (state == PersonState.Treatment) {
 			Treatment treatment = this.patient.getTreatment();
 			Duration durationMoving = Duration.ofMinutes(100);
 			

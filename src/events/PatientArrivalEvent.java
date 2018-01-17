@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import engine.Engine;
 import logger.LogType;
 import logger.Logger;
-import patients.Patient;
+import person.Patient;
 import spa.SpaResort;
 
 public class PatientArrivalEvent implements IEvent {

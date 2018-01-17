@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import engine.Engine;
-import patients.Patient;
+import person.Patient;
 import spa.SpaResort;
 import spa.Treatment;
 
@@ -42,7 +42,7 @@ public class EndTreatmentEvent implements IEvent {
 		Duration duration = getTimeInTreatment(patient.getStartTreatment());
 		Treatment treatment = this.patient.getTreatment();
 		Duration treatmentDuration = treatment.getDuration();
-		int point = (int) (treatmentDuration.toMinutes() * treatment.getMaxPoint() / duration.toMinutes());
+		int point = (int) (treatmentDuration.toMinutes() * treatment.getMaxPoints() / duration.toMinutes());
 		return point;
 	}
 }

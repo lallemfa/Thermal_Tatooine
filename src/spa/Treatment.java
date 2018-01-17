@@ -2,10 +2,11 @@ package spa;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import patients.Patient;
+import person.Patient;
 
 public enum Treatment {
 
@@ -15,9 +16,9 @@ public enum Treatment {
 						4,  5, 30, false, 10,  28,  4, 2),
 	Etuves			(2, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", true,
 						6, 15, 15,  true,  6,  21,  5, 3),
-	BainsModernes	(3, "Bain à jets modernes", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", true,
+	BainsModernes	(3, "Bain Ã  jets modernes", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", true,
 						8, 20, 15,  true, 10,  70, 10, 4),
-	BainsAnciens	(4, "Bain à jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", true,
+	BainsAnciens	(4, "Bain Ã  jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", true,
 						9, 20, 10,  true, 15,  35,  4, 2),
 	Douches			(5, "Douches", 				TreatmentType.Douche, 		"07:15:00", "14:00:00", true,
 						8, 10, 10, false,  8,  49,  2, 2),
@@ -32,8 +33,9 @@ public enum Treatment {
 	private final LocalTime openHour;
 	private final LocalTime closeHour;
 	
-	private final boolean withRendezVous;
+	private final boolean withAppointment;
 	private final int maxPatientsWorking;
+
 	private final Duration duration;
 	private final int maxPoints;
 	private final boolean isOrganizedWaiting;
@@ -46,7 +48,7 @@ public enum Treatment {
 	private List<Patient> currentPatients = new ArrayList<>();
 
 	
-	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withRendezVous,
+	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
 			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int maintenanceMeanDuration) {
 		
@@ -63,7 +65,7 @@ public enum Treatment {
 		this.duration 	= Duration.ofMinutes(duration);
 		this.maxPoints 	= maxPoints;
 		
-		this.withRendezVous 	= withRendezVous;
+		this.withAppointment = withAppointment;
 		this.isOrganizedWaiting = isOrganizedWaiting;
 		this.maxPatientsWorking = maxPatientsWorking;
 		this.maxPatientsWaiting = maxPatientsWaiting;
@@ -78,7 +80,7 @@ public enum Treatment {
 		return name + " | Type: " + type + "\n" +
 				"\tOpen from " + openHour + " to " + closeHour + "\n" +
 				"\tTreatment lasts " + duration + " minutes and gives " + maxPoints + " points if fulfilled\n" + 
-				"\tWith Rendez-Vous ? " + withRendezVous + "\n" +
+				"\tWith Rendez-Vous ? " + withAppointment + "\n" +
 				"\t\tMax number of patients working -> " + maxPatientsWorking + "\n" +
 				"\tOrganized waiting ? " + isOrganizedWaiting + "\n" +
 				"\t\tMax number of patients waiting -> " + maxPatientsWaiting + "\n" +
@@ -86,6 +88,14 @@ public enum Treatment {
 				"\t\tFailure mean (in days)              -> " + failureMeanPerDay + "\n" +
 				"\t\tStandard Deviation (in days)        -> " + failureSTDD + "\n" +
 				"\t\tMaintenance Mean Duration (in days) -> " + maintenanceMeanDuration + "\n";
+	}
+
+	public Duration getDuration() {
+		return duration;
+	}
+
+	public int getMaxPoints() {
+		return maxPoints;
 	}
 	
 	public List<Patient> getCurrentPatients() {
@@ -96,5 +106,12 @@ public enum Treatment {
 		return waitingQueue;
 	}
 	
-	
+	public void initEvents(ZonedDateTime startTime, ZonedDateTime endTime) {
+		// TODO: failures and repairs
+	}
+
+	public ZonedDateTime getAppointmentTime(ZonedDateTime time) {
+		// TODO: get appointment, time returned needs to be available for the next three weeks
+		return null;
+	}
 }
