@@ -35,7 +35,7 @@ public class SearchForActionEvent implements IEvent {
 	private Treatment selectNextTreatment() {
 		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
 		PersonState state = this.patient.getState();
-		Treatment choosenTreatment;
+		Treatment choosenTreatment = null;
 		
 		if (state == PersonState.Treatment) {
 			Treatment treatment = this.patient.getTreatment();

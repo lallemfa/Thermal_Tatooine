@@ -13,6 +13,8 @@ public class Patient extends Person {
     private Cure cure;
     private ZonedDateTime maxArrivingTime; // TODO
 
+    private ZonedDateTime startTreatment; // TODO
+
     public Patient(int id) {
         this(id, true);
     }
@@ -26,6 +28,10 @@ public class Patient extends Person {
 
     public Cure getCure() {
         return cure;
+    }
+
+    public ZonedDateTime getStartTreatment() {
+        return startTreatment;
     }
 
     public void addCurePoints(int points) {
