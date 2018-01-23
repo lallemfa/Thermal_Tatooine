@@ -12,28 +12,16 @@ import java.util.List;
 
 public class Logger {
 
-    private static boolean initialized = false;
-    private static List<String> logLines;
+    private static List<String> logLines = new ArrayList<>();
     private static boolean mLogToConsole = true;
     private static boolean mLogToFile = true;
 
-    public static void init() {
-        init(mLogToConsole, mLogToFile);
+    public static void setLogToConsole(boolean logToConsole) {
+        mLogToConsole = logToConsole;
     }
 
-    public static void init(boolean logToConsole) {
-        init(logToConsole, mLogToFile);
-    }
-
-    public static void init(boolean logToConsole, boolean logToFile) {
-        if (!initialized) {
-            initialized = true;
-            mLogToConsole = logToConsole;
-            mLogToFile = logToFile;
-            if (mLogToFile) {
-                logLines = new ArrayList<>();
-            }
-        }
+    public static void setLogToFile(boolean logToFile) {
+        mLogToFile = logToFile;
     }
 
     public static void end() {
@@ -52,9 +40,6 @@ public class Logger {
     }
 
     public static void log(LogType type, ZonedDateTime date, String message) {
-        if (!initialized) {
-            init();
-        }
         String logMessage = "[" + type.flag + "]";
         logMessage += " [" + date.toLocalDateTime() + "]";
         logMessage += " " + message;

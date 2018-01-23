@@ -16,9 +16,11 @@ import spa.Treatment;
 public class ScenarioTest {
 
 	public static void main(String[] args) {
+
+		Logger.setLogToConsole(true);
+		Logger.setLogToFile(true);
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
-		Logger.init(false, true);
 		Engine.init(scheduler);
 		
 		List<Month> openingMonths = new ArrayList<Month>();
