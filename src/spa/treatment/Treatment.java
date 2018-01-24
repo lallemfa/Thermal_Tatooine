@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import engine.Engine;
+import engine.event.MessageEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
@@ -44,7 +46,7 @@ public enum Treatment {
 	private final int maxPatientsWaiting;
 	private final int failureSTDD;
 	private final int failureMeanPerDay;
-	private final Duration maintenanceMeanDuration;
+	private final int repairMeanDuration;
 	
 	private List<Patient> waitingQueue = new ArrayList<>();
 	private List<Patient> currentPatients = new ArrayList<>();
@@ -52,7 +54,7 @@ public enum Treatment {
 	
 	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
-			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int maintenanceMeanDuration) {
+			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int repairMeanDuration) {
 		
 		this.id = id;
 		
@@ -75,7 +77,7 @@ public enum Treatment {
 		// Failures
 		this.failureSTDD 				= failureSTDD;
 		this.failureMeanPerDay			= failureMeanPerDay;
-		this.maintenanceMeanDuration 	= Duration.ofDays(maintenanceMeanDuration);
+		this.repairMeanDuration = repairMeanDuration;
 	}
 	
 	public String toString() {
@@ -89,7 +91,7 @@ public enum Treatment {
 				"\tFailures :\n" + 
 				"\t\tFailure mean (in days)              -> " + failureMeanPerDay + "\n" +
 				"\t\tStandard Deviation (in days)        -> " + failureSTDD + "\n" +
-				"\t\tMaintenance Mean Duration (in days) -> " + maintenanceMeanDuration + "\n";
+				"\t\tMaintenance Mean Duration (in days) -> " + repairMeanDuration + "\n";
 	}
 
 	public Duration getDuration() {
@@ -113,22 +115,42 @@ public enum Treatment {
 	}
 	
 	public void initEvents(SpaResort spa, ZonedDateTime startTime, ZonedDateTime endTime) {
-		// TODO: failures and repairs
 		ZonedDateTime currentTime = ZonedDateTime.of(startTime.toLocalDateTime(), startTime.getZone());
-		Duration nbDaysToFailure = getDaysToNextFailure();
-		currentTime.plus(nbDaysToFailure);
-		if (spa.isOpen(currentTime)) {
-			// OK
-		} else {
-			currentTime = spa.nextOpenDay(currentTime);
+		currentTime = spa.nextOpenDay(currentTime);
+		while (currentTime.compareTo(endTime) < 0) {
+			// Failure
+			Duration nbDaysToFailure = getDurationToNextFailure();
+			currentTime = currentTime.plus(nbDaysToFailure);
+			if (!spa.isOpen(currentTime)) {
+				currentTime = spa.nextOpenDay(currentTime);
+			}
+			LocalTime openingTime = spa.getOpeningHour(currentTime);
+			currentTime = currentTime.with(openingTime);
+			Engine.addEvent(new MessageEvent(currentTime, "Failure of treatment: " + name));
+
+			// Repair
+			Duration nbDaysToRepair = getDurationToRepair();
+			currentTime = currentTime.plus(nbDaysToRepair);
+			if (!spa.isOpen(currentTime)) {
+				currentTime = spa.nextOpenDay(currentTime);
+			}
+			LocalTime closingTime = spa.getClosingHour(currentTime);
+			currentTime = currentTime.with(closingTime);
+			Engine.addEvent(new MessageEvent(currentTime, "Repair of treatment: " + name));
+			currentTime = currentTime.plusDays(1);
 		}
 	}
 
-	private static Duration getDaysToNextFailure() {
-		double mean = 60;
+	private Duration getDurationToNextFailure() {
 		Random random = new Random();
-		double nbDaysToFailure = - mean * Math.log(1 - random.nextDouble());
-		return Duration.ofDays((long) Math.abs(nbDaysToFailure));
+		double nbDaysToFailure = - failureMeanPerDay * Math.log(1 - random.nextDouble());
+		return Duration.ofDays(Math.round(nbDaysToFailure));
+	}
+
+	private Duration getDurationToRepair() {
+		Random random = new Random();
+		double nbDaysToRepair = - repairMeanDuration * Math.log(1 - random.nextDouble());
+		return Duration.ofDays(Math.round(nbDaysToRepair));
 	}
 
 	public ZonedDateTime getAppointmentTime(ZonedDateTime time) {
