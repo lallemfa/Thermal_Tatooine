@@ -18,7 +18,7 @@ public class ScenarioTest {
 
 	public static void main(String[] args) {
 
-		Logger.setLogToConsole(true);
+		Logger.setLogToConsole(false);
 		Logger.setLogToFile(true);
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
@@ -26,10 +26,16 @@ public class ScenarioTest {
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);
-		openingMonths.add(Month.AUGUST);
-		
+		openingMonths.add(Month.MAY);
+		openingMonths.add(Month.JUNE);
+
 		List<DayOfWeek> openingDays = new ArrayList<DayOfWeek>();
+		openingDays.add(DayOfWeek.MONDAY);
+		openingDays.add(DayOfWeek.TUESDAY);
+		openingDays.add(DayOfWeek.WEDNESDAY);
+		openingDays.add(DayOfWeek.THURSDAY);
 		openingDays.add(DayOfWeek.FRIDAY);
+		openingDays.add(DayOfWeek.SATURDAY);
 		
 		LocalTime openTime 		= LocalTime.parse("07:00:00");
 		LocalTime closureTime 	= LocalTime.parse("14:00:00");
