@@ -3,6 +3,7 @@ package scenario;
 import java.time.ZonedDateTime;
 
 import spa.ISpaResort;
+import spa.Treatment;
 
 public class Scenario implements IScenario {
 
@@ -15,6 +16,8 @@ public class Scenario implements IScenario {
 	@Override
 	public void initScenario(ZonedDateTime startTime, ZonedDateTime endTime) {
 		spa.initEvents(startTime, endTime);
+		for (Treatment treatment : spa.getTreatments()) {
+			treatment.initEvents(startTime, endTime);
+		}
 	}
-	
 }
