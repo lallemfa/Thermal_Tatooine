@@ -28,28 +28,34 @@ public class SearchForActionEvent implements IEvent {
 
 	@Override
 	public void process() {
-		Treatment choosenTreatment = selectNextTreatment();
+		Duration duration;
+		PersonState state = this.patient.getState();
+		Treatment choosenTreatment = selectNextTreatment(state);
+		if (state != PersonState.Treatment) {
+			duration = this.spa.getMaxDistanceDuration();
+		}
+		// TODO rest zone + corridors
 		// TODO add event arrive in treatment with good time
 	}
 	
-	private Treatment selectNextTreatment() {
+	private Treatment selectNextTreatment(PersonState state) {
 		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
-		PersonState state = this.patient.getState();
-		Treatment choosenTreatment = null;
 		
-		if (state == PersonState.Treatment) {
-			Treatment treatment = this.patient.getTreatment();
-			Duration durationMoving = Duration.ofMinutes(100);
-			
-			for(int i=0; i < dailyTreatments.size(); i++) {
-				Treatment tempTreatment = dailyTreatments.remove(dailyTreatments.size()-1);
+		Treatment choosenTreatment = null;
+		Duration durationMoving = Duration.ofMinutes(100);
+		
+		for(int i=0; i < dailyTreatments.size(); i++) {
+			Treatment tempTreatment = dailyTreatments.remove(dailyTreatments.size()-1);
+			if (!tempTreatment.isWithAppointment() && state != PersonState.Treatment) {
+				return tempTreatment;
+			}
+			if (!tempTreatment.isWithAppointment() && state == PersonState.Treatment) {
+				Treatment treatment = this.patient.getTreatment();
 				Duration duration = this.spa.distanceBetween(treatment, tempTreatment);
 				if (duration.compareTo(durationMoving) < 0) {
 					choosenTreatment = tempTreatment;
 				}
 			}
-		} else {
-			// TODO rest zone + corridors
 		}
 		return choosenTreatment;
 	}

@@ -25,5 +25,6 @@ public interface ISpaResort {
 	boolean isOpen(ZonedDateTime time);
 	
 	void initEvents(ZonedDateTime startTime, ZonedDateTime endTime);
+	Duration getMaxDistanceDuration();
 	
 }

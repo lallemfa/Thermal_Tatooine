@@ -15,12 +15,12 @@ public class OpenSpaEvent implements IEvent {
 	
 	@Override
 	public ZonedDateTime getScheduledTime() {
-		return scheduledTime;
+		return this.scheduledTime;
 	}
 
 	@Override
 	public void process() {
-		Logger.log(LogType.INFO, scheduledTime, "Spa opened");
+		Logger.log(LogType.INFO, this.scheduledTime, "Spa opened");
 	}
 
 }

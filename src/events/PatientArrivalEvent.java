@@ -22,14 +22,14 @@ public class PatientArrivalEvent implements IEvent {
 
 	@Override
 	public ZonedDateTime getScheduledTime() {
-		return scheduledTime;
+		return this.scheduledTime;
 	}
 
 	@Override
 	public void process() {
-		Logger.log(LogType.INFO, scheduledTime, "Patient" + this.patient.getId() + "arrived");
+		Logger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
 		IEvent searchEvent;
-		searchEvent = new SearchForActionEvent(scheduledTime, this.spa, patient);
+		searchEvent = new SearchForActionEvent(this.scheduledTime, this.spa, this.patient);
 		Engine.addEvent(searchEvent);
 	}
 	

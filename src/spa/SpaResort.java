@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import engine.Engine;
@@ -64,6 +65,19 @@ public class SpaResort implements ISpaResort {
 	@Override
 	public List<DayOfWeek> getOpeningDays() {
 		return openingDays;
+	}
+	
+	@Override
+	public Duration getMaxDistanceDuration() {
+		int max = distances[0][0];
+	    for (int i = 0; i < distances.length; i++) {
+	    	for (int j = 0; j < distances[0].length; j++) {
+	    		if (distances[i][j] > max) {
+		            max = distances[i][j];
+		        }
+	    	}
+	    }
+	    return Duration.ofMinutes( max );
 	}
 	
 	@Override
@@ -128,7 +142,6 @@ public class SpaResort implements ISpaResort {
 		LocalTime closeHour;
 		
 		IEvent openEvent;
-		IEvent closeEvent;
 		IEvent closeSpaEvent;
 		
 		if( !isOpen(currDay) ) {
@@ -140,11 +153,9 @@ public class SpaResort implements ISpaResort {
 			closeHour 	= getClosingHour(currDay);
 			
 			openEvent 	= new MessageEvent(currDay.with(openHour), "Spa opens");
-			closeEvent 	= new MessageEvent(currDay.with(closeHour), "Spa closes");
 			closeSpaEvent = new CloseSpaEvent(currDay.with(closeHour), this);
 			
 			Engine.addEvent(openEvent);
-			Engine.addEvent(closeEvent);
 			Engine.addEvent(closeSpaEvent);
 		
 			currDay = nextOpenDay(currDay);

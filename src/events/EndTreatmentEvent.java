@@ -39,7 +39,7 @@ public class EndTreatmentEvent implements IEvent {
 	}
 
 	private int getPointPatient() {
-		Duration duration = getTimeInTreatment(patient.getStartTreatment());
+		Duration duration = getTimeInTreatment(this.patient.getStartTreatment());
 		Treatment treatment = this.patient.getTreatment();
 		Duration treatmentDuration = treatment.getDuration();
 		int point = (int) (treatmentDuration.toMinutes() * treatment.getMaxPoints() / duration.toMinutes());

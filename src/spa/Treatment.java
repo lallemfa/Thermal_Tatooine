@@ -106,6 +106,10 @@ public enum Treatment {
 		return waitingQueue;
 	}
 	
+	public boolean isWithAppointment() {
+		return this.withAppointment;
+	}
+	
 	public void initEvents(ZonedDateTime startTime, ZonedDateTime endTime) {
 		// TODO: failures and repairs
 	}

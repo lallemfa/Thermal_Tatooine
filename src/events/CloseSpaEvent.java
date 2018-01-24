@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.Engine;
+import logger.LogType;
+import logger.Logger;
 
 import java.time.ZonedDateTime;
 
@@ -34,6 +36,7 @@ public class CloseSpaEvent implements IEvent {
 		while (!patientInTreatments.isEmpty()) {
 			addEndTreatmentEvent(patientInTreatments.remove(patientInTreatments.size()));
 		}
+		Logger.log(LogType.INFO, this.scheduledTime, "Spa close");
 	}
 	
 	private List<Patient> findPatientsInTreatments(Treatment[] treatments){
@@ -53,7 +56,7 @@ public class CloseSpaEvent implements IEvent {
 	
 	private void addEndTreatmentEvent(Patient patient) {
 		IEvent endTreatEvent;
-		endTreatEvent = new EndTreatmentEvent(scheduledTime, spa, patient);
+		endTreatEvent = new EndTreatmentEvent(this.scheduledTime, this.spa, patient);
 		Engine.addEvent(endTreatEvent);
 	}
 }
