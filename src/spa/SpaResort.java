@@ -111,7 +111,7 @@ public class SpaResort implements ISpaResort {
 		return false;
 	}
 	
-	private ZonedDateTime nextOpenDay(ZonedDateTime time) {
+	public ZonedDateTime nextOpenDay(ZonedDateTime time) {
 		ZonedDateTime nextDay = time.plusDays(1);
 		
 		while(!isOpen(nextDay)) {

@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import person.Patient;
 
@@ -110,8 +111,23 @@ public enum Treatment {
 		return this.withAppointment;
 	}
 	
-	public void initEvents(ZonedDateTime startTime, ZonedDateTime endTime) {
+	public void initEvents(SpaResort spa, ZonedDateTime startTime, ZonedDateTime endTime) {
 		// TODO: failures and repairs
+		ZonedDateTime currentTime = ZonedDateTime.of(startTime.toLocalDateTime(), startTime.getZone());
+		Duration nbDaysToFailure = getDaysToNextFailure();
+		currentTime.plus(nbDaysToFailure);
+		if (spa.isOpen(currentTime)) {
+			// OK
+		} else {
+			currentTime = spa.nextOpenDay(currentTime);
+		}
+	}
+
+	private static Duration getDaysToNextFailure() {
+		double mean = 60;
+		Random random = new Random();
+		double nbDaysToFailure = - mean * Math.log(1 - random.nextDouble());
+		return Duration.ofDays((long) Math.abs(nbDaysToFailure));
 	}
 
 	public ZonedDateTime getAppointmentTime(ZonedDateTime time) {
