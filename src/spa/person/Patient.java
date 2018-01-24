@@ -33,6 +33,10 @@ public class Patient extends Person {
     public ZonedDateTime getStartTreatment() {
         return startTreatment;
     }
+    
+    public void setStartTreatment(ZonedDateTime scheduledTime) {
+    	this.startTreatment = scheduledTime;
+    }
 
     public void addCurePoints(int points) {
         this.cure.addPoints(points);

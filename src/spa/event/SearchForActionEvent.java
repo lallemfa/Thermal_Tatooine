@@ -36,7 +36,7 @@ public class SearchForActionEvent implements IEvent {
 		
 		IEvent arrivedTreatmentEvent;
 		ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
-		arrivedTreatmentEvent = new ArrivedTreatmentEvent(arrivedTime, choosenTreatment, this.patient);
+		arrivedTreatmentEvent = new ArrivedTreatmentEvent(arrivedTime, this.spa, choosenTreatment, this.patient);
 		Engine.addEvent(arrivedTreatmentEvent);
 	}
 	

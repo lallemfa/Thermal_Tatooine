@@ -102,6 +102,14 @@ public enum Treatment {
 		return maxPoints;
 	}
 	
+	public int getMaxPatientsWaiting() {
+		return maxPatientsWaiting;
+	}
+
+	public int getMaxPatientsWorking() {
+		return maxPatientsWorking;
+	}
+	
 	public List<Patient> getCurrentPatients() {
 		return currentPatients;
 	}
