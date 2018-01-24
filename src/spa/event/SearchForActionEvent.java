@@ -6,6 +6,7 @@ import java.util.List;
 
 import engine.Engine;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -29,7 +30,7 @@ public class SearchForActionEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		PersonState state = this.patient.getState();
 		Treatment choosenTreatment = selectNextTreatment(state);
 		Duration duration = selectDuration(state, choosenTreatment);
@@ -37,7 +38,7 @@ public class SearchForActionEvent implements IEvent {
 		IEvent arrivedTreatmentEvent;
 		ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
 		arrivedTreatmentEvent = new ArrivedTreatmentEvent(arrivedTime, choosenTreatment, this.patient);
-		Engine.addEvent(arrivedTreatmentEvent);
+		scheduler.postEvent(arrivedTreatmentEvent);
 	}
 	
 	private Treatment selectNextTreatment(PersonState state) {

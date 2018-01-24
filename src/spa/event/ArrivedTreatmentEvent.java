@@ -3,6 +3,7 @@ package spa.event;
 import java.time.ZonedDateTime;
 
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import spa.person.Patient;
 import spa.treatment.Treatment;
 
@@ -24,7 +25,7 @@ public class ArrivedTreatmentEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		
 		
 	}

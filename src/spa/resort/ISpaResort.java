@@ -7,6 +7,7 @@ import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import engine.event.IEventScheduler;
 import spa.treatment.Treatment;
 
 public interface ISpaResort {
@@ -26,7 +27,7 @@ public interface ISpaResort {
 	
 	boolean isOpen(ZonedDateTime time);
 	
-	void initEvents(ZonedDateTime startTime, ZonedDateTime endTime);
+	void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime);
 	Duration getMaxDistanceDuration();
 	
 }

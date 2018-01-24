@@ -2,7 +2,6 @@ package engine;
 
 import java.time.ZonedDateTime;
 
-import doodles.Toto;
 import engine.event.MessageEvent;
 
 
@@ -17,7 +16,7 @@ public class TestEngine {
 		
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
-		Engine.init(scheduler);
+		Engine engine = new Engine(scheduler);
 		
 		startTime 	= ZonedDateTime.parse("2018-01-01T07:00:00+01:00[Europe/Paris]");
 		endTime 	= ZonedDateTime.parse("2018-01-02T08:00:00+01:00[Europe/Paris]");
@@ -31,10 +30,7 @@ public class TestEngine {
 		time = ZonedDateTime.parse("2018-01-01T09:00:00+01:00[Europe/Paris]");
 		scheduler.postEvent(new MessageEvent(time, "One hour"));
 		
-		Toto noelie = new Toto(scheduler);
-		noelie.initialize(ZonedDateTime.parse("2018-01-01T12:30:00+01:00[Europe/Paris]"));
-		
-		Engine.simulateUntil(startTime, endTime);
+		engine.simulateUntil(startTime, endTime);
 		
 	}
 
