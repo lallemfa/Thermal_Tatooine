@@ -1,16 +1,15 @@
-package spa;
+package spa.resort;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import engine.Engine;
-import events.IEvent;
-import events.MessageEvent;
+import engine.event.IEvent;
+import engine.event.MessageEvent;
 import spa.event.CloseSpaEvent;
 import spa.treatment.Treatment;
 

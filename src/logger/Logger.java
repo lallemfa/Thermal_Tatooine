@@ -27,7 +27,7 @@ public class Logger {
     public static void end() {
         if (mLogToFile) {
             File directory = new File("logs");
-            if (! directory.exists()){
+            if (! directory.exists()) {
                 directory.mkdir();
             }
             Path file = Paths.get("logs/Simulation.log");

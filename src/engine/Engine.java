@@ -3,9 +3,9 @@ package engine;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-import events.EndEvent;
-import events.IEvent;
-import events.IEventScheduler;
+import engine.event.EndEvent;
+import engine.event.IEvent;
+import engine.event.IEventScheduler;
 
 public class Engine {
 
