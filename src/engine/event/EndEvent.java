@@ -16,6 +16,6 @@ public class EndEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {}
+	public void process(IEventScheduler scheduler) {}
 	
 }

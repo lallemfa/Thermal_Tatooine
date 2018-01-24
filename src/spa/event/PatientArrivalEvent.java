@@ -8,6 +8,7 @@ import java.util.List;
 
 import engine.Engine;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import logger.LogType;
 import logger.Logger;
 import spa.cure.Cure;
@@ -32,13 +33,13 @@ public class PatientArrivalEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		Cure patientCure = this.patient.getCure();
 		this.patient.getCure().resetDoneTreatments(); 
 		Logger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
 		IEvent searchEvent;
 		searchEvent = new SearchForActionEvent(this.scheduledTime, this.spa, this.patient);
-		Engine.addEvent(searchEvent);
+		scheduler.postEvent(searchEvent);
 	}
 	
 }

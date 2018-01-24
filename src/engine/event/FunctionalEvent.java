@@ -21,7 +21,7 @@ public class FunctionalEvent<T> implements IEvent {
     }
 
     @Override
-    public void process() {
+    public void process(IEventScheduler scheduler) {
         action.run();
     }
     

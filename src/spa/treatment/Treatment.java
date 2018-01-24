@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import engine.Engine;
+import engine.event.IEventScheduler;
 import engine.event.MessageEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
@@ -146,7 +147,7 @@ public enum Treatment {
 		return this.withAppointment;
 	}
 	
-	public void initEvents(SpaResort spa, ZonedDateTime startTime, ZonedDateTime endTime) {
+	public void initEvents(IEventScheduler scheduler, SpaResort spa, ZonedDateTime startTime, ZonedDateTime endTime) {
 		ZonedDateTime currentTime = ZonedDateTime.of(startTime.toLocalDateTime(), startTime.getZone());
 		currentTime = spa.nextOpenDay(currentTime);
 		while (currentTime.compareTo(endTime) < 0) {
@@ -158,7 +159,7 @@ public enum Treatment {
 			}
 			LocalTime openingTime = spa.getOpeningHour(currentTime);
 			currentTime = currentTime.with(openingTime);
-			Engine.addEvent(new MessageEvent(currentTime, "Failure of treatment: " + name));
+			scheduler.postEvent(new MessageEvent(currentTime, "Failure of treatment: " + name));
 
 			// Repair
 			Duration nbDaysToRepair = getDurationToRepair();
@@ -168,7 +169,7 @@ public enum Treatment {
 			}
 			LocalTime closingTime = spa.getClosingHour(currentTime);
 			currentTime = currentTime.with(closingTime);
-			Engine.addEvent(new MessageEvent(currentTime, "Repair of treatment: " + name));
+			scheduler.postEvent(new MessageEvent(currentTime, "Repair of treatment: " + name));
 			currentTime = currentTime.plusDays(1);
 		}
 	}

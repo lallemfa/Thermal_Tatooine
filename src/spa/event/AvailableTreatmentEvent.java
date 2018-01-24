@@ -3,6 +3,7 @@ package spa.event;
 import java.time.ZonedDateTime;
 
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import spa.treatment.Treatment;
 
 public class AvailableTreatmentEvent implements IEvent {
@@ -21,7 +22,7 @@ public class AvailableTreatmentEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		// TODO prendre patient de waitinglist et mettre dans currentList, setTreatment patient ajouter event fin treatment
 		// TRICHEURS
 		

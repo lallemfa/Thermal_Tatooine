@@ -3,6 +3,7 @@ package spa.event;
 import java.time.ZonedDateTime;
 
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import logger.LogType;
 import logger.Logger;
 
@@ -20,7 +21,7 @@ public class OpenSpaEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		Logger.log(LogType.INFO, this.scheduledTime, "Spa opened");
 	}
 

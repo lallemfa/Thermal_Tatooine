@@ -6,6 +6,7 @@ import java.util.List;
 
 import engine.Engine;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import logger.LogType;
 import logger.Logger;
 import spa.person.Patient;
@@ -28,12 +29,12 @@ public class CloseSpaEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		Treatment[] treatments = spa.getTreatments();
 		List<Patient> patientInTreatments = findPatientsInTreatments(treatments);
 		// TODO MANAGERS
 		while (!patientInTreatments.isEmpty()) {
-			addEndTreatmentEvent(patientInTreatments.remove(patientInTreatments.size()));
+			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
 		}
 		Logger.log(LogType.INFO, this.scheduledTime, "Spa closes");
 	}
@@ -53,9 +54,9 @@ public class CloseSpaEvent implements IEvent {
 		return patientInTreatments;
 	}
 	
-	private void addEndTreatmentEvent(Patient patient) {
+	private void addEndTreatmentEvent(IEventScheduler scheduler, Patient patient) {
 		IEvent endTreatEvent;
 		endTreatEvent = new EndTreatmentEvent(this.scheduledTime, this.spa, patient);
-		Engine.addEvent(endTreatEvent);
+		scheduler.postEvent(endTreatEvent);
 	}
 }

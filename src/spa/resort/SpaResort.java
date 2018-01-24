@@ -9,6 +9,7 @@ import java.util.List;
 
 import engine.Engine;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import engine.event.MessageEvent;
 import spa.event.CloseSpaEvent;
 import spa.treatment.Treatment;
@@ -135,7 +136,7 @@ public class SpaResort implements ISpaResort {
 	}
 
 	@Override
-	public void initEvents(ZonedDateTime startTime, ZonedDateTime endTime) {
+	public void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
 		ZonedDateTime currDay = startTime;
 		
 		LocalTime openHour;
@@ -155,8 +156,8 @@ public class SpaResort implements ISpaResort {
 			openEvent 	= new MessageEvent(currDay.with(openHour), "Spa opens");
 			closeSpaEvent = new CloseSpaEvent(currDay.with(closeHour), this);
 			
-			Engine.addEvent(openEvent);
-			Engine.addEvent(closeSpaEvent);
+			scheduler.postEvent(openEvent);
+			scheduler.postEvent(closeSpaEvent);
 		
 			currDay = nextOpenDay(currDay);
 		}

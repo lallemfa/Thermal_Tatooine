@@ -21,7 +21,7 @@ public class MessageEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		Logger.log(LogType.INFO, scheduledTime, message);
 	}
 
