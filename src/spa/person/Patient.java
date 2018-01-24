@@ -3,6 +3,7 @@ package spa.person;
 import java.time.ZonedDateTime;
 
 import spa.cure.Cure;
+import spa.treatment.Treatment;
 
 public class Patient extends Person {
 
@@ -35,6 +36,10 @@ public class Patient extends Person {
 
     public void addCurePoints(int points) {
         this.cure.addPoints(points);
+    }
+    
+    public void setTreatment(Treatment treatment) {
+    	this.treatment = treatment;
     }
 
     public String toString() {

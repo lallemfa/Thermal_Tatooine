@@ -2,6 +2,7 @@ package spa.event;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import engine.Engine;
 import engine.event.IEvent;
@@ -23,15 +24,22 @@ public class EndTreatmentEvent implements IEvent {
 	
 	@Override
 	public ZonedDateTime getScheduledTime() {
-		return scheduledTime;
+		return this.scheduledTime;
 	}
 
 	@Override
 	public void process() {
 		this.patient.addCurePoints(getPointPatient());
+		updateDoneTreatmentList();
+		Treatment treatment = this.patient.getTreatment();
+		treatment.removeCurrentPatients(this.patient);
+		
 		IEvent searchEvent;
 		searchEvent = new SearchForActionEvent(this.scheduledTime, this.spa, this.patient);
 		Engine.addEvent(searchEvent);
+		IEvent availableTreatmentEvent;
+		availableTreatmentEvent = new AvailableTreatmentEvent(this.scheduledTime, treatment);
+		Engine.addEvent(availableTreatmentEvent);
 	}
 	
 	private Duration getTimeInTreatment(ZonedDateTime startTreatment) {
@@ -45,5 +53,11 @@ public class EndTreatmentEvent implements IEvent {
 		Duration treatmentDuration = treatment.getDuration();
 		int point = (int) (treatmentDuration.toMinutes() * treatment.getMaxPoints() / duration.toMinutes());
 		return point;
+	}
+	
+	private void updateDoneTreatmentList() {
+		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
+		Treatment patientTreatment = this.patient.getTreatment();
+		this.patient.getCure().setDoneTreatments(patientTreatment);
 	}
 }

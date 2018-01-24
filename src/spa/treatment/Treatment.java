@@ -108,6 +108,30 @@ public enum Treatment {
 		return waitingQueue;
 	}
 	
+	public void addCurrentPatients(Patient patient) {
+		this.currentPatients.add(patient);
+	}
+	
+	public void addWaitingQueuePatient(Patient patient) {
+		this.waitingQueue.add(patient);
+	}
+	
+	public void removeCurrentPatients(Patient patient) {
+		for (int i = 0; i < this.currentPatients.size(); ++i) {
+            if (this.currentPatients.get(i) == patient) {
+            	this.currentPatients.remove(i);
+            }
+        }
+	}
+	
+	public void removeWaitingQueuePatient(Patient patient) {
+		for (int i = 0; i < this.waitingQueue.size(); ++i) {
+            if (this.waitingQueue.get(i) == patient) {
+            	this.waitingQueue.remove(i);
+            }
+        }
+	}
+	
 	public boolean isWithAppointment() {
 		return this.withAppointment;
 	}
