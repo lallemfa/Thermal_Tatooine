@@ -186,7 +186,7 @@ public enum Treatment implements IRecordable {
 		return Duration.ofDays(Math.round(nbDaysToRepair));
 	}
 
-	public ZonedDateTime getAppointmentTime(ZonedDateTime time) {
+	public LocalTime getAppointmentTime(ZonedDateTime time) {
 		// TODO: get appointment, time returned needs to be available for the next three weeks
 		return null;
 	}

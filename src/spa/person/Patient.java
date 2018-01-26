@@ -1,5 +1,6 @@
 package spa.person;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import enstabretagne.base.logger.IRecordable;
@@ -14,7 +15,10 @@ public class Patient extends Person implements IRecordable {
     private Cure cure;
     private ZonedDateTime maxArrivingTime; // TODO
 
-    private ZonedDateTime startTreatment; // TODO
+    private ZonedDateTime startTreatment; 
+    private ZonedDateTime startWaiting; 
+    
+    private Duration waitedDuration;
 
     public Patient(int id) {
         this(id, true);
@@ -26,17 +30,29 @@ public class Patient extends Person implements IRecordable {
         // TODO: compute random time for cure start
         this.cure = new Cure(ZonedDateTime.now());
     }
+    
+    public Boolean getFairness() {
+    	return this.isFair;
+    }
 
     public Cure getCure() {
         return cure;
     }
 
     public ZonedDateTime getStartTreatment() {
-        return startTreatment;
+        return this.startTreatment;
     }
     
     public void setStartTreatment(ZonedDateTime scheduledTime) {
     	this.startTreatment = scheduledTime;
+    }
+    
+    public ZonedDateTime getStartWaiting() {
+        return this.startWaiting;
+    }
+    
+    public void setStartWaiting(ZonedDateTime scheduledTime) {
+    	this.startWaiting = scheduledTime;
     }
 
     public void addCurePoints(int points) {

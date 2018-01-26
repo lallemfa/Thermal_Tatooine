@@ -6,14 +6,14 @@ import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
-import logger.LogType;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
+import spa.person.Patient;
+import spa.resort.SpaResort;
 
-public class OpenSpaEvent extends Event implements IEvent {
-
+public class AppointmentTimeoutEvent extends Event implements IEvent {
+	
 	private ZonedDateTime scheduledTime;
 
-	public OpenSpaEvent(Object parent, ZonedDateTime scheduledTime) {
+	public AppointmentTimeoutEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa, Patient patient) {
 		super(parent);
 		this.scheduledTime = scheduledTime;
 	}
@@ -26,8 +26,7 @@ public class OpenSpaEvent extends Event implements IEvent {
 	@Override
 
 	public void process(IEventScheduler scheduler) {
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa opened");
-		Logger.Information(getParent(), "Process", "Spa opened");
+		//Logger.Information(getParent(), "Process", "Spa opened");
 	}
 
 }

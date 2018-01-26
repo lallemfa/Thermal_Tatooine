@@ -1,12 +1,16 @@
 package spa.cure;
 
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import engine.event.IEvent;
 import spa.cure.Appointment;
+import spa.event.AppointmentTimeoutEvent;
+import spa.event.EndTreatmentEvent;
 import spa.treatment.Treatment;
 
 public class Cure {
@@ -52,6 +56,15 @@ public class Cure {
     }
 
     private void setAppointments() {
+    	for (int i=0; i < dailyTreatments.size(); i++) {
+    		Treatment treatment = dailyTreatments.get(i);
+    		if (treatment.isWithAppointment()) {
+    			IEvent appointmentEvent;
+    			LocalTime time = treatment.getAppointmentTime(this.startDate);
+    			//appointmentEvent = new AppointmentTimeoutEvent(this, time, this.spa, this.patient);
+    			//scheduler.postEvent(appointmentEvent);
+    		}
+    	}
         // TODO: set appointments for treatments
     }
 
