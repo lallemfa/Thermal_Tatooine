@@ -2,17 +2,16 @@ package engine.event;
 
 import java.time.ZonedDateTime;
 
-public class FunctionalEvent<T> implements IEvent {
+public class FunctionalEvent<T> extends Event implements IEvent {
 
-    private final T owner;
     private final ZonedDateTime scheduledTime;
     private final IEventAction action;
 
 
-    public FunctionalEvent(T owner, ZonedDateTime scheduledTime, IEventAction action) {
-        this.owner = owner;
-        this.scheduledTime = scheduledTime;
-        this.action = action;
+    public FunctionalEvent(Object parent, ZonedDateTime scheduledTime, IEventAction action) {
+    	super(parent);
+        this.scheduledTime 	= scheduledTime;
+        this.action 		= action;
     }
 
     @Override
@@ -21,13 +20,13 @@ public class FunctionalEvent<T> implements IEvent {
     }
 
     @Override
-    public void process() {
+    public void process(IEventScheduler scheduler) {
         action.run();
     }
     
     @Override
     public String toString() {
-        return "Event created by : " + owner.toString();
+        return "Event created by : " + getParent().getClass().getName();
     }
 
 }

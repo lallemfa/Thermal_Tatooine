@@ -4,20 +4,23 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import engine.Engine;
+import engine.event.Event;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import logger.LogType;
 import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
-public class CloseSpaEvent implements IEvent {
+public class CloseSpaEvent extends Event implements IEvent {
 
     private final ZonedDateTime scheduledTime;
     private final SpaResort spa;
     
-    public CloseSpaEvent(ZonedDateTime scheduledTime, SpaResort spa) {
+    public CloseSpaEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa) {
+    	super(parent);
         this.scheduledTime = scheduledTime;
         this.spa = spa;
     }
@@ -28,14 +31,15 @@ public class CloseSpaEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
 		Treatment[] treatments = spa.getTreatments();
 		List<Patient> patientInTreatments = findPatientsInTreatments(treatments);
 		// TODO MANAGERS
 		while (!patientInTreatments.isEmpty()) {
-			addEndTreatmentEvent(patientInTreatments.remove(patientInTreatments.size()));
+			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
 		}
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa close");
+		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa closes");
+		Logger.Information(this, "Process", "Spa closes");
 	}
 	
 	private List<Patient> findPatientsInTreatments(Treatment[] treatments){
@@ -53,9 +57,9 @@ public class CloseSpaEvent implements IEvent {
 		return patientInTreatments;
 	}
 	
-	private void addEndTreatmentEvent(Patient patient) {
+	private void addEndTreatmentEvent(IEventScheduler scheduler, Patient patient) {
 		IEvent endTreatEvent;
-		endTreatEvent = new EndTreatmentEvent(this.scheduledTime, this.spa, patient);
-		Engine.addEvent(endTreatEvent);
+		endTreatEvent = new EndTreatmentEvent(getParent(), this.scheduledTime, this.spa, patient);
+		scheduler.postEvent(endTreatEvent);
 	}
 }

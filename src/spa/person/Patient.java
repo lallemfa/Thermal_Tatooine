@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 
 import enstabretagne.base.logger.IRecordable;
 import spa.cure.Cure;
+import spa.treatment.Treatment;
 
 public class Patient extends Person implements IRecordable {
 
@@ -33,9 +34,17 @@ public class Patient extends Person implements IRecordable {
     public ZonedDateTime getStartTreatment() {
         return startTreatment;
     }
+    
+    public void setStartTreatment(ZonedDateTime scheduledTime) {
+    	this.startTreatment = scheduledTime;
+    }
 
     public void addCurePoints(int points) {
         this.cure.addPoints(points);
+    }
+    
+    public void setTreatment(Treatment treatment) {
+    	this.treatment = treatment;
     }
 
     public String toString() {

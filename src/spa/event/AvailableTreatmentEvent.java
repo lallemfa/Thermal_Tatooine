@@ -5,17 +5,17 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
-import logger.LogType;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
+import spa.treatment.Treatment;
 
-public class OpenSpaEvent extends Event implements IEvent {
+public class AvailableTreatmentEvent extends Event implements IEvent {
 
 	private ZonedDateTime scheduledTime;
+	private Treatment treatment;
 
-	public OpenSpaEvent(Object parent, ZonedDateTime scheduledTime) {
+	public AvailableTreatmentEvent(Object parent, ZonedDateTime scheduledTime, Treatment treatment) {
 		super(parent);
 		this.scheduledTime = scheduledTime;
+		this.treatment = treatment;
 	}
 	
 	@Override
@@ -24,10 +24,10 @@ public class OpenSpaEvent extends Event implements IEvent {
 	}
 
 	@Override
-
 	public void process(IEventScheduler scheduler) {
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa opened");
-		Logger.Information(this, "Process", "Spa opened");
+		// TODO prendre patient de waitinglist et mettre dans currentList, setTreatment patient ajouter event fin treatment
+		// TRICHEURS
+		
 	}
 
 }

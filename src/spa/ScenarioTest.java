@@ -19,23 +19,34 @@ public class ScenarioTest {
 
 	public static void main(String[] args) {
 
-		//Logger.setDateProvider(Engine);
+		
 		
 		NoJokeItIsTheBestOneSoFarLogger.setLogToConsole(true);
 		NoJokeItIsTheBestOneSoFarLogger.setLogToFile(true);
+
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
-		Engine.init(scheduler);
+		Engine engine = new Engine(scheduler);
+		
+		Logger.setDateProvider(engine);
+		
+		
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);
-		openingMonths.add(Month.AUGUST);
-		
+		openingMonths.add(Month.MAY);
+		openingMonths.add(Month.JUNE);
+
 		List<DayOfWeek> openingDays = new ArrayList<DayOfWeek>();
+		openingDays.add(DayOfWeek.MONDAY);
+		openingDays.add(DayOfWeek.TUESDAY);
+		openingDays.add(DayOfWeek.WEDNESDAY);
+		openingDays.add(DayOfWeek.THURSDAY);
 		openingDays.add(DayOfWeek.FRIDAY);
+		openingDays.add(DayOfWeek.SATURDAY);
 		
-		LocalTime openTime 		= LocalTime.parse("07:00:00");
-		LocalTime closureTime 	= LocalTime.parse("14:00:00");
+		LocalTime openTime = LocalTime.parse("07:00:00");
+		LocalTime closureTime = LocalTime.parse("14:00:00");
 		LocalTime[][] openingHours = {{openTime, openTime,  openTime, openTime, openTime, openTime,  openTime},
 										{closureTime, closureTime, closureTime, closureTime, closureTime, closureTime, closureTime}};
 		
@@ -47,14 +58,17 @@ public class ScenarioTest {
 		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
+
+		ZonedDateTime startTime = ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
+		ZonedDateTime endTime 	= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
 		
+		scenario.initScenario(engine.getScheduler(), startTime, endTime);
+		engine.simulateUntil(startTime, endTime);
 		
-		ZonedDateTime startTime 	= ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
-		ZonedDateTime endTime 		= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
-		
-		scenario.initScenario(startTime, endTime);
-		Engine.simulateUntil(startTime, endTime);
 		NoJokeItIsTheBestOneSoFarLogger.end();
+		
+		Logger.Terminate();
+		
 	}
 
 }

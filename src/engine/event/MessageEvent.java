@@ -2,15 +2,17 @@ package engine.event;
 
 import java.time.ZonedDateTime;
 
+import enstabretagne.base.logger.Logger;
 import logger.LogType;
 import logger.NoJokeItIsTheBestOneSoFarLogger;
 
-public class MessageEvent implements IEvent {
+public class MessageEvent extends Event implements IEvent {
 	
 	private final ZonedDateTime scheduledTime;
 	private final String message;
 
-	public MessageEvent(ZonedDateTime eventTime, String message) {
+	public MessageEvent(Object parent, ZonedDateTime eventTime, String message) {
+		super(parent);
 		this.scheduledTime = eventTime;
 		this.message = message;
 	}
@@ -21,8 +23,10 @@ public class MessageEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+		
+	public void process(IEventScheduler scheduler) {
 		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, scheduledTime, message);
+		Logger.Information(this, "Process", message);
 	}
 
 }

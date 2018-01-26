@@ -2,20 +2,24 @@ package spa.event;
 
 import java.time.ZonedDateTime;
 
-import engine.Engine;
+import engine.event.Event;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import logger.LogType;
 import logger.NoJokeItIsTheBestOneSoFarLogger;
+import spa.cure.Cure;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
-public class PatientArrivalEvent implements IEvent {
+public class PatientArrivalEvent extends Event implements IEvent {
 
 	private final ZonedDateTime scheduledTime;
 	private Patient patient;
 	private SpaResort spa;
 	
-	public PatientArrivalEvent(ZonedDateTime scheduledTime, SpaResort spa, Patient patient) {
+	public PatientArrivalEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa, Patient patient) {
+		super(parent);
 		this.scheduledTime = scheduledTime;
 		this.patient = patient;
 		this.spa = spa;
@@ -27,11 +31,14 @@ public class PatientArrivalEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {
+	public void process(IEventScheduler scheduler) {
+		Cure patientCure = this.patient.getCure();
+		this.patient.getCure().resetDoneTreatments(); 
 		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
+		Logger.Information(this, "Process", "Patient" + this.patient.getId() + "arrived");
 		IEvent searchEvent;
-		searchEvent = new SearchForActionEvent(this.scheduledTime, this.spa, this.patient);
-		Engine.addEvent(searchEvent);
+		searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+		scheduler.postEvent(searchEvent);
 	}
 	
 }

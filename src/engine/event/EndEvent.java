@@ -2,12 +2,14 @@ package engine.event;
 
 import java.time.ZonedDateTime;
 
-public class EndEvent implements IEvent {
+public class EndEvent extends Event implements IEvent {
 
+	
 	private final ZonedDateTime scheduledTime;
 	
-	public EndEvent(ZonedDateTime scheduledTime) {
-		this.scheduledTime = scheduledTime;
+	public EndEvent(Object parent, ZonedDateTime scheduledTime) {
+		super(parent);
+		this.scheduledTime 	= scheduledTime;
 	}
 
 	@Override
@@ -16,6 +18,7 @@ public class EndEvent implements IEvent {
 	}
 
 	@Override
-	public void process() {}
+	public void process(IEventScheduler scheduler) {}
+
 	
 }

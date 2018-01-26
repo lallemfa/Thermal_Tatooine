@@ -7,8 +7,8 @@ import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import engine.Engine;
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
 import spa.event.CloseSpaEvent;
@@ -136,7 +136,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 	}
 
 	@Override
-	public void initEvents(ZonedDateTime startTime, ZonedDateTime endTime) {
+	public void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
 		ZonedDateTime currDay = startTime;
 		
 		LocalTime openHour;
@@ -153,11 +153,11 @@ public class SpaResort implements ISpaResort, IRecordable {
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
 			
-			openEvent 	= new MessageEvent(currDay.with(openHour), "Spa opens");
-			closeSpaEvent = new CloseSpaEvent(currDay.with(closeHour), this);
+			openEvent 	= new MessageEvent(this, currDay.with(openHour), "Spa opens");
+			closeSpaEvent = new CloseSpaEvent(this, currDay.with(closeHour), this);
 			
-			Engine.addEvent(openEvent);
-			Engine.addEvent(closeSpaEvent);
+			scheduler.postEvent(openEvent);
+			scheduler.postEvent(closeSpaEvent);
 		
 			currDay = nextOpenDay(currDay);
 		}

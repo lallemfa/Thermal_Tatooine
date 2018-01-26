@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import engine.event.IEventScheduler;
+import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
 import spa.person.Patient;
 import spa.resort.SpaResort;
@@ -45,7 +47,7 @@ public enum Treatment implements IRecordable {
 	private final int maxPatientsWaiting;
 	private final int failureSTDD;
 	private final int failureMeanPerDay;
-	private final Duration maintenanceMeanDuration;
+	private final int repairMeanDuration;
 	
 	private List<Patient> waitingQueue = new ArrayList<>();
 	private List<Patient> currentPatients = new ArrayList<>();
@@ -53,7 +55,7 @@ public enum Treatment implements IRecordable {
 	
 	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
-			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int maintenanceMeanDuration) {
+			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int repairMeanDuration) {
 		
 		this.id = id;
 		
@@ -76,7 +78,7 @@ public enum Treatment implements IRecordable {
 		// Failures
 		this.failureSTDD 				= failureSTDD;
 		this.failureMeanPerDay			= failureMeanPerDay;
-		this.maintenanceMeanDuration 	= Duration.ofDays(maintenanceMeanDuration);
+		this.repairMeanDuration = repairMeanDuration;
 	}
 	
 	public String toString() {
@@ -90,7 +92,7 @@ public enum Treatment implements IRecordable {
 				"\tFailures :\n" + 
 				"\t\tFailure mean (in days)              -> " + failureMeanPerDay + "\n" +
 				"\t\tStandard Deviation (in days)        -> " + failureSTDD + "\n" +
-				"\t\tMaintenance Mean Duration (in days) -> " + maintenanceMeanDuration + "\n";
+				"\t\tMaintenance Mean Duration (in days) -> " + repairMeanDuration + "\n";
 	}
 
 	public Duration getDuration() {
@@ -101,6 +103,14 @@ public enum Treatment implements IRecordable {
 		return maxPoints;
 	}
 	
+	public int getMaxPatientsWaiting() {
+		return maxPatientsWaiting;
+	}
+
+	public int getMaxPatientsWorking() {
+		return maxPatientsWorking;
+	}
+	
 	public List<Patient> getCurrentPatients() {
 		return currentPatients;
 	}
@@ -109,27 +119,71 @@ public enum Treatment implements IRecordable {
 		return waitingQueue;
 	}
 	
+	public void addCurrentPatients(Patient patient) {
+		this.currentPatients.add(patient);
+	}
+	
+	public void addWaitingQueuePatient(Patient patient) {
+		this.waitingQueue.add(patient);
+	}
+	
+	public void removeCurrentPatients(Patient patient) {
+		for (int i = 0; i < this.currentPatients.size(); ++i) {
+            if (this.currentPatients.get(i) == patient) {
+            	this.currentPatients.remove(i);
+            }
+        }
+	}
+	
+	public void removeWaitingQueuePatient(Patient patient) {
+		for (int i = 0; i < this.waitingQueue.size(); ++i) {
+            if (this.waitingQueue.get(i) == patient) {
+            	this.waitingQueue.remove(i);
+            }
+        }
+	}
+	
 	public boolean isWithAppointment() {
 		return this.withAppointment;
 	}
 	
-	public void initEvents(SpaResort spa, ZonedDateTime startTime, ZonedDateTime endTime) {
-		// TODO: failures and repairs
+	public void initEvents(IEventScheduler scheduler, SpaResort spa, ZonedDateTime startTime, ZonedDateTime endTime) {
 		ZonedDateTime currentTime = ZonedDateTime.of(startTime.toLocalDateTime(), startTime.getZone());
-		Duration nbDaysToFailure = getDaysToNextFailure();
-		currentTime.plus(nbDaysToFailure);
-		if (spa.isOpen(currentTime)) {
-			// OK
-		} else {
-			currentTime = spa.nextOpenDay(currentTime);
+		currentTime = spa.nextOpenDay(currentTime);
+		while (currentTime.compareTo(endTime) < 0) {
+			// Failure
+			Duration nbDaysToFailure = getDurationToNextFailure();
+			currentTime = currentTime.plus(nbDaysToFailure);
+			if (!spa.isOpen(currentTime)) {
+				currentTime = spa.nextOpenDay(currentTime);
+			}
+			LocalTime openingTime = spa.getOpeningHour(currentTime);
+			currentTime = currentTime.with(openingTime);
+			scheduler.postEvent(new MessageEvent(this, currentTime, "Failure of treatment: " + name));
+
+			// Repair
+			Duration nbDaysToRepair = getDurationToRepair();
+			currentTime = currentTime.plus(nbDaysToRepair);
+			if (!spa.isOpen(currentTime)) {
+				currentTime = spa.nextOpenDay(currentTime);
+			}
+			LocalTime closingTime = spa.getClosingHour(currentTime);
+			currentTime = currentTime.with(closingTime);
+			scheduler.postEvent(new MessageEvent(this, currentTime, "Repair of treatment: " + name));
+			currentTime = currentTime.plusDays(1);
 		}
 	}
 
-	private static Duration getDaysToNextFailure() {
-		double mean = 60;
+	private Duration getDurationToNextFailure() {
 		Random random = new Random();
-		double nbDaysToFailure = - mean * Math.log(1 - random.nextDouble());
-		return Duration.ofDays((long) Math.abs(nbDaysToFailure));
+		double nbDaysToFailure = - failureMeanPerDay * Math.log(1 - random.nextDouble());
+		return Duration.ofDays(Math.round(nbDaysToFailure));
+	}
+
+	private Duration getDurationToRepair() {
+		Random random = new Random();
+		double nbDaysToRepair = - repairMeanDuration * Math.log(1 - random.nextDouble());
+		return Duration.ofDays(Math.round(nbDaysToRepair));
 	}
 
 	public ZonedDateTime getAppointmentTime(ZonedDateTime time) {

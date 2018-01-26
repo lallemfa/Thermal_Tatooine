@@ -3,6 +3,7 @@ package spa.cure;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import spa.cure.Appointment;
@@ -19,6 +20,7 @@ public class Cure {
     private ZonedDateTime endDate;
     private List<Treatment> dailyTreatments;
     private List<Appointment> appointments;
+    private List<Boolean> doneTreatments;
     private int maxPointsPerDay;
     private int maxPoints;
     private int currentPoints;
@@ -44,6 +46,9 @@ public class Cure {
             allTreatments.removeIf(t -> t.type == treatment.type);
             maxPointsPerDay += treatment.getMaxPoints();
         }
+        
+        this.doneTreatments = new ArrayList<Boolean>(Arrays.asList(new Boolean[this.dailyTreatments.size()]));
+        Collections.fill(this.doneTreatments, Boolean.FALSE);
     }
 
     private void setAppointments() {
@@ -64,6 +69,25 @@ public class Cure {
     public List<Treatment> getDailyTreatments() {
         return dailyTreatments;
     }
+    
+    public List<Boolean> getDoneTreatments() {
+        return this.doneTreatments;
+    }
+    
+    public void resetDoneTreatments() {
+		List<Boolean> doneTreatments = new ArrayList<Boolean>(Arrays.asList(new Boolean[this.dailyTreatments.size()]));
+        Collections.fill(doneTreatments, Boolean.FALSE);
+        this.doneTreatments = doneTreatments;
+    }
+    
+    public void setDoneTreatments(Treatment treatment) {
+    	for (int i = 0; i < this.dailyTreatments.size(); ++i) {
+            if (this.dailyTreatments.get(i) == treatment) {
+            	this.doneTreatments.set(i, Boolean.TRUE);
+            }
+        }        
+    }
+
 
     public void addPoints(int points) {
         this.currentPoints += points;
