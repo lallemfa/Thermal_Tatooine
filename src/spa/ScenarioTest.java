@@ -9,7 +9,8 @@ import java.util.List;
 
 import engine.Engine;
 import engine.SortedListScheduler;
-import logger.Logger;
+import enstabretagne.base.logger.Logger;
+import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.resort.SpaResort;
 import spa.scenario.Scenario;
 import spa.treatment.Treatment;
@@ -18,8 +19,10 @@ public class ScenarioTest {
 
 	public static void main(String[] args) {
 
-		Logger.setLogToConsole(true);
-		Logger.setLogToFile(true);
+		//Logger.setDateProvider(Engine);
+		
+		NoJokeItIsTheBestOneSoFarLogger.setLogToConsole(true);
+		NoJokeItIsTheBestOneSoFarLogger.setLogToFile(true);
 		
 		SortedListScheduler scheduler = new SortedListScheduler();
 		Engine.init(scheduler);
@@ -51,7 +54,7 @@ public class ScenarioTest {
 		
 		scenario.initScenario(startTime, endTime);
 		Engine.simulateUntil(startTime, endTime);
-		Logger.end();
+		NoJokeItIsTheBestOneSoFarLogger.end();
 	}
 
 }

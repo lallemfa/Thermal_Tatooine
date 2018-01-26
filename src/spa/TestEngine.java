@@ -39,6 +39,8 @@ public class TestEngine {
 		
 		Engine.simulateUntil(startTime, endTime);
 		
+		System.out.println(startTime.getClass().getName());
+		
 	}
 
 }

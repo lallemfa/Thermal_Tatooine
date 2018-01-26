@@ -2,9 +2,10 @@ package spa.person;
 
 import java.time.ZonedDateTime;
 
+import enstabretagne.base.logger.IRecordable;
 import spa.cure.Cure;
 
-public class Patient extends Person {
+public class Patient extends Person implements IRecordable {
 
     boolean patient = true;
     private boolean isFair;
@@ -44,4 +45,21 @@ public class Patient extends Person {
             "\n\tCure to do :\n" + this.cure.toString() + "\n" +
             "___________________________";
     }
+    
+    // Next 3 methods for the Logger
+    
+	@Override
+	public String[] getTitles() {
+		return new String[] {"Classe"};
+	}
+
+	@Override
+	public String[] getRecords() {
+		return new String[] {this.getClass().getName()};
+	}
+
+	@Override
+	public String getClassement() {
+		return "Treatment";
+	}
 }

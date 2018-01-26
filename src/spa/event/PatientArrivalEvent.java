@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import engine.Engine;
 import engine.event.IEvent;
 import logger.LogType;
-import logger.Logger;
+import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
@@ -28,7 +28,7 @@ public class PatientArrivalEvent implements IEvent {
 
 	@Override
 	public void process() {
-		Logger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
+		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
 		IEvent searchEvent;
 		searchEvent = new SearchForActionEvent(this.scheduledTime, this.spa, this.patient);
 		Engine.addEvent(searchEvent);

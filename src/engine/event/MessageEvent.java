@@ -3,7 +3,7 @@ package engine.event;
 import java.time.ZonedDateTime;
 
 import logger.LogType;
-import logger.Logger;
+import logger.NoJokeItIsTheBestOneSoFarLogger;
 
 public class MessageEvent implements IEvent {
 	
@@ -22,7 +22,7 @@ public class MessageEvent implements IEvent {
 
 	@Override
 	public void process() {
-		Logger.log(LogType.INFO, scheduledTime, message);
+		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, scheduledTime, message);
 	}
 
 }

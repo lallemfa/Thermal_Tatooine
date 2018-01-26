@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Logger {
+public class NoJokeItIsTheBestOneSoFarLogger {
 
     private static List<String> logLines = new ArrayList<>();
     private static boolean mLogToConsole = true;

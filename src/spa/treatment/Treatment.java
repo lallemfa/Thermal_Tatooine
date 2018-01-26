@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import enstabretagne.base.logger.IRecordable;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
-public enum Treatment {
+public enum Treatment implements IRecordable {
 
 	TerresChaudes	(0, "Terres Chaudes", 			TreatmentType.Terre, 		"07:15:00", "14:00:00", true,
 						6, 20, 20,  true, 10,  61, 10, 3),
-	Filiformes		(1, "Jets filiformes", 		TreatmentType.Filiforme, 	"10:00:00", "13:00:00", true,
+	Filiformes		(1, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", true,
 						4,  5, 30, false, 10,  28,  4, 2),
 	Etuves			(2, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", true,
 						6, 15, 15,  true,  6,  21,  5, 3),
@@ -22,7 +23,7 @@ public enum Treatment {
 						8, 20, 15,  true, 10,  70, 10, 4),
 	BainsAnciens	(4, "Bain à jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", true,
 						9, 20, 10,  true, 15,  35,  4, 2),
-	Douches			(5, "Douches", 				TreatmentType.Douche, 		"07:15:00", "14:00:00", true,
+	Douches			(5, "Douches", 					TreatmentType.Douche, 		"07:15:00", "14:00:00", true,
 						8, 10, 10, false,  8,  49,  2, 2),
 	SoinVisage		(6, "Soin du visage", 			TreatmentType.Visage, 		"07:15:00", "14:00:00", true,
 						8, 10,  5, false,  5, 365, 40, 1);
@@ -134,5 +135,22 @@ public enum Treatment {
 	public ZonedDateTime getAppointmentTime(ZonedDateTime time) {
 		// TODO: get appointment, time returned needs to be available for the next three weeks
 		return null;
+	}
+	
+	// Next 3 methods for the Logger
+	
+	@Override
+	public String[] getTitles() {
+		return new String[] {"Classe"};
+	}
+
+	@Override
+	public String[] getRecords() {
+		return new String[] {this.getClass().getName()};
+	}
+
+	@Override
+	public String getClassement() {
+		return "Treatment";
 	}
 }

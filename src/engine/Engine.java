@@ -6,8 +6,10 @@ import java.time.ZonedDateTime;
 import engine.event.EndEvent;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
+import enstabretagne.base.time.LogicalDateTime;
+import enstabretagne.simulation.core.ISimulationDateProvider;
 
-public class Engine {
+public class Engine implements ISimulationDateProvider {
 
     private static IEventScheduler mScheduler;
     private static ZonedDateTime mCurrentTime;
@@ -43,5 +45,10 @@ public class Engine {
     public static void simulateFor(ZonedDateTime startTime, Duration duration) {
         simulateUntil(startTime, startTime.plus(duration));
     }
+
+	@Override
+	public LogicalDateTime SimulationDate() {
+		return new LogicalDateTime(mCurrentTime.toLocalDateTime());
+	}
 
 }

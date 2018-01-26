@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 import engine.event.IEvent;
 import logger.LogType;
-import logger.Logger;
+import logger.NoJokeItIsTheBestOneSoFarLogger;
 
 public class OpenSpaEvent implements IEvent {
 
@@ -21,7 +21,7 @@ public class OpenSpaEvent implements IEvent {
 
 	@Override
 	public void process() {
-		Logger.log(LogType.INFO, this.scheduledTime, "Spa opened");
+		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa opened");
 	}
 
 }

@@ -10,10 +10,11 @@ import java.util.List;
 import engine.Engine;
 import engine.event.IEvent;
 import engine.event.MessageEvent;
+import enstabretagne.base.logger.IRecordable;
 import spa.event.CloseSpaEvent;
 import spa.treatment.Treatment;
 
-public class SpaResort implements ISpaResort {
+public class SpaResort implements ISpaResort, IRecordable {
 	
 	private static final int[][] distances = {{0, 1, 2, 4, 1, 2, 3},
 											{1, 0, 1, 2, 2, 2, 4},
@@ -180,6 +181,23 @@ public class SpaResort implements ISpaResort {
 		msg += "\n==========================================\n\n";
 		
 		return msg;
+	}
+
+	// Next 3 methods for the Logger
+	
+	@Override
+	public String[] getTitles() {
+		return new String[] {"Classe"};
+	}
+
+	@Override
+	public String[] getRecords() {
+		return new String[] {this.getClass().getName()};
+	}
+
+	@Override
+	public String getClassement() {
+		return "Resort";
 	}
 	
 }

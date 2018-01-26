@@ -7,7 +7,7 @@ import java.util.List;
 import engine.Engine;
 import engine.event.IEvent;
 import logger.LogType;
-import logger.Logger;
+import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -35,7 +35,7 @@ public class CloseSpaEvent implements IEvent {
 		while (!patientInTreatments.isEmpty()) {
 			addEndTreatmentEvent(patientInTreatments.remove(patientInTreatments.size()));
 		}
-		Logger.log(LogType.INFO, this.scheduledTime, "Spa close");
+		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa close");
 	}
 	
 	private List<Patient> findPatientsInTreatments(Treatment[] treatments){
