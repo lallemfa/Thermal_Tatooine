@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import engine.event.IEventScheduler;
+import spa.person.Patient;
 import spa.treatment.Treatment;
 
 public interface ISpaResort {
@@ -26,8 +27,12 @@ public interface ISpaResort {
 	Duration distanceBetween(Treatment treatment1, Treatment treatment2);
 	
 	boolean isOpen(ZonedDateTime time);
+	boolean isOpenForThreeWeeks(ZonedDateTime time);
 	
 	void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime);
 	Duration getMaxDistanceDuration();
+
+	void addPatient(Patient patient);
+	int getNbPatientsOfWeek(ZonedDateTime time);
 	
 }

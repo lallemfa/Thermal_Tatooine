@@ -12,8 +12,8 @@ public abstract class Person extends Entity {
     protected Treatment treatment;
     protected boolean patient;
 
-    public Person(IEventScheduler scheduler) {
-    	super(scheduler);
+    public Person() {
+    	super();
     }
     
     public PersonState getPersonState() {
