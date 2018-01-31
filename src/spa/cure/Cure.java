@@ -71,7 +71,7 @@ public class Cure extends Entity {
         Collections.fill(this.doneTreatments, Boolean.FALSE);
     }
     
-    private void setAppointments(ZonedDateTime time, IEventScheduler scheduler, SpaResort spa) {
+    private void setAppointments(ZonedDateTime time, IEventScheduler scheduler, SpaResort spa, Treatment treatment) {
     	ZonedDateTime yearTime = time;
     	ZonedDateTime eventTime = time;
     	
@@ -89,7 +89,7 @@ public class Cure extends Entity {
         		eventTime = yearTime.plusWeeks(j);
             	for (int k = 0; k<5; k++) {
             		eventTime = eventTime.plusDays(k);
-            		scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner));
+            		scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner, treatment));
             	}
         	}
     	}
@@ -101,7 +101,7 @@ public class Cure extends Entity {
     		if (treatment.isWithAppointment()) {
     			LocalTime time = treatment.getAppointmentTime(this.startDate);
     			ZonedDateTime eventTime = this.startDate.with(time);
-    			setAppointments(eventTime, scheduler, spa);
+    			setAppointments(eventTime, scheduler, spa, treatment);
     		}
     	}
     }
