@@ -60,7 +60,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	@Override
 	public float getInflowMonth(Month month) {
-		return inflowMonth[month.getValue()];
+		return maxClients * inflowMonth[month.getValue()];
 	}
 
 	@Override
