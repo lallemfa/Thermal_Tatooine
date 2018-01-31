@@ -56,7 +56,6 @@ public enum Treatment implements IRecordable {
 	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
 			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int repairMeanDuration) {
-		
 		this.id = id;
 		
 		this.name = name;
@@ -79,6 +78,7 @@ public enum Treatment implements IRecordable {
 		this.failureSTDD 				= failureSTDD;
 		this.failureMeanPerDay			= failureMeanPerDay;
 		this.repairMeanDuration = repairMeanDuration;
+		
 	}
 /*	
 	public String toString() {

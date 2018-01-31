@@ -3,6 +3,7 @@ package spa.person;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
+import engine.event.IEventScheduler;
 import enstabretagne.base.logger.IRecordable;
 import spa.cure.Cure;
 import spa.treatment.Treatment;
@@ -20,15 +21,18 @@ public class Patient extends Person implements IRecordable {
     
     private Duration waitedDuration;
 
-    public Patient(int id) {
-        this(id, true);
+    public Patient(IEventScheduler scheduler, int id) {
+        this(scheduler, id, true);
     }
 
-    public Patient(int id, boolean isFair) {
+    public Patient(IEventScheduler scheduler, int id, boolean isFair) {
+    	super(scheduler);
         this.id = id;
         this.isFair = isFair;
         // TODO: compute random time for cure start
-        this.cure = new Cure(ZonedDateTime.now());
+        this.cure = new Cure(scheduler, ZonedDateTime.now());
+        super.endConstructor();
+        super.addChildren(this.cure);
     }
     
     public Boolean getFairness() {
@@ -71,8 +75,10 @@ public class Patient extends Person implements IRecordable {
             "___________________________";
     }
     
-    // Next 3 methods for the Logger
     
+    
+    // Next 3 methods for the Logger
+
 	@Override
 	public String[] getTitles() {
 		return new String[] {"Classe"};

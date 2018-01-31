@@ -10,7 +10,6 @@ import java.util.List;
 import engine.Engine;
 import engine.SortedListScheduler;
 import enstabretagne.base.logger.Logger;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.resort.SpaResort;
 import spa.scenario.Scenario;
 import spa.treatment.Treatment;
@@ -18,9 +17,6 @@ import spa.treatment.Treatment;
 public class ScenarioTest {
 
 	public static void main(String[] args) {
-		
-		NoJokeItIsTheBestOneSoFarLogger.setLogToConsole(true);
-		NoJokeItIsTheBestOneSoFarLogger.setLogToFile(true);
 
 		SortedListScheduler scheduler = new SortedListScheduler();
 		Engine engine = new Engine(scheduler);
@@ -50,7 +46,7 @@ public class ScenarioTest {
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
-		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
+		SpaResort spa = new SpaResort(scheduler, openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
 
@@ -59,8 +55,6 @@ public class ScenarioTest {
 		
 		scenario.initScenario(engine.getScheduler(), startTime, endTime);
 		engine.simulateUntil(startTime, endTime);
-		
-		NoJokeItIsTheBestOneSoFarLogger.end();
 		
 		Logger.Terminate();
 		

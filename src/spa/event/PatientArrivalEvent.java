@@ -6,8 +6,6 @@ import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
-import logger.LogType;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.cure.Cure;
 import spa.person.Patient;
 import spa.resort.SpaResort;
@@ -34,7 +32,6 @@ public class PatientArrivalEvent extends Event implements IEvent {
 	public void process(IEventScheduler scheduler) {
 		Cure patientCure = this.patient.getCure();
 		patientCure.resetDoneTreatments(); 
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
 		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "arrived");
 		IEvent searchEvent;
 		searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);

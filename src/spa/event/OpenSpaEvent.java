@@ -6,8 +6,6 @@ import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
-import logger.LogType;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
 
 public class OpenSpaEvent extends Event implements IEvent {
 
@@ -26,7 +24,6 @@ public class OpenSpaEvent extends Event implements IEvent {
 	@Override
 
 	public void process(IEventScheduler scheduler) {
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa opened");
 		Logger.Information(getParent(), "Process", "Spa opened");
 	}
 

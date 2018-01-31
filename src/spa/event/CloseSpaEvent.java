@@ -7,10 +7,7 @@ import java.util.List;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.IRecordable;
 import enstabretagne.base.logger.Logger;
-import logger.LogType;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -39,7 +36,6 @@ public class CloseSpaEvent extends Event implements IEvent {
 		while (!patientInTreatments.isEmpty()) {
 			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
 		}
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa closes");
 		Logger.Information(getParent(), "Process", "Spa closes");
 	}
 	

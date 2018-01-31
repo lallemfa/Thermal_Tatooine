@@ -33,7 +33,7 @@ public class SearchForActionEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		PersonState state = this.patient.getState();
+		PersonState state = this.patient.getPersonState();
 		Treatment choosenTreatment = selectNextTreatment(state);
 		Duration duration = selectDuration(state, choosenTreatment);
 		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts looking for an available treatment");

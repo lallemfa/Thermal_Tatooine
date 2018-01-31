@@ -1,8 +1,10 @@
 package spa.person;
 
+import engine.event.IEventScheduler;
+import spa.entity.Entity;
 import spa.treatment.Treatment;
 
-public abstract class Person {
+public abstract class Person extends Entity {
 
     protected int id;
 
@@ -10,7 +12,11 @@ public abstract class Person {
     protected Treatment treatment;
     protected boolean patient;
 
-    public PersonState getState() {
+    public Person(IEventScheduler scheduler) {
+    	super(scheduler);
+    }
+    
+    public PersonState getPersonState() {
         return state;
     }
 
@@ -21,4 +27,11 @@ public abstract class Person {
     public Treatment getTreatment() {
         return this.treatment;
     }
+
+	@Override
+	public void endConstructor() {
+		super.endConstructor();
+	}
+    
+    
 }

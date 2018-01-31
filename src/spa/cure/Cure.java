@@ -8,17 +8,16 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.event.IEvent;
+import engine.event.IEventScheduler;
 import spa.cure.Appointment;
+import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
 import spa.event.EndTreatmentEvent;
 import spa.treatment.Treatment;
 
-public class Cure {
+public class Cure extends Entity {
 
     private final double PROB_NB_TREATMENTS[] = {0.2, 0.35, 0.3, 0.15};
-    private final double PROB_4_TREATMENTS = 0.35;
-    private final double PROB_5_TREATMENTS = 0.3;
-    private final double PROB_6_TREATMENTS = 0.15;
 
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;
@@ -29,7 +28,8 @@ public class Cure {
     private int maxPoints;
     private int currentPoints;
 
-    public Cure(ZonedDateTime start) {
+    public Cure(IEventScheduler scheduler, ZonedDateTime start) {
+    	super(scheduler);
         currentPoints = 0;
         maxPointsPerDay = 0;
         setTreatments();
@@ -37,6 +37,7 @@ public class Cure {
         maxPoints = maxPointsPerDay * 5 * 3 * 3;
         // TODO: create events for patient arriving
         // TODO: calculate startDate/endDate
+        super.endConstructor();
     }
 
     private void setTreatments() {
