@@ -18,8 +18,10 @@ public class Scenario implements IScenario {
 	@Override
 	public void initScenario(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
 		spa.initEvents(scheduler, startTime, endTime);
+		/*
 		for (Treatment treatment : spa.getTreatments()) {
 			treatment.initEvents(scheduler, spa, startTime, endTime);
 		}
+		*/
 	}
 }

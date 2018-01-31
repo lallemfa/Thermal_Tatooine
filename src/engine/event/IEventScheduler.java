@@ -6,5 +6,6 @@ public interface IEventScheduler {
 	void postEvent(IEvent event);
 	boolean hasNoEvent();
 	boolean removeEvent(IEvent event);
+	int size();
 	
 }

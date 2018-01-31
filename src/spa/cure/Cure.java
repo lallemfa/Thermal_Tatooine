@@ -78,7 +78,7 @@ public class Cure extends Entity {
     	for (int i = 0; i<3; i++) {
     		yearTime = time.plusYears(i).with(DayOfWeek.MONDAY);
     		
-    		if(!spa.isOpen(yearTime)) {
+    		while(!spa.isOpen(yearTime)) {
     			yearTime.plusWeeks(1);
     		}
     		while (!spa.isOpen(yearTime.plusWeeks(2))) {

@@ -18,8 +18,7 @@ public class ScenarioTest {
 
 	public static void main(String[] args) {
 
-		SortedListScheduler scheduler = new SortedListScheduler();
-		Engine engine = new Engine(scheduler);
+		Engine engine = new Engine();
 		
 		Logger.setDateProvider(engine);
 		
@@ -51,7 +50,7 @@ public class ScenarioTest {
 		Scenario scenario = new Scenario(spa);
 
 		ZonedDateTime startTime = ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
-		ZonedDateTime endTime 	= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
+		ZonedDateTime endTime 	= ZonedDateTime.parse("2022-01-01T00:00:00+01:00[Europe/Paris]");
 		
 		scenario.initScenario(engine.getScheduler(), startTime, endTime);
 		engine.simulateUntil(startTime, endTime);

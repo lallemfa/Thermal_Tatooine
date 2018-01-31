@@ -40,4 +40,11 @@ public class SortedListScheduler implements IEventScheduler {
 		return internalList.remove(event);
 	}
 
+	@Override
+	public int size() {
+		return internalList.size();
+	}
+	
+	
+
 }

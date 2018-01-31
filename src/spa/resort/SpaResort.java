@@ -2,10 +2,14 @@ package spa.resort;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
@@ -115,10 +119,69 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		return false;
 	}
 	
+	private int idOfWeek(ZonedDateTime time) {
+		return (int)Math.floor(time.getDayOfYear()/7);
+	}
+	
+	private ZonedDateTime mondayOfWeek(ZonedDateTime time) {
+		if( idOfWeek(time) != idOfWeek(time.with(DayOfWeek.MONDAY)) ) {
+			return time.with(DayOfWeek.MONDAY).minusDays(7);
+		} else {
+			return time.with(DayOfWeek.MONDAY);
+		}
+	}
+	
+	private boolean isWeekOpen(ZonedDateTime time) {
+		ZonedDateTime monday = mondayOfWeek(time);
+		
+		return isOpen(monday) && isOpen( monday.plusDays(5) );
+	}
+	
+	private int minWeeksOpen(ZonedDateTime startTime, ZonedDateTime endTime) {
+		ZonedDateTime currDay = startTime;
+		
+		int currYear;
+		int endYear = endTime.getYear();
+		
+		int minWeeks = 60;
+		int tempWeeks = 0;
+		
+		if(!isOpen(currDay)) {
+			currDay = nextOpenDay(currDay);
+		}
+		currYear = currDay.getYear();
+		currDay = mondayOfWeek(currDay);
+		
+		while(currYear <= endYear) {
+			
+			while(currDay.getYear() == currYear) {
+				tempWeeks += ( isWeekOpen(currDay) ) ? 1 : 0;
+				currDay = currDay.plusWeeks(1);
+			}
+			
+			if(tempWeeks < minWeeks) {
+				minWeeks = tempWeeks;
+			}
+			tempWeeks = 0;
+			currDay = currDay.withDayOfYear(1);
+			currYear += 1;
+		}
+		
+		return minWeeks;
+	}
+	
+	public int dayToWeek(ZonedDateTime day) {
+		return -1;
+	}
+	
+	public ZonedDateTime weekToDay(int year, int week) {
+		return null;
+	}
+	
 	public ZonedDateTime nextOpenDay(ZonedDateTime time) {
 		ZonedDateTime nextDay = time.plusDays(1);
 		
-		while(!isOpen(nextDay)) {
+		while(!isOpen(nextDay) || !isWeekOpen(nextDay)) {
 			while( !openingMonths.contains(nextDay.getMonth()) ) {
 				nextDay = nextDay.plusMonths(1);
 				nextDay = nextDay.withDayOfMonth(1);
@@ -132,27 +195,38 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		return nextDay;
 	}
 	
+	public ZonedDateTime nextOpenableWeek(ZonedDateTime time) {
+		ZonedDateTime nextDay = time.plusWeeks(1);
+		nextDay = mondayOfWeek(nextDay);
+		
+		while(!isWeekOpen(nextDay)) {
+			while( !openingMonths.contains(nextDay.getMonth()) ) {
+				nextDay = nextDay.plusMonths(1);
+				nextDay = nextDay.withDayOfMonth(1);
+			}
+			
+			nextDay = nextDay.plusWeeks(1);
+		}
+		
+		return mondayOfWeek(nextDay);
+	}
+	
 	@Override
 	public Duration distanceBetween(Treatment treatment1, Treatment treatment2) {
 		int duration = distances[treatment1.id][treatment2.id];
 		return Duration.ofMinutes( duration );
 	}
 
-	@Override
-	public void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
-		ZonedDateTime currDay = startTime;
-		
+	private void postEventForWeek (IEventScheduler scheduler, ZonedDateTime currDay) {
 		LocalTime openHour;
 		LocalTime closeHour;
 		
 		IEvent openEvent;
 		IEvent closeSpaEvent;
 		
-		if( !isOpen(currDay) ) {
-			currDay = nextOpenDay(currDay);
-		}
-		
-		while(currDay.compareTo(endTime) < 0) {
+		for(DayOfWeek day : openingDays) {
+			currDay = currDay.with(day);
+			
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
 			
@@ -161,31 +235,42 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			
 			scheduler.postEvent(openEvent);
 			scheduler.postEvent(closeSpaEvent);
-		
-			currDay = nextOpenDay(currDay);
 		}
+
 	}
-/*
+	
 	@Override
-	public String toString() {
-		String msg = "=============== Spa Resort ===============\n\n" +
-				"Max patients : " + maxClients + "\n" +
-				"Opening months -> " + openingMonths.toString() + "\n" +
-				"Opening days   -> " + openingDays.toString() + "\n" + 
-				"Opening hours  -> " + openingHours.toString() + "\n\n" +
-				"Treatments available";
+	public void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
+		ZonedDateTime currDay = startTime;
 		
-		int compteur = 1;
+		int minWeek = minWeeksOpen(startTime, endTime);
+		int compteur = 0;
 		
-		for(Treatment treatment : treatments) {
-			msg += "\n" + (compteur++) + " - " + treatment.toString();
+		if( !isWeekOpen(currDay) ) {
+			currDay = nextOpenableWeek(currDay);
 		}
 		
-		msg += "\n==========================================\n\n";
+		int currYear = currDay.getYear();
 		
-		return msg;
+		while(currDay.compareTo(endTime) < 0) {
+			while(compteur < minWeek && currDay.getYear() == currYear) {
+				postEventForWeek (scheduler, currDay);
+				currDay = nextOpenableWeek(currDay);
+				compteur += 1;
+			}
+			
+			if(currDay.getYear() == currYear) {
+				currDay = currDay.plusYears(1).withDayOfYear(1);
+			} else {
+				currDay = currDay.withDayOfYear(1);
+			}
+			
+			compteur = 0;
+			currYear = currDay.getYear();
+			currDay = nextOpenableWeek(currDay);
+		}
 	}
-*/
+
 	// Next 3 methods for the Logger
 	
 	@Override
