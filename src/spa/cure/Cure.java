@@ -11,6 +11,7 @@ import java.util.List;
 import engine.event.IEventScheduler;
 import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
+import spa.event.PatientArrivalEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -22,7 +23,6 @@ public class Cure extends Entity {
     private int startYear;
     private int startWeek;
     private List<Treatment> dailyTreatments;
-    private List<Appointment> appointments;
     private List<Boolean> doneTreatments;
     private int maxPointsPerDay;
     private int maxPoints;
@@ -75,27 +75,20 @@ public class Cure extends Entity {
     }
     
     private void setAppointmentEvents(int startYear, int startWeek, IEventScheduler scheduler, SpaResort spa, Treatment treatment) {
-    	ZonedDateTime yearTime = spa.weekToDay(startYear, startWeek);
-    	ZonedDateTime eventTime = spa.weekToDay(startYear, startWeek);
-    	for (int i = 0; i<3; i++) {
-    		yearTime = yearTime.plusYears(i).with(DayOfWeek.MONDAY);
-    		
-    		if(!spa.isOpen(yearTime)) {
-    			yearTime.plusWeeks(1);
-    		}
-    		while (!spa.isOpen(yearTime.plusWeeks(2))) {
-    			yearTime.minusWeeks(1);
-    		}
-    		
-        	for (int j = 0; j<3; j++) {
-        		eventTime = yearTime.plusWeeks(j);
-            	for (int k = 0; k<5; k++) {
-            		eventTime = eventTime.plusDays(k);
-            		// TODO: create appointments
+    	ZonedDateTime yearTime;
+    	ZonedDateTime eventTime;
+    	
+    	for (int i = 0; i < 3; i++) {
+    		int year = this.startYear + i;
+        	for (int j = 0; j < 3; j++) {
+        		int week = this.startWeek + j;
+        		eventTime = spa.weekToDay(year, week);
+            	for (int k = 0; k < 5; k++) {
             		scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner, treatment));
+            		eventTime = eventTime.plusDays(1);
             	}
         	}
-    	}
+    	}		
     }
     
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {

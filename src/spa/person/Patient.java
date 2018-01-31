@@ -75,13 +75,11 @@ public class Patient extends Person implements IRecordable {
 	public void initEvents(IEventScheduler scheduler, SpaResort spa) {
 		ZonedDateTime yearTime;
     	ZonedDateTime eventTime;
-    	int startYear = this.startYear;
-    	int startWeek = this.startWeek;
     	
     	for (int i = 0; i < 3; i++) {
-    		int year = startYear + i;
+    		int year = this.startYear + i;
         	for (int j = 0; j < 3; j++) {
-        		int week = startWeek + j;
+        		int week = this.startWeek + j;
         		eventTime = spa.weekToDay(year, week);
             	for (int k = 0; k < 5; k++) {
             		scheduler.postEvent(new PatientArrivalEvent(this, eventTime, spa, this));
