@@ -2,11 +2,10 @@ package spa.event;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.List;
-
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -35,12 +34,19 @@ public class EndTreatmentEvent extends Event implements IEvent {
 		updateDoneTreatmentList();
 		Treatment treatment = this.patient.getTreatment();
 		treatment.removeCurrentPatients(this.patient);
+		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "finished " + treatment.name);
 		
+		int actualHour 	= this.scheduledTime.getHour();
+		int closingHour = this.spa.getClosingHour(this.scheduledTime).getHour();
+		if(actualHour >= closingHour) {
+			scheduler.postEvent(new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient));
+		}
+			
 		IEvent searchEvent;
 		searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 		scheduler.postEvent(searchEvent);
 		IEvent availableTreatmentEvent;
-		availableTreatmentEvent = new AvailableTreatmentEvent(getParent(), this.scheduledTime, treatment);
+		availableTreatmentEvent = new AvailableTreatmentEvent(getParent(), this.scheduledTime, this.spa, treatment);
 		scheduler.postEvent(availableTreatmentEvent);
 	}
 	
@@ -58,7 +64,6 @@ public class EndTreatmentEvent extends Event implements IEvent {
 	}
 	
 	private void updateDoneTreatmentList() {
-		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
 		Treatment patientTreatment = this.patient.getTreatment();
 		this.patient.getCure().setDoneTreatments(patientTreatment);
 	}

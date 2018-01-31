@@ -13,12 +13,13 @@ import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
+import spa.entity.Entity;
 import spa.event.CloseSpaEvent;
 import spa.event.CreatePatientsEvent;
 import spa.person.Patient;
 import spa.treatment.Treatment;
 
-public class SpaResort implements ISpaResort, IRecordable {
+public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	private static final int[][] distances = {{0, 1, 2, 4, 1, 2, 3},
 											{1, 0, 1, 2, 2, 2, 4},
@@ -41,6 +42,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 
 	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
+		super();
 		this.openingMonths = openingMonths;
 		this.openingDays = openingDays;
 		this.openingHours = openingHours;
@@ -48,6 +50,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 		this.inflowMonth = inflowMonth;
 		this.treatments = treatments;
 		this.patients = new ArrayList<>();
+		super.endConstructor();
 	}
 
 	@Override
@@ -187,7 +190,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 			currDay = nextOpenDay(currDay);
 		}
 	}
-
+/*
 	@Override
 	public String toString() {
 		String msg = "=============== Spa Resort ===============\n\n" +
@@ -207,7 +210,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 		
 		return msg;
 	}
-
+*/
 	// Next 3 methods for the Logger
 	
 	@Override

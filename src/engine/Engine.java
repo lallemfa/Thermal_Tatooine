@@ -6,15 +6,20 @@ import java.time.ZonedDateTime;
 import engine.event.EndEvent;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import enstabretagne.base.time.LogicalDateTime;
+import enstabretagne.simulation.components.IScenarioIdProvider;
+import enstabretagne.simulation.components.ScenarioId;
 import enstabretagne.simulation.core.ISimulationDateProvider;
 
-public class Engine implements ISimulationDateProvider {
+public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
 
     private IEventScheduler scheduler;
     private ZonedDateTime currentTime;
+    private ScenarioId scenarioId;
     
     public Engine(IEventScheduler scheduler) {
+    	scenarioId = new ScenarioId("Scenario1");
         this.scheduler 		= scheduler;
         this.currentTime 	= null;
     }
@@ -41,6 +46,7 @@ public class Engine implements ISimulationDateProvider {
             if (currentEvent == endEvent) break;
             currentEvent = scheduler.popNextEvent();
         }
+        
     }
 
     public void simulateFor(ZonedDateTime startTime, Duration duration) {
@@ -51,6 +57,11 @@ public class Engine implements ISimulationDateProvider {
 	public LogicalDateTime SimulationDate() {
 		LogicalDateTime time = new LogicalDateTime(getCurrentTime().toLocalDateTime());
 		return time;
+	}
+
+	@Override
+	public ScenarioId getScenarioId() {
+		return scenarioId;
 	}
 
 }

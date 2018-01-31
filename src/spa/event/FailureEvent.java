@@ -12,44 +12,44 @@ import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
-public class CloseSpaEvent extends Event implements IEvent {
+public class FailureEvent extends Event implements IEvent {
 
-    private final ZonedDateTime scheduledTime;
-    private final SpaResort spa;
-    
-    public CloseSpaEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa) {
-    	super(parent);
+	private ZonedDateTime scheduledTime;
+	private SpaResort spa;
+	private Treatment treatment;
+
+	public FailureEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa, Treatment treatment) {
+		super(parent);
         this.scheduledTime = scheduledTime;
+        this.treatment = treatment;
         this.spa = spa;
     }
-    
+	
 	@Override
 	public ZonedDateTime getScheduledTime() {
-		return scheduledTime;
+		return this.scheduledTime;
 	}
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		Treatment[] treatments = spa.getTreatments();
-		List<Patient> patientInTreatments = findPatientsInTreatments(treatments);
+		Logger.Information(getParent(), "Process", "Failure of treatment: " + this.treatment.name);
+		this.treatment.setBrokenState(true);
+		List<Patient> patientInTreatments = findPatientsInTreatment();
 		// TODO MANAGERS
 		while (!patientInTreatments.isEmpty()) {
 			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
 		}
-		Logger.Information(getParent(), "Process", "Spa closes");
 	}
 	
-	private List<Patient> findPatientsInTreatments(Treatment[] treatments){
+	private List<Patient> findPatientsInTreatment(){
 		List<Patient> patientInTreatments = new ArrayList<>();
-		for (int i = 0; i < treatments.length; i++){
-			List<Patient> waitingQueue = treatments[i].getWaitingQueue();
-			List<Patient> currentPatients = treatments[i].getCurrentPatients();
-			if (!waitingQueue.isEmpty()) {
-				patientInTreatments.addAll(waitingQueue);
-			}
-			if (!currentPatients.isEmpty()) {
-				patientInTreatments.addAll(currentPatients);
-			}
+		List<Patient> waitingQueue = this.treatment.getWaitingQueue();
+		List<Patient> currentPatients = this.treatment.getCurrentPatients();
+		if (!waitingQueue.isEmpty()) {
+			patientInTreatments.addAll(waitingQueue);
+		}
+		if (!currentPatients.isEmpty()) {
+			patientInTreatments.addAll(currentPatients);
 		}
 		return patientInTreatments;
 	}

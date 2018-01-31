@@ -3,8 +3,6 @@ package engine.event;
 import java.time.ZonedDateTime;
 
 import enstabretagne.base.logger.Logger;
-import logger.LogType;
-import logger.NoJokeItIsTheBestOneSoFarLogger;
 
 public class MessageEvent extends Event implements IEvent {
 	
@@ -25,8 +23,7 @@ public class MessageEvent extends Event implements IEvent {
 	@Override
 		
 	public void process(IEventScheduler scheduler) {
-		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, scheduledTime, message);
-		Logger.Information(this, "Process", message);
+		Logger.Information(getParent(), "Process", message);
 	}
 
 }

@@ -1,9 +1,12 @@
 package spa.person;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 
+import engine.event.IEventScheduler;
 import enstabretagne.base.logger.IRecordable;
 import spa.cure.Cure;
+import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
 public class Patient extends Person implements IRecordable {
@@ -14,17 +17,27 @@ public class Patient extends Person implements IRecordable {
     private Cure cure;
     private ZonedDateTime maxArrivingTime; // TODO
 
-    private ZonedDateTime startTreatment; // TODO
+    private ZonedDateTime startTreatment; 
+    private ZonedDateTime startWaiting; 
+    
+    private Duration waitedDuration;
 
-    public Patient(int id) {
+    public Patient(IEventScheduler scheduler, int id) {
         this(id, true);
     }
 
     public Patient(int id, boolean isFair) {
+    	super();
         this.id = id;
         this.isFair = isFair;
         // TODO: compute random time for cure start
-        this.cure = new Cure(ZonedDateTime.now());
+        this.cure = new Cure(this, ZonedDateTime.now());
+        super.endConstructor();
+        super.addChildren(this.cure);
+    }
+    
+    public Boolean getFairness() {
+    	return this.isFair;
     }
 
     public Cure getCure() {
@@ -32,11 +45,19 @@ public class Patient extends Person implements IRecordable {
     }
 
     public ZonedDateTime getStartTreatment() {
-        return startTreatment;
+        return this.startTreatment;
     }
     
     public void setStartTreatment(ZonedDateTime scheduledTime) {
     	this.startTreatment = scheduledTime;
+    }
+    
+    public ZonedDateTime getStartWaiting() {
+        return this.startWaiting;
+    }
+    
+    public void setStartWaiting(ZonedDateTime scheduledTime) {
+    	this.startWaiting = scheduledTime;
     }
 
     public void addCurePoints(int points) {
@@ -46,7 +67,7 @@ public class Patient extends Person implements IRecordable {
     public void setTreatment(Treatment treatment) {
     	this.treatment = treatment;
     }
-
+/*
     public String toString() {
         return "___________________________\n" +
             "Patient ID :\t" + this.id + "\n" +
@@ -54,9 +75,17 @@ public class Patient extends Person implements IRecordable {
             "\n\tCure to do :\n" + this.cure.toString() + "\n" +
             "___________________________";
     }
+*/
+    
+	void initEvents(IEventScheduler scheduler, SpaResort spa) {
+		this.cure.findAppointments(scheduler, spa);
+	}
+
+    
+    
     
     // Next 3 methods for the Logger
-    
+
 	@Override
 	public String[] getTitles() {
 		return new String[] {"Classe"};
