@@ -39,6 +39,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	private final float[] inflowMonth;
 
 	private List<Patient> patients;
+	private int newPatientId;
 
 	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
@@ -50,6 +51,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		this.inflowMonth = inflowMonth;
 		this.treatments = treatments;
 		this.patients = new ArrayList<>();
+		this.newPatientId = 0;
 		super.endConstructor();
 	}
 
@@ -101,7 +103,17 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 
 		return 0;
 	}
+	
+	@Override
+	public int getNewPatientId() {
+		return this.newPatientId;
+	}
 
+	@Override
+	public void setNewPatientId(int id) {
+		this.newPatientId = id;
+	}
+	
 	@Override
 	public LocalTime getOpeningHour(ZonedDateTime time) {
 		if( openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek()) ) {

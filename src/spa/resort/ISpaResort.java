@@ -34,5 +34,7 @@ public interface ISpaResort {
 
 	void addPatient(Patient patient);
 	int getNbPatientsOfWeek(ZonedDateTime time);
+	int getNewPatientId();
+	void setNewPatientId(int id);
 	
 }

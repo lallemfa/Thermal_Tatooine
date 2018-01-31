@@ -77,7 +77,8 @@ public class Patient extends Person implements IRecordable {
     }
 */
     
-	void initEvents(IEventScheduler scheduler, SpaResort spa) {
+	public void initEvents(IEventScheduler scheduler, ZonedDateTime currentTime, SpaResort spa) {
+		currentTime = spa.nextOpenDay(currentTime);
 		this.cure.findAppointments(scheduler, spa);
 	}
 
