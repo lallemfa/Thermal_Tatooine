@@ -3,12 +3,9 @@ package spa.treatment;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import engine.event.IEventScheduler;
-import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
 import spa.event.FailureEvent;
 import spa.event.RepairEvent;
@@ -56,6 +53,9 @@ public enum Treatment implements IRecordable {
 	private List<Patient> waitingQueue = new ArrayList<>();
 	private List<Patient> currentPatients = new ArrayList<>();
 
+    private List<LocalTime> appointmentTimes;
+	private HashMap<Integer, HashMap<Integer, List<Integer>>> appointments = new HashMap<>();
+
 	
 	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
@@ -82,24 +82,17 @@ public enum Treatment implements IRecordable {
 		this.failureSTDD 				= failureSTDD;
 		this.failureMeanPerDay			= failureMeanPerDay;
 		this.repairMeanDuration = repairMeanDuration;
-		
+
+		// Appointment Times
+        appointmentTimes = new ArrayList<>();
+        LocalTime time = this.openHour.plus(Duration.ofMinutes(5));
+        while (time.compareTo(this.closeHour) < 0) {
+            appointmentTimes.add(time);
+            time = time.plus(this.duration).plus(Duration.ofMinutes(5));
+        }
 	}
-/*	
-	public String toString() {
-		return name + " | Type: " + type + "\n" +
-				"\tOpen from " + openHour + " to " + closeHour + "\n" +
-				"\tTreatment lasts " + duration + " minutes and gives " + maxPoints + " points if fulfilled\n" + 
-				"\tWith Rendez-Vous ? " + withAppointment + "\n" +
-				"\t\tMax number of patients working -> " + maxPatientsWorking + "\n" +
-				"\tOrganized waiting ? " + isOrganizedWaiting + "\n" +
-				"\t\tMax number of patients waiting -> " + maxPatientsWaiting + "\n" +
-				"\tFailures :\n" + 
-				"\t\tFailure mean (in days)              -> " + failureMeanPerDay + "\n" +
-				"\t\tStandard Deviation (in days)        -> " + failureSTDD + "\n" +
-				"\t\tMaintenance Mean Duration (in days) -> " + repairMeanDuration + "\n";
-	}
-*/
-	public Duration getDuration() {
+
+    public Duration getDuration() {
 		return this.duration;
 	}
 	
@@ -198,13 +191,29 @@ public enum Treatment implements IRecordable {
 		return Duration.ofDays(Math.round(nbDaysToRepair));
 	}
 
-	public LocalTime getAppointmentTime(ZonedDateTime time) {
-		// TODO: get appointment, time returned needs to be available for the next three weeks
+	public void addAppointment(int year, int week, LocalTime time) {
+        int index = appointmentTimes.indexOf(time);
+        appointments.get(year).get(week).set(index, appointments.get(year).get(week).get(index) + 1);
+    }
+
+	public LocalTime getAppointmentTime(int year, int week) {
+        if (!appointments.containsKey(year)) {
+            appointments.put(year, new HashMap<>());
+        }
+        if (!appointments.get(year).containsKey(week)) {
+            List<Integer> emptyList = new ArrayList<>(appointmentTimes.size());
+            Collections.fill(emptyList, 0);
+            appointments.get(year).put(week, emptyList);
+        }
+        for (int i = 0; i < appointments.get(year).get(week).size(); i++) {
+            if (appointments.get(year).get(week).get(i) < maxPatientsWorking) {
+                return appointmentTimes.get(i);
+            }
+        }
 		return null;
 	}
 	
 	// Next 3 methods for the Logger
-	
 	@Override
 	public String[] getTitles() {
 		return new String[] {"Classe"};

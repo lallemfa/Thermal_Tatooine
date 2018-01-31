@@ -11,6 +11,7 @@ import java.util.List;
 import engine.event.IEventScheduler;
 import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
+import spa.event.PatientArrivalEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -19,24 +20,24 @@ public class Cure extends Entity {
 
     private final double PROB_NB_TREATMENTS[] = {0.2, 0.35, 0.3, 0.15};
 
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
+    private int startYear;
+    private int startWeek;
     private List<Treatment> dailyTreatments;
-    private List<Appointment> appointments;
     private List<Boolean> doneTreatments;
     private int maxPointsPerDay;
     private int maxPoints;
     private int currentPoints;
 	private final Patient owner;
 
-    public Cure(Patient patient, ZonedDateTime start) {
+    public Cure(Patient patient, int startYear, int startWeek) {
     	super();
     	this.owner = patient;
+    	this.startYear = startYear;
+    	this.startWeek = startWeek;
     	this.currentPoints = 0;
     	this.maxPointsPerDay = 0;
 
         setTreatments();
-        //setAppointments();
         this.maxPoints = maxPointsPerDay * 5 * 3 * 3;
         // TODO: create events for patient arriving
         // TODO: calculate startDate/endDate
@@ -53,8 +54,11 @@ public class Cure extends Entity {
         }
         return 0;
     }
+
+    public boolean hasCureDuringWeek(int year, int week) {
+        return Math.abs(week - startWeek) < 3 && Math.abs(year - startYear) < 3;
+    }
     
-    // TODO TO CHECK
     private void setTreatments() {
         List<Treatment> allTreatments = new ArrayList<>(Arrays.asList(Treatment.values()));
         int nbTreatments = getNbDailyTreatments();
@@ -66,42 +70,37 @@ public class Cure extends Entity {
             allTreatments.removeIf(t -> t.type == treatment.type);
             this.maxPointsPerDay += treatment.getMaxPoints();
         }
-        
         this.doneTreatments = new ArrayList<Boolean>(this.dailyTreatments.size());
         Collections.fill(this.doneTreatments, Boolean.FALSE);
     }
     
-    private void setAppointments(ZonedDateTime time, IEventScheduler scheduler, SpaResort spa) {
-    	ZonedDateTime yearTime = time;
-    	ZonedDateTime eventTime = time;
-    	
-    	for (int i = 0; i<3; i++) {
-    		yearTime = time.plusYears(i).with(DayOfWeek.MONDAY);
-    		
-    		while(!spa.isOpen(yearTime)) {
-    			yearTime.plusWeeks(1);
-    		}
-    		while (!spa.isOpen(yearTime.plusWeeks(2))) {
-    			yearTime.minusWeeks(1);
-    		}
-    		
-        	for (int j = 0; j<3; j++) {
-        		eventTime = yearTime.plusWeeks(j);
-            	for (int k = 0; k<5; k++) {
-            		eventTime = eventTime.plusDays(k);
-            		scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner));
+    private void setAppointmentEvents(int startYear, int startWeek, IEventScheduler scheduler, SpaResort spa, Treatment treatment) {
+    	ZonedDateTime yearTime;
+    	ZonedDateTime eventTime;
+
+    	for (int i = 0; i < 3; i++) {
+    		int year = this.startYear + i;
+        	for (int j = 0; j < 3; j++) {
+        		int week = this.startWeek + j;
+        		eventTime = spa.weekToDay(year, week);
+            	for (int k = 0; k < 5; k++) {
+            		scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner, treatment));
+            		eventTime = eventTime.plusDays(1);
             	}
         	}
-    	}
+    	}		
     }
     
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {
-    	for (int i=0; i < this.dailyTreatments.size(); i++) {
-    		Treatment treatment = this.dailyTreatments.get(i);
+    	for (Treatment treatment : this.dailyTreatments) {
     		if (treatment.isWithAppointment()) {
-    			LocalTime time = treatment.getAppointmentTime(this.startDate);
-    			ZonedDateTime eventTime = this.startDate.with(time);
-    			setAppointments(eventTime, scheduler, spa);
+    			LocalTime time = treatment.getAppointmentTime(startYear, startWeek);
+                for (int w = 0; w < 3; w++) {
+                    for (int y = 0; y < 3; y++) {
+                        treatment.addAppointment(startYear + y, startWeek + w, time);
+                    }
+                }
+    			setAppointmentEvents(startYear, startWeek, scheduler, spa, treatment);
     		}
     	}
     }
@@ -133,18 +132,5 @@ public class Cure extends Entity {
 
     public int getPoints() {
         return this.currentPoints;
-    }
-
-    public String toString() {
-        if (startDate != null) {
-            return "Time\n" +
-                "\tStart -> " + startDate.toLocalDateTime() + "\n" +
-                "\tEnd   -> " + endDate.toLocalDateTime() + "\n" +
-                "Points\t" + currentPoints + " / " + maxPoints + "\n";
-        } else {
-            return "Time\n" +
-                "\tStart -> Not started yet\n" +
-                "\tEnd   -> Not started yet\n";
-        }
     }
 }

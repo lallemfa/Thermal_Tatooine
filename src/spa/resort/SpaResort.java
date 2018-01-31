@@ -2,14 +2,11 @@ package spa.resort;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
@@ -17,6 +14,7 @@ import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
 import spa.entity.Entity;
 import spa.event.CloseSpaEvent;
+import spa.person.Patient;
 import spa.treatment.Treatment;
 
 public class SpaResort extends Entity implements ISpaResort, IRecordable {
@@ -37,7 +35,10 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	private final int maxClients;
 	private final float[] inflowMonth;
-	
+
+	private List<Patient> patients;
+	private int newPatientId;
+
 	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
 		super();
@@ -47,6 +48,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		this.maxClients = maxClients;
 		this.inflowMonth = inflowMonth;
 		this.treatments = treatments;
+		this.patients = new ArrayList<>();
+		this.newPatientId = 0;
 		super.endConstructor();
 	}
 
@@ -57,7 +60,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	@Override
 	public float getInflowMonth(Month month) {
-		return inflowMonth[month.getValue()];
+		return maxClients * inflowMonth[month.getValue()];
 	}
 
 	@Override
@@ -87,6 +90,34 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	    }
 	    return Duration.ofMinutes( max );
 	}
+
+	@Override
+	public void addPatient(Patient patient) {
+		patients.add(patient);
+	}
+
+	@Override
+	public int getNbPatientsOfWeek(ZonedDateTime time) {
+		int year = time.getYear();
+		int relativeWeek = dayToWeek(time);
+		int nbPatients = 0;
+		for (Patient patient : patients) {
+			if (patient.getCure().hasCureDuringWeek(year, relativeWeek)) {
+				nbPatients++;
+			}
+		}
+		return nbPatients;
+	}
+	
+	@Override
+	public int getNewPatientId() {
+		return this.newPatientId;
+	}
+
+	@Override
+	public void setNewPatientId(int id) {
+		this.newPatientId = id;
+	}
 	
 	@Override
 	public LocalTime getOpeningHour(ZonedDateTime time) {
@@ -113,10 +144,20 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	@Override
 	public boolean isOpen(ZonedDateTime time) {
-		if( openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek()) ) {
-			return true;
-		}
-		return false;
+		return openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek());
+	}
+
+	@Override
+	public boolean isOpenForThreeWeeks(ZonedDateTime time) {
+		time = time.with(DayOfWeek.MONDAY);
+		boolean isOpen = isOpen(time);
+		time = time.with(DayOfWeek.FRIDAY);
+		isOpen = isOpen && isOpen(time);
+		time = time.plusWeeks(1);
+		isOpen = isOpen && isOpen(time);
+		time = time.plusWeeks(1);
+		isOpen = isOpen && isOpen(time);
+		return isOpen;
 	}
 	
 	private int idOfWeek(ZonedDateTime time) {
@@ -132,8 +173,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	}
 	
 	private boolean isWeekOpen(ZonedDateTime time) {
+		//TODO: Not dependent of numbers
 		ZonedDateTime monday = mondayOfWeek(time);
-		
 		return isOpen(monday) && isOpen( monday.plusDays(5) );
 	}
 	
@@ -153,7 +194,6 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		currDay = mondayOfWeek(currDay);
 		
 		while(currYear <= endYear) {
-			
 			while(currDay.getYear() == currYear) {
 				tempWeeks += ( isWeekOpen(currDay) ) ? 1 : 0;
 				currDay = currDay.plusWeeks(1);
@@ -180,7 +220,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	public ZonedDateTime nextOpenDay(ZonedDateTime time) {
 		ZonedDateTime nextDay = time.plusDays(1);
-		
+
 		while(!isOpen(nextDay) || !isWeekOpen(nextDay)) {
 			while( !openingMonths.contains(nextDay.getMonth()) ) {
 				nextDay = nextDay.plusMonths(1);
@@ -217,10 +257,10 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		return Duration.ofMinutes( duration );
 	}
 
+
 	private void postEventForWeek (IEventScheduler scheduler, ZonedDateTime currDay) {
 		LocalTime openHour;
 		LocalTime closeHour;
-		
 		IEvent openEvent;
 		IEvent closeSpaEvent;
 		
@@ -229,14 +269,11 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
-			
 			openEvent 	= new MessageEvent(this, currDay.with(openHour), "Spa opens");
 			closeSpaEvent = new CloseSpaEvent(this, currDay.with(closeHour), this);
-			
 			scheduler.postEvent(openEvent);
 			scheduler.postEvent(closeSpaEvent);
 		}
-
 	}
 	
 	@Override
@@ -272,7 +309,6 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	}
 
 	// Next 3 methods for the Logger
-	
 	@Override
 	public String[] getTitles() {
 		return new String[] {"Classe"};
