@@ -98,8 +98,15 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 
 	@Override
 	public int getNbPatientsOfWeek(ZonedDateTime time) {
-
-		return 0;
+		int year = time.getYear();
+		int relativeWeek = dayToWeek(time);
+		int nbPatients = 0;
+		for (Patient patient : patients) {
+			if (patient.getCure().hasCureDuringWeek(year, relativeWeek)) {
+				nbPatients++;
+			}
+		}
+		return nbPatients;
 	}
 
 	@Override
@@ -127,15 +134,15 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	@Override
 	public boolean isOpen(ZonedDateTime time) {
-		if( openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek()) ) {
-			return true;
-		}
-		return false;
+		return openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek());
 	}
 
 	@Override
 	public boolean isOpenForThreeWeeks(ZonedDateTime time) {
+		time = time.with(DayOfWeek.MONDAY);
 		boolean isOpen = isOpen(time);
+		time = time.with(DayOfWeek.FRIDAY);
+		isOpen = isOpen && isOpen(time);
 		time = time.plusWeeks(1);
 		isOpen = isOpen && isOpen(time);
 		time = time.plusWeeks(1);
@@ -190,29 +197,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			currDay = nextOpenDay(currDay);
 		}
 	}
-/*
-	@Override
-	public String toString() {
-		String msg = "=============== Spa Resort ===============\n\n" +
-				"Max patients : " + maxClients + "\n" +
-				"Opening months -> " + openingMonths.toString() + "\n" +
-				"Opening days   -> " + openingDays.toString() + "\n" + 
-				"Opening hours  -> " + openingHours.toString() + "\n\n" +
-				"Treatments available";
-		
-		int compteur = 1;
-		
-		for(Treatment treatment : treatments) {
-			msg += "\n" + (compteur++) + " - " + treatment.toString();
-		}
-		
-		msg += "\n==========================================\n\n";
-		
-		return msg;
-	}
-*/
+
 	// Next 3 methods for the Logger
-	
 	@Override
 	public String[] getTitles() {
 		return new String[] {"Classe"};

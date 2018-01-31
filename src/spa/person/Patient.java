@@ -67,17 +67,9 @@ public class Patient extends Person implements IRecordable {
     public void setTreatment(Treatment treatment) {
     	this.treatment = treatment;
     }
-/*
-    public String toString() {
-        return "___________________________\n" +
-            "Patient ID :\t" + this.id + "\n" +
-            "Honesty :\t" + this.isFair + "\n" +
-            "\n\tCure to do :\n" + this.cure.toString() + "\n" +
-            "___________________________";
-    }
-*/
-    
+
 	void initEvents(IEventScheduler scheduler, SpaResort spa) {
+	    // TODO: PatientArrivalEvents
 		this.cure.findAppointments(scheduler, spa);
 	}
 
