@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import engine.event.IEvent;
@@ -12,6 +14,8 @@ import engine.event.IEventScheduler;
 import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
 import spa.event.CloseSpaEvent;
+import spa.event.CreatePatientsEvent;
+import spa.person.Patient;
 import spa.treatment.Treatment;
 
 public class SpaResort implements ISpaResort, IRecordable {
@@ -32,7 +36,9 @@ public class SpaResort implements ISpaResort, IRecordable {
 	
 	private final int maxClients;
 	private final float[] inflowMonth;
-	
+
+	private List<Patient> patients;
+
 	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
 		this.openingMonths = openingMonths;
@@ -41,6 +47,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 		this.maxClients = maxClients;
 		this.inflowMonth = inflowMonth;
 		this.treatments = treatments;
+		this.patients = new ArrayList<>();
 	}
 
 	@Override
@@ -80,7 +87,18 @@ public class SpaResort implements ISpaResort, IRecordable {
 	    }
 	    return Duration.ofMinutes( max );
 	}
-	
+
+	@Override
+	public void addPatient(Patient patient) {
+		patients.add(patient);
+	}
+
+	@Override
+	public int getNbPatientsOfWeek(ZonedDateTime time) {
+
+		return 0;
+	}
+
 	@Override
 	public LocalTime getOpeningHour(ZonedDateTime time) {
 		if( openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek()) ) {
@@ -111,6 +129,16 @@ public class SpaResort implements ISpaResort, IRecordable {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean isOpenForThreeWeeks(ZonedDateTime time) {
+		boolean isOpen = isOpen(time);
+		time = time.plusWeeks(1);
+		isOpen = isOpen && isOpen(time);
+		time = time.plusWeeks(1);
+		isOpen = isOpen && isOpen(time);
+		return isOpen;
+	}
 	
 	public ZonedDateTime nextOpenDay(ZonedDateTime time) {
 		ZonedDateTime nextDay = time.plusDays(1);
@@ -138,27 +166,24 @@ public class SpaResort implements ISpaResort, IRecordable {
 	@Override
 	public void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
 		ZonedDateTime currDay = startTime;
-		
 		LocalTime openHour;
 		LocalTime closeHour;
-		
 		IEvent openEvent;
 		IEvent closeSpaEvent;
-		
 		if( !isOpen(currDay) ) {
 			currDay = nextOpenDay(currDay);
 		}
-		
 		while(currDay.compareTo(endTime) < 0) {
+			if (currDay.getDayOfWeek() == DayOfWeek.MONDAY && isOpenForThreeWeeks(currDay)) {
+				ZonedDateTime previousSunday = currDay.minusDays(1);
+				scheduler.postEvent(new CreatePatientsEvent(this, previousSunday, this));
+			}
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
-			
 			openEvent 	= new MessageEvent(this, currDay.with(openHour), "Spa opens");
 			closeSpaEvent = new CloseSpaEvent(this, currDay.with(closeHour), this);
-			
 			scheduler.postEvent(openEvent);
 			scheduler.postEvent(closeSpaEvent);
-		
 			currDay = nextOpenDay(currDay);
 		}
 	}
