@@ -47,7 +47,7 @@ public class Cure {
             maxPointsPerDay += treatment.getMaxPoints();
         }
         
-        this.doneTreatments = new ArrayList<Boolean>(Arrays.asList(new Boolean[this.dailyTreatments.size()]));
+        this.doneTreatments = new ArrayList<Boolean>(this.dailyTreatments.size());
         Collections.fill(this.doneTreatments, Boolean.FALSE);
     }
 
@@ -75,9 +75,7 @@ public class Cure {
     }
     
     public void resetDoneTreatments() {
-		List<Boolean> doneTreatments = new ArrayList<Boolean>(Arrays.asList(new Boolean[this.dailyTreatments.size()]));
         Collections.fill(doneTreatments, Boolean.FALSE);
-        this.doneTreatments = doneTreatments;
     }
     
     public void setDoneTreatments(Treatment treatment) {

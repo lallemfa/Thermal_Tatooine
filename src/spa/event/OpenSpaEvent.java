@@ -27,7 +27,7 @@ public class OpenSpaEvent extends Event implements IEvent {
 
 	public void process(IEventScheduler scheduler) {
 		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa opened");
-		Logger.Information(this, "Process", "Spa opened");
+		Logger.Information(getParent(), "Process", "Spa opened");
 	}
 
 }

@@ -80,7 +80,7 @@ public enum Treatment implements IRecordable {
 		this.failureMeanPerDay			= failureMeanPerDay;
 		this.repairMeanDuration = repairMeanDuration;
 	}
-	
+/*	
 	public String toString() {
 		return name + " | Type: " + type + "\n" +
 				"\tOpen from " + openHour + " to " + closeHour + "\n" +
@@ -94,7 +94,7 @@ public enum Treatment implements IRecordable {
 				"\t\tStandard Deviation (in days)        -> " + failureSTDD + "\n" +
 				"\t\tMaintenance Mean Duration (in days) -> " + repairMeanDuration + "\n";
 	}
-
+*/
 	public Duration getDuration() {
 		return duration;
 	}

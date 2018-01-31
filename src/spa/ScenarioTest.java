@@ -18,19 +18,14 @@ import spa.treatment.Treatment;
 public class ScenarioTest {
 
 	public static void main(String[] args) {
-
-		
 		
 		NoJokeItIsTheBestOneSoFarLogger.setLogToConsole(true);
 		NoJokeItIsTheBestOneSoFarLogger.setLogToFile(true);
 
-		
 		SortedListScheduler scheduler = new SortedListScheduler();
 		Engine engine = new Engine(scheduler);
 		
 		Logger.setDateProvider(engine);
-		
-		
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);

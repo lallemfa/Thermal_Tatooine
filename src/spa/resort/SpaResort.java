@@ -162,7 +162,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 			currDay = nextOpenDay(currDay);
 		}
 	}
-
+/*
 	@Override
 	public String toString() {
 		String msg = "=============== Spa Resort ===============\n\n" +
@@ -182,7 +182,7 @@ public class SpaResort implements ISpaResort, IRecordable {
 		
 		return msg;
 	}
-
+*/
 	// Next 3 methods for the Logger
 	
 	@Override

@@ -26,7 +26,7 @@ public class MessageEvent extends Event implements IEvent {
 		
 	public void process(IEventScheduler scheduler) {
 		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, scheduledTime, message);
-		Logger.Information(this, "Process", message);
+		Logger.Information(getParent(), "Process", message);
 	}
 
 }
