@@ -77,7 +77,6 @@ public class Cure extends Entity {
     private void setAppointments(int startYear, int startWeek, IEventScheduler scheduler, SpaResort spa, Treatment treatment) {
     	ZonedDateTime yearTime = spa.weekToDay(startYear, startWeek);
     	ZonedDateTime eventTime = spa.weekToDay(startYear, startWeek);
-    	
     	for (int i = 0; i<3; i++) {
     		yearTime = yearTime.plusYears(i).with(DayOfWeek.MONDAY);
     		
