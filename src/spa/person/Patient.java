@@ -23,15 +23,15 @@ public class Patient extends Person implements IRecordable {
     private Duration waitedDuration;
 
     public Patient(IEventScheduler scheduler, int id) {
-        this(scheduler, id, true);
+        this(id, true);
     }
 
-    public Patient(IEventScheduler scheduler, int id, boolean isFair) {
-    	super(scheduler);
+    public Patient(int id, boolean isFair) {
+    	super();
         this.id = id;
         this.isFair = isFair;
         // TODO: compute random time for cure start
-        this.cure = new Cure(scheduler, this, ZonedDateTime.now());
+        this.cure = new Cure(this, ZonedDateTime.now());
         super.endConstructor();
         super.addChildren(this.cure);
     }

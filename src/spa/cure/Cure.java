@@ -29,8 +29,8 @@ public class Cure extends Entity {
     private int currentPoints;
 	private final Patient owner;
 
-    public Cure(IEventScheduler scheduler, Patient patient, ZonedDateTime start) {
-    	super(scheduler);
+    public Cure(Patient patient, ZonedDateTime start) {
+    	super();
     	this.owner = patient;
     	this.currentPoints = 0;
     	this.maxPointsPerDay = 0;

@@ -3,17 +3,13 @@ package spa.entity;
 import java.util.List;
 
 import engine.event.IEventScheduler;
-import engine.event.MessageEvent;
 
 public abstract class Entity {
-	
-	protected final IEventScheduler scheduler;
 	
 	private IEntityState state;
 	private List<Entity> children;
 	
-	public Entity(IEventScheduler scheduler) {
-		this.scheduler = scheduler;
+	public Entity() {
 		this.state = IEntityState.NONE;
 	}
 	

@@ -34,9 +34,9 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	private final int maxClients;
 	private final float[] inflowMonth;
 	
-	public SpaResort(IEventScheduler scheduler, List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
+	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
-		super(scheduler);
+		super();
 		this.openingMonths = openingMonths;
 		this.openingDays = openingDays;
 		this.openingHours = openingHours;
