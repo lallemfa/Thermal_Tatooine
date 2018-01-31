@@ -38,7 +38,7 @@ public class SearchForActionEvent extends Event implements IEvent {
 		Duration duration = selectDuration(state, choosenTreatment);
 		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts looking for an available treatment");
 		
-		
+		this.patient.setPersonState(PersonState.Moving);
 		IEvent arrivedTreatmentEvent;
 		ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
 		arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, choosenTreatment, this.patient);
@@ -54,10 +54,11 @@ public class SearchForActionEvent extends Event implements IEvent {
 		
 		for(int i=0; i < dailyTreatments.size(); i++) {
 			Treatment tempTreatment = dailyTreatments.remove(dailyTreatments.size()-1);
-			if (!doneTreatments.get(i) && !tempTreatment.isWithAppointment() && state != PersonState.Treatment) {
+			boolean condition = !doneTreatments.get(i) && !tempTreatment.isWithAppointment() && !tempTreatment.getBrokenState();
+			if (condition && state != PersonState.Treatment) {
 				return tempTreatment;
 			}
-			if (!doneTreatments.get(i) && !tempTreatment.isWithAppointment() && state == PersonState.Treatment) {
+			if (condition && state == PersonState.Treatment) {
 				Treatment treatment = this.patient.getTreatment();
 				Duration duration = this.spa.distanceBetween(treatment, tempTreatment);
 				if (duration.compareTo(durationMoving) < 0) {

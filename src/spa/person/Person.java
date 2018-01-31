@@ -17,11 +17,15 @@ public abstract class Person extends Entity {
     }
     
     public PersonState getPersonState() {
-        return state;
+        return this.state;
+    }
+
+    public void setPersonState(PersonState state) {
+        this.state = state;
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public Treatment getTreatment() {

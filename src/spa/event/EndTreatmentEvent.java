@@ -36,6 +36,12 @@ public class EndTreatmentEvent extends Event implements IEvent {
 		treatment.removeCurrentPatients(this.patient);
 		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "finished " + treatment.name);
 		
+		int actualHour 	= this.scheduledTime.getHour();
+		int closingHour = this.spa.getClosingHour(this.scheduledTime).getHour();
+		if(actualHour >= closingHour) {
+			scheduler.postEvent(new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient));
+		}
+			
 		IEvent searchEvent;
 		searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 		scheduler.postEvent(searchEvent);

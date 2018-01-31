@@ -10,6 +10,8 @@ import java.util.Random;
 import engine.event.IEventScheduler;
 import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
+import spa.event.FailureEvent;
+import spa.event.RepairEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
@@ -49,6 +51,8 @@ public enum Treatment implements IRecordable {
 	private final int failureMeanPerDay;
 	private final int repairMeanDuration;
 	
+	private boolean broken;
+	
 	private List<Patient> waitingQueue = new ArrayList<>();
 	private List<Patient> currentPatients = new ArrayList<>();
 
@@ -57,7 +61,7 @@ public enum Treatment implements IRecordable {
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
 			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int repairMeanDuration) {
 		this.id = id;
-		
+		this.broken = false;
 		this.name = name;
 		this.type = type;
 		
@@ -96,27 +100,35 @@ public enum Treatment implements IRecordable {
 	}
 */
 	public Duration getDuration() {
-		return duration;
+		return this.duration;
+	}
+	
+	public Boolean getBrokenState() {
+		return this.broken;
+	}
+	
+	public void setBrokenState(Boolean brokenState) {
+		this.broken = brokenState;
 	}
 
 	public int getMaxPoints() {
-		return maxPoints;
+		return this.maxPoints;
 	}
 	
 	public int getMaxPatientsWaiting() {
-		return maxPatientsWaiting;
+		return this.maxPatientsWaiting;
 	}
 
 	public int getMaxPatientsWorking() {
-		return maxPatientsWorking;
+		return this.maxPatientsWorking;
 	}
 	
 	public List<Patient> getCurrentPatients() {
-		return currentPatients;
+		return this.currentPatients;
 	}
 	
 	public List<Patient> getWaitingQueue() {
-		return waitingQueue;
+		return this.waitingQueue;
 	}
 	
 	public void addCurrentPatients(Patient patient) {
@@ -159,7 +171,7 @@ public enum Treatment implements IRecordable {
 			}
 			LocalTime openingTime = spa.getOpeningHour(currentTime);
 			currentTime = currentTime.with(openingTime);
-			scheduler.postEvent(new MessageEvent(this, currentTime, "Failure of treatment: " + name));
+			scheduler.postEvent(new FailureEvent(this, currentTime, spa, this));
 
 			// Repair
 			Duration nbDaysToRepair = getDurationToRepair();
@@ -169,7 +181,7 @@ public enum Treatment implements IRecordable {
 			}
 			LocalTime closingTime = spa.getClosingHour(currentTime);
 			currentTime = currentTime.with(closingTime);
-			scheduler.postEvent(new MessageEvent(this, currentTime, "Repair of treatment: " + name));
+			scheduler.postEvent(new RepairEvent(this, currentTime, this));
 			currentTime = currentTime.plusDays(1);
 		}
 	}

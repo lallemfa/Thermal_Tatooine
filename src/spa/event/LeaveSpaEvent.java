@@ -7,28 +7,29 @@ import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
+import spa.person.PersonState;
 import spa.resort.SpaResort;
 
-public class AppointmentTimeoutEvent extends Event implements IEvent {
-	
+public class LeaveSpaEvent extends Event implements IEvent {
+
 	private ZonedDateTime scheduledTime;
 	private Patient patient;
 
-	public AppointmentTimeoutEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa, Patient patient) {
+	public LeaveSpaEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa, Patient patient) {
 		super(parent);
-		this.scheduledTime = scheduledTime;
-		this.patient = patient;
+        this.scheduledTime = scheduledTime;
+        this.patient = patient;
 	}
-	
+
 	@Override
 	public ZonedDateTime getScheduledTime() {
 		return this.scheduledTime;
 	}
 
 	@Override
-
 	public void process(IEventScheduler scheduler) {
-		Logger.Information(getParent(), "Process", "Appointment Patient " + this.patient.getId());
+		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " leaves Spa");
+		this.patient.setPersonState(PersonState.Out);
 	}
 
 }

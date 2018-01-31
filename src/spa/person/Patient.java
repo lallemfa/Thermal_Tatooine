@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.IRecordable;
 import spa.cure.Cure;
+import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
 public class Patient extends Person implements IRecordable {
@@ -30,7 +31,7 @@ public class Patient extends Person implements IRecordable {
         this.id = id;
         this.isFair = isFair;
         // TODO: compute random time for cure start
-        this.cure = new Cure(scheduler, ZonedDateTime.now());
+        this.cure = new Cure(scheduler, this, ZonedDateTime.now());
         super.endConstructor();
         super.addChildren(this.cure);
     }
@@ -66,7 +67,7 @@ public class Patient extends Person implements IRecordable {
     public void setTreatment(Treatment treatment) {
     	this.treatment = treatment;
     }
-
+/*
     public String toString() {
         return "___________________________\n" +
             "Patient ID :\t" + this.id + "\n" +
@@ -74,6 +75,12 @@ public class Patient extends Person implements IRecordable {
             "\n\tCure to do :\n" + this.cure.toString() + "\n" +
             "___________________________";
     }
+*/
+    
+	void initEvents(IEventScheduler scheduler, SpaResort spa) {
+		this.cure.findAppointments(scheduler, spa);
+	}
+
     
     
     
