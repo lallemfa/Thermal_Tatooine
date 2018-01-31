@@ -43,15 +43,14 @@ public class ScenarioTest {
 		openingDays.add(DayOfWeek.WEDNESDAY);
 		openingDays.add(DayOfWeek.THURSDAY);
 		openingDays.add(DayOfWeek.FRIDAY);
-		openingDays.add(DayOfWeek.SATURDAY);
-		
+
 		LocalTime openTime = LocalTime.parse("07:00:00");
 		LocalTime closureTime = LocalTime.parse("14:00:00");
 		LocalTime[][] openingHours = {{openTime, openTime,  openTime, openTime, openTime, openTime,  openTime},
 										{closureTime, closureTime, closureTime, closureTime, closureTime, closureTime, closureTime}};
-		
-		float[] inflowMonth = {};
-		
+
+		float[] inflowMonth = new float[] {0f, 0f, 0.5f, 0.6f, 0.7f, 0.8f, 0.95f, 0.9f, 0.65f, 0f, 0f, 0f};
+
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
