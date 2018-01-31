@@ -7,6 +7,7 @@ import java.util.List;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -35,6 +36,8 @@ public class SearchForActionEvent extends Event implements IEvent {
 		PersonState state = this.patient.getState();
 		Treatment choosenTreatment = selectNextTreatment(state);
 		Duration duration = selectDuration(state, choosenTreatment);
+		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts looking for an available treatment");
+		
 		
 		IEvent arrivedTreatmentEvent;
 		ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);

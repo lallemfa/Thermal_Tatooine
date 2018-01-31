@@ -33,7 +33,7 @@ public class PatientArrivalEvent extends Event implements IEvent {
 	@Override
 	public void process(IEventScheduler scheduler) {
 		Cure patientCure = this.patient.getCure();
-		this.patient.getCure().resetDoneTreatments(); 
+		patientCure.resetDoneTreatments(); 
 		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Patient" + this.patient.getId() + "arrived");
 		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "arrived");
 		IEvent searchEvent;

@@ -40,7 +40,7 @@ public class CloseSpaEvent extends Event implements IEvent {
 			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
 		}
 		NoJokeItIsTheBestOneSoFarLogger.log(LogType.INFO, this.scheduledTime, "Spa closes");
-		Logger.Information(((IRecordable) getParent()), "Process", "Spa closes");
+		Logger.Information(getParent(), "Process", "Spa closes");
 	}
 	
 	private List<Patient> findPatientsInTreatments(Treatment[] treatments){
