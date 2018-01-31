@@ -10,12 +10,16 @@ public abstract class Person {
     protected Treatment treatment;
     protected boolean patient;
 
-    public PersonState getState() {
-        return state;
+    public PersonState getPersonState() {
+        return this.state;
+    }
+
+    public void setPersonState(PersonState state) {
+        this.state = state;
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public Treatment getTreatment() {

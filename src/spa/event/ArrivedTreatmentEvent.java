@@ -7,6 +7,7 @@ import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
+import spa.person.PersonState;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
@@ -32,6 +33,7 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
+		this.patient.setPersonState(PersonState.Treatment);
 		boolean availableWaitingQueue = (this.treatment.getWaitingQueue().size() < this.treatment.getMaxPatientsWaiting());
 		boolean availableWork = (this.treatment.getCurrentPatients().size() < this.treatment.getMaxPatientsWorking());
 		if (availableWork) {
