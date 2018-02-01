@@ -145,39 +145,37 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	}
 	
 	@Override
+	public Duration distanceBetween(Treatment treatment1, Treatment treatment2) {
+		int duration = distances[treatment1.id][treatment2.id];
+		return Duration.ofMinutes( duration );
+	}
+	
+	@Override
 	public boolean isOpen(ZonedDateTime time) {
 		return openingMonths.contains(time.getMonth()) & openingDays.contains(time.getDayOfWeek());
 	}
 
 	@Override
 	public boolean isOpenForThreeWeeks(ZonedDateTime time) {
-		time = time.with(DayOfWeek.MONDAY);
-		boolean isOpen = isOpen(time);
-		time = time.with(DayOfWeek.FRIDAY);
-		isOpen = isOpen && isOpen(time);
-		time = time.plusWeeks(1);
-		isOpen = isOpen && isOpen(time);
-		time = time.plusWeeks(1);
-		isOpen = isOpen && isOpen(time);
-		return isOpen;
+		return isWeekOpen(time) && isWeekOpen(time.plusWeeks(1))  && isWeekOpen(time.plusWeeks(2));
 	}
 	
 	private int idOfWeek(ZonedDateTime time) {
 		return (int)Math.floor(time.getDayOfYear()/7);
 	}
 	
-	private ZonedDateTime mondayOfWeek(ZonedDateTime time) {
-		if( idOfWeek(time) != idOfWeek(time.with(DayOfWeek.MONDAY)) ) {
-			return time.with(DayOfWeek.MONDAY).minusDays(7);
+	private ZonedDateTime firstOpenDayOfWeek(ZonedDateTime time) {
+		DayOfWeek firstDay = openingDays.get(0);
+		if( idOfWeek(time) != idOfWeek(time.with(firstDay)) ) {
+			return time.with(firstDay).minusDays(7);
 		} else {
-			return time.with(DayOfWeek.MONDAY);
+			return time.with(firstDay);
 		}
 	}
 	
 	private boolean isWeekOpen(ZonedDateTime time) {
-		//TODO: Not dependent of numbers
-		ZonedDateTime monday = mondayOfWeek(time);
-		return isOpen(monday) && isOpen( monday.plusDays(5) );
+		ZonedDateTime firstDay = firstOpenDayOfWeek(time);
+		return isOpen(firstDay) && isOpen( firstDay.plusDays(openingDays.size() - 1) );
 	}
 	
 	private int minWeeksOpen(ZonedDateTime startTime, ZonedDateTime endTime) {
@@ -193,7 +191,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			currDay = nextOpenDay(currDay);
 		}
 		currYear = currDay.getYear();
-		currDay = mondayOfWeek(currDay);
+		currDay = firstOpenDayOfWeek(currDay);
 		
 		while(currYear <= endYear) {
 			while(currDay.getYear() == currYear) {
@@ -213,10 +211,10 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	}
 	
 	public int dayToWeek(ZonedDateTime day) {
-		ZonedDateTime monday = mondayOfWeek(day);
+		ZonedDateTime firstDay = firstOpenDayOfWeek(day);
 		for(List<ZonedDateTime> sublist : mondayOfOpenWeeksByYear) {
-			if(sublist.contains(monday)) {
-				return sublist.indexOf(monday);
+			if(sublist.contains(firstDay)) {
+				return sublist.indexOf(firstDay);
 			}
 		}
 		return -1;
@@ -255,7 +253,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	public ZonedDateTime nextOpenableWeek(ZonedDateTime time) {
 		ZonedDateTime nextDay = time.plusWeeks(1);
-		nextDay = mondayOfWeek(nextDay);
+		nextDay = firstOpenDayOfWeek(nextDay);
 		
 		while(!isWeekOpen(nextDay)) {
 			while( !openingMonths.contains(nextDay.getMonth()) ) {
@@ -266,14 +264,10 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			nextDay = nextDay.plusWeeks(1);
 		}
 		
-		return mondayOfWeek(nextDay);
+		return firstOpenDayOfWeek(nextDay);
 	}
 	
-	@Override
-	public Duration distanceBetween(Treatment treatment1, Treatment treatment2) {
-		int duration = distances[treatment1.id][treatment2.id];
-		return Duration.ofMinutes( duration );
-	}
+
 
 
 	private void postEventForWeek (IEventScheduler scheduler, ZonedDateTime currDay) {
