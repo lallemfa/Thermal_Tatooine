@@ -30,18 +30,20 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		Patient nextPatient = findNextPatient();
-		this.treatment.addCurrentPatients(nextPatient);
-		nextPatient.setStartTreatment(this.scheduledTime);
-		IEvent endTreatmentEvent;
-		ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
-		endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, nextPatient);
-		scheduler.postEvent(endTreatmentEvent);
+		if (!this.treatment.getWaitingQueue().isEmpty()) {
+			Patient nextPatient = findNextPatient();
+			this.treatment.addCurrentPatients(nextPatient);
+			nextPatient.setStartTreatment(this.scheduledTime);
+			IEvent endTreatmentEvent;
+			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
+			endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, nextPatient);
+			scheduler.postEvent(endTreatmentEvent);
+		}
 	}
 	
 	private Patient findNextPatient() {
 		Patient nextPatient = null;
-		if (cheatWorks()) {
+		if (cheatWorks(this.treatment)) {
 			Boolean findCheater = false;
 			List<Patient> waitingQueue = this.treatment.getWaitingQueue();
 			for (int i=0; i < waitingQueue.size(); i++) {
@@ -60,11 +62,20 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 		return nextPatient;
 	}
 	
-	private Boolean cheatWorks() {
+	private Boolean cheatWorks(Treatment treatment) {
+		double waitingTime;
+		double freq;
+		if (treatment.getOrganizedWaiting()) {
+			waitingTime = 20d;
+			freq = 10d;
+		} else {
+			waitingTime = 10d;
+			freq = 4d;
+		}
 		double rand = Math.random() * 40d;
-		if (rand >= 20d) {
-			rand = Math.random() * 9d;
-			if (rand >= 8d) {
+		if (rand >= waitingTime) {
+			rand = Math.random() * freq;
+			if (rand <= 1d) {
 				return true;
 			}
 		}		
