@@ -230,6 +230,9 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			while( !openingDays.contains(nextDay.getDayOfWeek()) ) {
 				nextDay = nextDay.plusDays(1);
 			}
+			if(!isWeekOpen(nextDay)) {
+				nextDay = nextDay.plusWeeks(1);
+			}
 		}
 		
 		return nextDay;

@@ -165,7 +165,8 @@ public enum Treatment implements IRecordable {
 			LocalTime openingTime = spa.getOpeningHour(currentTime);
 			currentTime = currentTime.with(openingTime);
 			scheduler.postEvent(new FailureEvent(this, currentTime, spa, this));
-
+			
+			
 			// Repair
 			Duration nbDaysToRepair = getDurationToRepair();
 			currentTime = currentTime.plus(nbDaysToRepair);
