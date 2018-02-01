@@ -38,6 +38,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 
 	private List<Patient> patients;
 	private int newPatientId;
+	
+	private List<List<ZonedDateTime>> mondayOfOpenWeeksByYear = new ArrayList<List<ZonedDateTime>>();
 
 	public SpaResort(List<Month> openingMonths, List<DayOfWeek> openingDays, LocalTime[][] openingHours, Treatment[] treatments,
 			int maxClients, float[] inflowMonth) {
@@ -211,10 +213,23 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	}
 	
 	public int dayToWeek(ZonedDateTime day) {
+		ZonedDateTime monday = mondayOfWeek(day);
+		for(List<ZonedDateTime> sublist : mondayOfOpenWeeksByYear) {
+			if(sublist.contains(monday)) {
+				return sublist.indexOf(monday);
+			}
+		}
 		return -1;
 	}
 	
 	public ZonedDateTime weekToDay(int year, int week) {
+		for(List<ZonedDateTime> sublist : mondayOfOpenWeeksByYear) {
+			if(year == sublist.get(0).getYear()) {
+				if(week < sublist.size()) {
+					return sublist.get(week);
+				}
+			}
+		}
 		return null;
 	}
 	
@@ -286,6 +301,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		int minWeek = minWeeksOpen(startTime, endTime);
 		int compteur = 0;
 		
+		List<ZonedDateTime> subList = new ArrayList<ZonedDateTime>();
+		
 		if( !isWeekOpen(currDay) ) {
 			currDay = nextOpenableWeek(currDay);
 		}
@@ -293,7 +310,9 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		int currYear = currDay.getYear();
 		
 		while(currDay.compareTo(endTime) < 0) {
+			subList = new ArrayList<ZonedDateTime>();
 			while(compteur < minWeek && currDay.getYear() == currYear) {
+				subList.add(currDay);
 				postEventForWeek (scheduler, currDay);
 				currDay = nextOpenableWeek(currDay);
 				compteur += 1;
@@ -304,6 +323,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			} else {
 				currDay = currDay.withDayOfYear(1);
 			}
+			
+			mondayOfOpenWeeksByYear.add(subList);
 			
 			compteur = 0;
 			currYear = currDay.getYear();
