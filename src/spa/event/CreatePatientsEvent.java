@@ -1,13 +1,13 @@
 package spa.event;
 
+import java.time.ZonedDateTime;
+
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
 import spa.resort.SpaResort;
-
-import java.time.ZonedDateTime;
 
 public class CreatePatientsEvent extends Event implements IEvent {
 
@@ -35,7 +35,7 @@ public class CreatePatientsEvent extends Event implements IEvent {
     		double rand = Math.random() * 100d;    		
     		honesty = (rand > 5) ? true : false;
     		
-    		int startWeek = dayToWeek(scheduledTime);
+    		int startWeek = this.spa.dayToWeek(scheduledTime);
     		int startYear = scheduledTime.getYear();
     		Patient patient = new Patient(this.spa.getNewPatientId(), honesty, startYear, startWeek);
     		Logger.Information(getParent(), "Process", "Patient " + patient.getId() + " created");
