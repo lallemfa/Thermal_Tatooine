@@ -36,6 +36,11 @@ public class CloseSpaEvent extends Event implements IEvent {
 		while (!patientInTreatments.isEmpty()) {
 			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
 		}
+		List<Patient> patientWalking = spa.getPatient();
+		patientWalking.removeAll(patientInTreatments);
+		while (!patientWalking.isEmpty()) {
+			addLeaveSpaEvent(scheduler, patientWalking.remove(patientWalking.size()));
+		}
 		Logger.Information(getParent(), "Process", "Spa closes");
 	}
 	
@@ -58,5 +63,11 @@ public class CloseSpaEvent extends Event implements IEvent {
 		IEvent endTreatEvent;
 		endTreatEvent = new EndTreatmentEvent(getParent(), this.scheduledTime, this.spa, patient);
 		scheduler.postEvent(endTreatEvent);
+	}
+	
+	private void addLeaveSpaEvent(IEventScheduler scheduler, Patient patient) {
+		IEvent leaveEvent;
+		leaveEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, patient);
+		scheduler.postEvent(leaveEvent);
 	}
 }

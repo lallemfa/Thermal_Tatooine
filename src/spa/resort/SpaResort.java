@@ -97,6 +97,11 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	public void addPatient(Patient patient) {
 		patients.add(patient);
 	}
+	
+	@Override
+	public List<Patient> getPatient() {
+		return this.patients;
+	}
 
 	@Override
 	public int getNbPatientsOfWeek(ZonedDateTime time) {
