@@ -2,6 +2,8 @@ package spa.event;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import engine.event.Event;
@@ -35,19 +37,32 @@ public class SearchForActionEvent extends Event implements IEvent {
 	public void process(IEventScheduler scheduler) {
 		PersonState state = this.patient.getPersonState();
 		Treatment choosenTreatment = selectNextTreatment(state);
-		Duration duration = selectDuration(state, choosenTreatment);
-		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts looking for an available treatment");
-		
-		this.patient.setPersonState(PersonState.Moving);
-		IEvent arrivedTreatmentEvent;
-		ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
-		arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, choosenTreatment, this.patient);
-		scheduler.postEvent(arrivedTreatmentEvent);
+		if (choosenTreatment == null) {
+			IEvent leaveEvent;
+			leaveEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+			scheduler.postEvent(leaveEvent);
+		} else {
+			Duration duration = selectDuration(state, choosenTreatment);
+			Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts looking for an available treatment");
+			
+			this.patient.setPersonState(PersonState.Moving);
+			IEvent arrivedTreatmentEvent;
+			ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
+			arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, choosenTreatment, this.patient);
+			scheduler.postEvent(arrivedTreatmentEvent);
+		}		
 	}
 	
 	private Treatment selectNextTreatment(PersonState state) {
 		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
 		List<Boolean> doneTreatments = this.patient.getCure().getDoneTreatments();
+		
+		List<Boolean> fullTrueList = new ArrayList<Boolean>(doneTreatments.size());
+        Collections.fill(fullTrueList, Boolean.TRUE);
+        
+		if (doneTreatments.equals(fullTrueList)) {
+			return null;
+		} 
 		
 		Treatment choosenTreatment = null;
 		Duration durationMoving = Duration.ofMinutes(100);

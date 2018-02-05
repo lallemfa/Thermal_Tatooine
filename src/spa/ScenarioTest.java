@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.Engine;
-import engine.SortedListScheduler;
 import enstabretagne.base.logger.Logger;
 import spa.resort.SpaResort;
 import spa.scenario.Scenario;
@@ -54,7 +53,6 @@ public class ScenarioTest {
 		
 		scenario.initScenario(engine.getScheduler(), startTime, endTime);
 		engine.simulateUntil(startTime, endTime);
-		
 		Logger.Terminate();
 		
 	}
