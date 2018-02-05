@@ -51,8 +51,7 @@ public class ScenarioTest {
 		ZonedDateTime startTime = ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
 		ZonedDateTime endTime 	= ZonedDateTime.parse("2022-01-01T00:00:00+01:00[Europe/Paris]");
 		
-		scenario.initScenario(engine.getScheduler(), startTime, endTime);
-		engine.simulateUntil(startTime, endTime);
+		engine.simulateUntil(scenario, startTime, endTime);
 		Logger.Terminate();
 		
 	}
