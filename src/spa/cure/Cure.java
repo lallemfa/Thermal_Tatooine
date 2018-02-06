@@ -93,7 +93,7 @@ public class Cure extends Entity implements IRecordableWrapper {
                         }
                         eventTime = eventTime.with(time);
                         for (int k = 0; k < 5; k++) {
-                            scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner, treatment));
+                            scheduler.postEvent(new AppointmentTimeoutEvent(this.owner, eventTime, spa, this.owner, treatment));
                             eventTime = eventTime.plusDays(1);
                         }
                     }

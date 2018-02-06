@@ -43,14 +43,13 @@ public class SearchForActionEvent extends Event implements IEvent {
 			scheduler.postEvent(leaveEvent);
 		} else {
 			Duration duration = selectDuration(state, chosenTreatment);
-			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts looking for an available treatment");
 			this.patient.setPersonState(PersonState.Moving);
 			ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
 			if (arrivedTime.toLocalTime().isAfter(this.spa.getClosingHour(arrivedTime))) {
 				IEvent leaveSpaEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, spa, patient);
 				scheduler.postEvent(leaveSpaEvent);
 			} else {
-				Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts looking for an available treatment");
+				LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts looking for an available treatment");
 				IEvent arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, chosenTreatment, this.patient);
 				scheduler.postEvent(arrivedTreatmentEvent);
 			}
