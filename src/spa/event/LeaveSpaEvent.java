@@ -32,5 +32,4 @@ public class LeaveSpaEvent extends Event implements IEvent {
 		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " leaves Spa");
 		this.patient.setPersonState(PersonState.Out);
 	}
-
 }

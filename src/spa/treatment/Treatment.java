@@ -21,7 +21,7 @@ import spa.resort.SpaResort;
 public enum Treatment implements IRecordableWrapper {
 
 	Filiformes		(0, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
-					4,  5, 30, false, 10,  28,  4, 2),
+					4, 5, 30, false, 10,  28,  4, 2),
 	Douches			(1, "Douches", 					TreatmentType.Douche, 		"07:15:00", "14:00:00", false,
 					8, 10, 10, false,  8,  49,  2, 2),
 	BainsAnciens	(2, "Bain à jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,

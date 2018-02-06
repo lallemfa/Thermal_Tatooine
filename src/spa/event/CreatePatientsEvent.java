@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.resort.SpaResort;
@@ -41,7 +40,7 @@ public class CreatePatientsEvent extends Event implements IEvent {
     		int startWeek = this.spa.dayToWeek(time);
     		int startYear = time.getYear();
     		Patient patient = new Patient(this.spa.getNewPatientId(), honesty, startYear, startWeek);
-    		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + patient.getId() + " created");
+    		LoggerWrap.Log(patient, "Patient " + patient.getId() + " created");
     		this.spa.addPatient(patient);
     		patient.initEvents(scheduler, this.spa);
             nbrPatientToAdd--;

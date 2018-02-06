@@ -21,12 +21,14 @@ public class ScenarioTest {
 		
 		LoggerWrap.setDateProvider(engine);
 		
-		List<Month> openingMonths = new ArrayList<Month>();
+		List<Month> openingMonths = new ArrayList<>();
 		openingMonths.add(Month.APRIL);
         openingMonths.add(Month.MAY);
         openingMonths.add(Month.JUNE);
+		openingMonths.add(Month.JULY);
+		openingMonths.add(Month.AUGUST);
 
-		List<DayOfWeek> openingDays = new ArrayList<DayOfWeek>();
+		List<DayOfWeek> openingDays = new ArrayList<>();
 		openingDays.add(DayOfWeek.MONDAY);
 		openingDays.add(DayOfWeek.TUESDAY);
 		openingDays.add(DayOfWeek.WEDNESDAY);
@@ -42,7 +44,7 @@ public class ScenarioTest {
 
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
-		
+
 		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 50, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);

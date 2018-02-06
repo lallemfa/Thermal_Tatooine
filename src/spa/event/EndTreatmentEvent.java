@@ -6,7 +6,6 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
@@ -38,7 +37,7 @@ public class EndTreatmentEvent extends Event implements IEvent {
 		updateDoneTreatmentList();
 		Treatment treatment = this.patient.getTreatment();
 		treatment.removeCurrentPatients(this.patient);
-		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " finished " + treatment.name);
+		LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " finished " + treatment.name);
 
 		if (this.patient.getPersonState() == PersonState.Appointment) {
 			return;
@@ -47,9 +46,10 @@ public class EndTreatmentEvent extends Event implements IEvent {
 		if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.toLocalTime())) {
 			scheduler.postEvent(new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient));
 		} else {
-			IEvent searchEvent;
-			searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+			IEvent searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 			scheduler.postEvent(searchEvent);
+			IEvent availableTreatmentEvent = new AvailableTreatmentEvent(treatment, this.scheduledTime, spa, treatment);
+			scheduler.postEvent(availableTreatmentEvent);
 		}
 	}
 	
