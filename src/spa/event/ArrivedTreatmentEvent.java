@@ -39,20 +39,19 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			return;
 		}
 
-		boolean availableWaitingQueue = (this.treatment.getWaitingQueue().size() < this.treatment.getMaxPatientsWaiting());
-		boolean availableWork = (this.treatment.getCurrentPatients().size() < this.treatment.getMaxPatientsWorking());
+		boolean availableWaitingQueue = this.treatment.getWaitingQueue().size() < this.treatment.getMaxPatientsWaiting();
+		boolean availableWork = this.treatment.getCurrentPatients().size() < this.treatment.getMaxPatientsWorking();
 		if (availableWork) {
 			this.patient.setPersonState(PersonState.Treatment);
 			this.patient.setTreatment(this.treatment);
 			this.treatment.addCurrentPatients(this.patient);
 			this.patient.setStartTreatment(this.scheduledTime);
-			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts " + this.treatment.name);
-			IEvent endTreatmentEvent;
+			LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts " + this.treatment.name);
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
 			if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime())) {
 				time = time.with(this.spa.getClosingHour(this.scheduledTime));
 			}
-			endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, this.patient);
+			IEvent endTreatmentEvent = new EndTreatmentEvent(this.patient, time, this.spa, this.patient);
 			this.patient.nextEndTreatment = endTreatmentEvent;
 			scheduler.postEvent(endTreatmentEvent);
 		} else if (availableWaitingQueue) {
@@ -60,11 +59,27 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			this.patient.setTreatment(this.treatment);
 			this.treatment.addWaitingQueuePatient(this.patient);
 			this.patient.setStartWaiting(this.scheduledTime);
-			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts waiting");
+			LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts waiting for " + this.treatment.name);
 		} else {
-			IEvent searchEvent;
-			searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
-			scheduler.postEvent(searchEvent);
+            this.patient.nbRecursiveSearch++;
+            if (this.patient.nbRecursiveSearch > 5) {
+                this.patient.nbRecursiveSearch = 0;
+                this.patient.setPersonState(PersonState.Rest);
+                if (this.scheduledTime.plusHours(2).toLocalTime().isAfter(this.spa.getClosingHour(this.scheduledTime))) {
+                    IEvent leaveEvent = new LeaveSpaEvent(this.patient, this.scheduledTime, this.spa, this.patient);
+                    scheduler.postEvent(leaveEvent);
+                } else {
+                    LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " rests");
+                    IEvent searchEvent = new SearchForActionEvent(this.patient, this.scheduledTime.plusHours(2), this.spa, this.patient);
+                    scheduler.postEvent(searchEvent);
+                    this.patient.nextMovingEvent = searchEvent;
+                }
+            } else {
+                LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " arrived at " + this.treatment.name + " but no room left");
+                IEvent searchEvent = new SearchForActionEvent(this.patient, this.scheduledTime, this.spa, this.patient);
+                scheduler.postEvent(searchEvent);
+                this.patient.nextMovingEvent = searchEvent;
+            }
 		}
 	}
 

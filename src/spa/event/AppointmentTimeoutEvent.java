@@ -35,13 +35,15 @@ public class AppointmentTimeoutEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " got an appointment in " + this.treatment);
+		LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " got an appointment in " + this.treatment);
 		Duration duration = selectDuration(this.patient.getPersonState(), this.treatment);
 
 		if (this.patient.getPersonState() == PersonState.Treatment) {
 			scheduler.removeEvent(this.patient.nextEndTreatment);
-			IEvent endTreatmentEvent = new EndTreatmentEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+			IEvent endTreatmentEvent = new EndTreatmentEvent(this.patient, this.scheduledTime, this.spa, this.patient);
 			scheduler.postEvent(endTreatmentEvent);
+		} else if (this.patient.getPersonState() == PersonState.Moving || this.patient.getPersonState() == PersonState.Rest) {
+			scheduler.removeEvent(this.patient.nextMovingEvent);
 		}
 
 		this.patient.setPersonState(PersonState.Appointment);

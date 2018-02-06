@@ -1,7 +1,9 @@
 package spa.person;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.Random;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
@@ -28,6 +30,8 @@ public class Patient extends Person implements IRecordableWrapper {
     private Duration waitedDuration = Duration.ZERO;
 
     public IEvent nextEndTreatment;
+    public IEvent nextMovingEvent;
+    public int nbRecursiveSearch = 0;
     
     private String msg = "";
 
@@ -95,7 +99,7 @@ public class Patient extends Person implements IRecordableWrapper {
             		eventTime = eventTime.plusDays(1);
             	}
         	}
-    	}		
+    	}
 		this.cure.findAppointments(scheduler, spa);
 	}
     

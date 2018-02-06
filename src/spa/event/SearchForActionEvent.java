@@ -39,19 +39,20 @@ public class SearchForActionEvent extends Event implements IEvent {
 		Treatment chosenTreatment = selectNextTreatment(state);
 		if (chosenTreatment == null) {
 			IEvent leaveEvent;
-			leaveEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+			leaveEvent = new LeaveSpaEvent(this.patient, this.scheduledTime, this.spa, this.patient);
 			scheduler.postEvent(leaveEvent);
 		} else {
 			Duration duration = selectDuration(state, chosenTreatment);
 			this.patient.setPersonState(PersonState.Moving);
 			ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
 			if (arrivedTime.toLocalTime().isAfter(this.spa.getClosingHour(arrivedTime))) {
-				IEvent leaveSpaEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, spa, patient);
+				IEvent leaveSpaEvent = new LeaveSpaEvent(this.patient, this.scheduledTime, spa, patient);
 				scheduler.postEvent(leaveSpaEvent);
 			} else {
-				LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts looking for an available treatment");
-				IEvent arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, chosenTreatment, this.patient);
+				LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts looking for an available treatment");
+				IEvent arrivedTreatmentEvent = new ArrivedTreatmentEvent(this.patient, arrivedTime, this.spa, chosenTreatment, this.patient);
 				scheduler.postEvent(arrivedTreatmentEvent);
+				this.patient.nextMovingEvent = arrivedTreatmentEvent;
 			}
 		}
 	}
@@ -76,7 +77,8 @@ public class SearchForActionEvent extends Event implements IEvent {
 			if (condition) {
 				Treatment treatment = this.patient.getTreatment();
 				Duration duration = this.spa.distanceBetween(treatment, tempTreatment);
-				if (duration.compareTo(durationMoving) < 0) {
+				if (treatment != tempTreatment && duration.compareTo(durationMoving) < 0) {
+                    durationMoving = duration;
 					chosenTreatment = tempTreatment;
 				}
 			}
