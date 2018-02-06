@@ -7,7 +7,6 @@ import java.util.List;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
 import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;

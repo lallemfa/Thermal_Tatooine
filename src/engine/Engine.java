@@ -12,8 +12,6 @@ import enstabretagne.base.time.LogicalDateTime;
 import enstabretagne.simulation.components.IScenarioIdProvider;
 import enstabretagne.simulation.components.ScenarioId;
 import enstabretagne.simulation.core.ISimulationDateProvider;
-import spa.event.EndTreatmentEvent;
-import spa.scenario.Scenario;
 
 public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
 

@@ -23,8 +23,8 @@ public class ScenarioTest {
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);
-//        openingMonths.add(Month.MAY);
-//        openingMonths.add(Month.JUNE);
+        openingMonths.add(Month.MAY);
+        openingMonths.add(Month.JUNE);
 
 		List<DayOfWeek> openingDays = new ArrayList<DayOfWeek>();
 		openingDays.add(DayOfWeek.MONDAY);
@@ -43,7 +43,7 @@ public class ScenarioTest {
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
-		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 20, inflowMonth);
+		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 50, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
 
