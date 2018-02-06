@@ -1,6 +1,5 @@
 package spa.cure;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -10,14 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.event.IEventScheduler;
-<<<<<<< HEAD
 import javafx.util.Pair;
-=======
 import logger.IRecordableWrapper;
->>>>>>> 1197185a9be82dbb73425072c4eab586bf39bbca
 import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
-import spa.event.PatientArrivalEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
