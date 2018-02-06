@@ -39,7 +39,7 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 			nextPatient.setPersonState(PersonState.Treatment);
 			IEvent endTreatmentEvent;
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
-			if (this.spa.getClosingHour(this.scheduledTime).compareTo(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime()) < 0) {
+			if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime())) {
 				time = time.with(this.spa.getClosingHour(this.scheduledTime));
 			}
 			Logger.Information(getParent(), "Process", "Patient " + nextPatient.getId() + " starts " + treatment.name);
@@ -50,24 +50,16 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 	}
 	
 	private Patient findNextPatient() {
-		Patient nextPatient = null;
 		if (cheatWorks(this.treatment)) {
-			Boolean findCheater = false;
 			List<Patient> waitingQueue = this.treatment.getWaitingQueue();
-			for (int i=0; i < waitingQueue.size(); i++) {
-				if (!waitingQueue.get(i).getFairness()) {
-					nextPatient = waitingQueue.remove(i);
-					findCheater = true;
-					break;
+			for (Patient patient : waitingQueue) {
+				if (!patient.getFairness()) {
+					this.treatment.removeWaitingQueuePatient(patient);
+					return patient;
 				}
-			}	
-			if (!findCheater) {
-				nextPatient = this.treatment.getWaitingQueue().remove(0);
 			}
-		} else {
-			nextPatient = this.treatment.getWaitingQueue().remove(0);
 		}
-		return nextPatient;
+		return this.treatment.popFirstInWaitingQueue();
 	}
 	
 	private Boolean cheatWorks(Treatment treatment) {
