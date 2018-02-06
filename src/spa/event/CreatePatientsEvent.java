@@ -41,7 +41,7 @@ public class CreatePatientsEvent extends Event implements IEvent {
     		int startWeek = this.spa.dayToWeek(time);
     		int startYear = time.getYear();
     		Patient patient = new Patient(this.spa.getNewPatientId(), honesty, startYear, startWeek);
-    		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + patient.getId() + " created");
+    		LoggerWrap.Log(patient, "Patient " + patient.getId() + " created");
     		this.spa.addPatient(patient);
     		patient.initEvents(scheduler, this.spa);
             nbrPatientToAdd--;

@@ -40,7 +40,7 @@ public class CloseSpaEvent extends Event implements IEvent {
 			patient.getTreatment().removeWaitingQueuePatient(patient);
 			patient.setTreatment(null);
 			patient.setPersonState(PersonState.Out);
-			IEvent leaveEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, patient);
+			IEvent leaveEvent = new LeaveSpaEvent(patient, this.scheduledTime, this.spa, patient);
 			scheduler.postEvent(leaveEvent);
 		}
 		LoggerWrap.Log((IRecordableWrapper) getParent(), "Spa closes");

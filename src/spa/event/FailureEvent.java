@@ -34,12 +34,11 @@ public class FailureEvent extends Event implements IEvent {
 	@Override
 	public void process(IEventScheduler scheduler) {
 		LoggerWrap.Log((IRecordableWrapper) getParent(), "Failure of treatment: " + this.treatment.name);
-		this.treatment.setBrokenState(true);
-		List<Patient> patientInTreatments = findPatientsInTreatment();
-		// TODO MANAGERS
-		while (!patientInTreatments.isEmpty()) {
-			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size() - 1));
-		}
+//		this.treatment.setBrokenState(true);
+//		List<Patient> patientInTreatments = findPatientsInTreatment();
+//		while (!patientInTreatments.isEmpty()) {
+//			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size() - 1));
+//		}
 	}
 	
 	private List<Patient> findPatientsInTreatment(){
@@ -57,7 +56,7 @@ public class FailureEvent extends Event implements IEvent {
 	
 	private void addEndTreatmentEvent(IEventScheduler scheduler, Patient patient) {
 		IEvent endTreatEvent;
-		endTreatEvent = new EndTreatmentEvent(getParent(), this.scheduledTime, this.spa, patient);
+		endTreatEvent = new EndTreatmentEvent(patient, this.scheduledTime, this.spa, patient);
 		scheduler.postEvent(endTreatEvent);
 	}
 }

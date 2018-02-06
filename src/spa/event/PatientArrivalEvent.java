@@ -33,10 +33,11 @@ public class PatientArrivalEvent extends Event implements IEvent {
 	@Override
 	public void process(IEventScheduler scheduler) {
 		this.patient.setPersonState(PersonState.Moving);
+		this.patient.nbRecursiveSearch = 0;
 		Cure patientCure = this.patient.getCure();
 		patientCure.resetDoneTreatments(); 
-		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " arrived");
-		IEvent searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+		LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " arrived");
+		IEvent searchEvent = new SearchForActionEvent(this.patient, this.scheduledTime, this.spa, this.patient);
 		scheduler.postEvent(searchEvent);
 	}
 	

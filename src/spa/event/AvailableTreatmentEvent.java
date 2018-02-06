@@ -41,7 +41,6 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 			nextPatient.setPersonState(PersonState.Treatment);
 			
 			Duration durationWaited = Duration.between(nextPatient.getStartWaiting(), this.scheduledTime);
-
 			nextPatient.addWaitedTime(durationWaited);
 			
 			IEvent endTreatmentEvent;
@@ -50,9 +49,9 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 				time = time.with(this.spa.getClosingHour(this.scheduledTime));
 			}
 			
-			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + nextPatient.getId() + " starts " + treatment.name);
+			LoggerWrap.Log(nextPatient, "Patient " + nextPatient.getId() + " starts " + treatment.name);
 			
-			endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, nextPatient);
+			endTreatmentEvent = new EndTreatmentEvent(nextPatient, time, this.spa, nextPatient);
 			nextPatient.nextEndTreatment = endTreatmentEvent;
 			scheduler.postEvent(endTreatmentEvent);
 		}
