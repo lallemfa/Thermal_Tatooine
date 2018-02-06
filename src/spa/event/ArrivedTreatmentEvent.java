@@ -34,6 +34,11 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
+		if (patient.getPersonState() == PersonState.Out) {
+			System.out.println("Escaped arrived treatment for patient: " + patient.getId());
+			return;
+		}
+
 		boolean availableWaitingQueue = (this.treatment.getWaitingQueue().size() < this.treatment.getMaxPatientsWaiting());
 		boolean availableWork = (this.treatment.getCurrentPatients().size() < this.treatment.getMaxPatientsWorking());
 		if (availableWork) {
@@ -44,7 +49,7 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts " + this.treatment.name);
 			IEvent endTreatmentEvent;
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
-			if (this.spa.getClosingHour(this.scheduledTime).compareTo(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime()) < 0) {
+			if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime())) {
 				time = time.with(this.spa.getClosingHour(this.scheduledTime));
 			}
 			endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, this.patient);

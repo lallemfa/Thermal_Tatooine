@@ -7,6 +7,7 @@ import java.util.List;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;
@@ -35,21 +36,25 @@ public class SearchForActionEvent extends Event implements IEvent {
 	@Override
 	public void process(IEventScheduler scheduler) {
 		PersonState state = this.patient.getPersonState();
-		Treatment choosenTreatment = selectNextTreatment(state);
-		if (choosenTreatment == null) {
+		Treatment chosenTreatment = selectNextTreatment(state);
+		if (chosenTreatment == null) {
 			IEvent leaveEvent;
 			leaveEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 			scheduler.postEvent(leaveEvent);
 		} else {
-			Duration duration = selectDuration(state, choosenTreatment);
+			Duration duration = selectDuration(state, chosenTreatment);
 			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts looking for an available treatment");
-			
 			this.patient.setPersonState(PersonState.Moving);
-			IEvent arrivedTreatmentEvent;
 			ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
-			arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, choosenTreatment, this.patient);
-			scheduler.postEvent(arrivedTreatmentEvent);
-		}		
+			if (arrivedTime.toLocalTime().isAfter(this.spa.getClosingHour(arrivedTime))) {
+				IEvent leaveSpaEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, spa, patient);
+				scheduler.postEvent(leaveSpaEvent);
+			} else {
+				Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts looking for an available treatment");
+				IEvent arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, chosenTreatment, this.patient);
+				scheduler.postEvent(arrivedTreatmentEvent);
+			}
+		}
 	}
 	
 	private Treatment selectNextTreatment(PersonState state) {
@@ -60,7 +65,7 @@ public class SearchForActionEvent extends Event implements IEvent {
 			return null;
 		}
 
-		Treatment choosenTreatment = null;
+		Treatment chosenTreatment = null;
 		Duration durationMoving = Duration.ofMinutes(100);
 
 		for (int i = 0; i < dailyTreatments.size(); i++) {
@@ -73,11 +78,11 @@ public class SearchForActionEvent extends Event implements IEvent {
 				Treatment treatment = this.patient.getTreatment();
 				Duration duration = this.spa.distanceBetween(treatment, tempTreatment);
 				if (duration.compareTo(durationMoving) < 0) {
-					choosenTreatment = tempTreatment;
+					chosenTreatment = tempTreatment;
 				}
 			}
 		}
-		return choosenTreatment;
+		return chosenTreatment;
 	}
 	
 	private Duration selectDuration(PersonState state,Treatment choosenTreatment) {

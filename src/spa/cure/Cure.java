@@ -1,6 +1,7 @@
 package spa.cure;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -9,7 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.event.IEventScheduler;
+<<<<<<< HEAD
+import javafx.util.Pair;
+=======
 import logger.IRecordableWrapper;
+>>>>>>> 1197185a9be82dbb73425072c4eab586bf39bbca
 import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
 import spa.event.PatientArrivalEvent;
@@ -29,7 +34,8 @@ public class Cure extends Entity implements IRecordableWrapper {
     private int maxPoints;
     private int currentPoints;
 	private final Patient owner;
-	
+	private List<Pair<LocalTime, Duration>> appointmentTimes = new ArrayList<>();
+
 	private String msg = "";
 
     public Cure(Patient patient, int startYear, int startWeek) {
@@ -42,8 +48,6 @@ public class Cure extends Entity implements IRecordableWrapper {
 
         setTreatments();
         this.maxPoints = maxPointsPerDay * 5 * 3 * 3;
-        // TODO: create events for patient arriving
-        // TODO: calculate startDate/endDate
         super.endConstructor();
     }
 
@@ -80,10 +84,11 @@ public class Cure extends Entity implements IRecordableWrapper {
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {
     	for (Treatment treatment : this.dailyTreatments) {
     		if (treatment.isWithAppointment()) {
-    			LocalTime time = treatment.getAppointmentTime(startYear, startWeek);
+    			LocalTime time = treatment.getAppointmentTime(startYear, startWeek, appointmentTimes);
     			if (time == null) {
     			    continue;
                 }
+                appointmentTimes.add(new Pair<>(time, treatment.getDuration()));
                 for (int w = 0; w < 3; w++) {
                     for (int y = 0; y < 3; y++) {
                         treatment.addAppointment(startYear + y, startWeek + w, time);

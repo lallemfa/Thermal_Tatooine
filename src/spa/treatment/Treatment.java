@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.IRecordable;
+import javafx.util.Pair;
 import logger.IRecordableWrapper;
 import spa.event.FailureEvent;
 import spa.event.RepairEvent;
@@ -25,11 +25,11 @@ public enum Treatment implements IRecordableWrapper {
 					9, 20, 10,  true, 15,  35,  4, 2),
 	SoinVisage		(3, "Soin du visage", 			TreatmentType.Visage, 		"07:15:00", "14:00:00", false,
 					8, 10,  5, false,  5, 365, 40, 1),
-	Etuves			(4, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", false,
+	Etuves			(4, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", true,
 					6, 15, 15,  true,  6,  21,  5, 3),
 	BainsModernes	(5, "Bain à jets modernes", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
 					8, 20, 15,  true, 10,  70, 10, 4),
-	TerresChaudes	(6, "Terres Chaudes", 			TreatmentType.Terre, 		"07:15:00", "14:00:00", false,
+	TerresChaudes	(6, "Terres Chaudes", 			TreatmentType.Terre, 		"07:15:00", "14:00:00", true,
 					6, 20, 20,  true, 10,  61, 10, 3);
 
 	
@@ -86,15 +86,17 @@ public enum Treatment implements IRecordableWrapper {
 		// Failures
 		this.failureSTDD 				= failureSTDD;
 		this.failureMeanPerDay			= failureMeanPerDay;
-		this.repairMeanDuration = repairMeanDuration;
+		this.repairMeanDuration			= repairMeanDuration;
 
 		// Appointment Times
-        appointmentTimes = new ArrayList<>();
-        LocalTime time = this.openHour.plus(Duration.ofMinutes(5));
-        while (time.compareTo(this.closeHour) < 0) {
-            appointmentTimes.add(time);
-            time = time.plus(this.duration).plus(Duration.ofMinutes(5));
-        }
+		if (withAppointment) {
+			appointmentTimes = new ArrayList<>();
+			LocalTime time = this.openHour.plus(Duration.ofMinutes(5));
+			while (time.compareTo(this.closeHour) < 0) {
+				appointmentTimes.add(time);
+				time = time.plus(this.duration).plus(Duration.ofMinutes(5));
+			}
+		}
 	}
 
     public Duration getDuration() {
@@ -146,11 +148,14 @@ public enum Treatment implements IRecordableWrapper {
 	}
 	
 	public void removeWaitingQueuePatient(Patient patient) {
-		for (int i = 0; i < this.waitingQueue.size(); ++i) {
-            if (this.waitingQueue.get(i) == patient) {
-            	this.waitingQueue.remove(i);
-            }
-        }
+		this.waitingQueue.remove(patient);
+	}
+
+	public Patient popFirstInWaitingQueue() {
+		if (this.waitingQueue.isEmpty()) {
+			return null;
+		}
+		return this.waitingQueue.remove(0);
 	}
 	
 	public boolean isWithAppointment() {
@@ -203,11 +208,22 @@ public enum Treatment implements IRecordableWrapper {
         appointments.get(year).get(week).set(index, appointments.get(year).get(week).get(index) + 1);
     }
 
-	public LocalTime getAppointmentTime(int year, int week) {
+	public LocalTime getAppointmentTime(int year, int week, List<Pair<LocalTime, Duration>> patientAppnts) {
 		createAppointmentNodeIfNotExists(year, week);
         for (int i = 0; i < appointments.get(year).get(week).size(); i++) {
             if (appointments.get(year).get(week).get(i) < maxPatientsWorking) {
-                return appointmentTimes.get(i);
+            	boolean available = true;
+            	LocalTime startTime = appointmentTimes.get(i);
+            	LocalTime endTime = startTime.plus(duration);
+            	for (Pair<LocalTime, Duration> appts : patientAppnts) {
+					if (!(appts.getKey().isBefore(startTime) && appts.getKey().plus(appts.getValue()).isBefore(startTime)) &&
+						!(appts.getKey().isAfter(endTime) && appts.getKey().plus(appts.getValue()).isAfter(endTime))) {
+						available = false;
+					}
+				}
+				if (available) {
+					return appointmentTimes.get(i);
+				}
             }
         }
 		return null;
