@@ -7,6 +7,7 @@ import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
+import spa.person.PersonState;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
@@ -30,37 +31,38 @@ public class EndTreatmentEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
+		this.patient.nextEndTreatment = null;
 		this.patient.addCurePoints(getPointPatient());
 		updateDoneTreatmentList();
 		Treatment treatment = this.patient.getTreatment();
 		treatment.removeCurrentPatients(this.patient);
-		Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "finished " + treatment.name);
-		
-		int actualHour 	= this.scheduledTime.getHour();
-		int closingHour = this.spa.getClosingHour(this.scheduledTime).getHour();
-		if(actualHour >= closingHour) {
-			scheduler.postEvent(new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient));
+		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " finished " + treatment.name);
+
+		if (this.patient.getPersonState() == PersonState.Appointment) {
+			return;
 		}
-			
-		IEvent searchEvent;
-		searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
-		scheduler.postEvent(searchEvent);
-		IEvent availableTreatmentEvent;
-		availableTreatmentEvent = new AvailableTreatmentEvent(getParent(), this.scheduledTime, this.spa, treatment);
-		scheduler.postEvent(availableTreatmentEvent);
+
+		if (this.spa.getClosingHour(this.scheduledTime).compareTo(this.scheduledTime.toLocalTime()) <= 0) {
+			scheduler.postEvent(new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient));
+		} else {
+			IEvent searchEvent;
+			searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+			scheduler.postEvent(searchEvent);
+			IEvent availableTreatmentEvent;
+			availableTreatmentEvent = new AvailableTreatmentEvent(getParent(), this.scheduledTime, this.spa, treatment);
+			scheduler.postEvent(availableTreatmentEvent);
+		}
 	}
 	
 	private Duration getTimeInTreatment(ZonedDateTime startTreatment) {
-		Duration duration = Duration.between(this.scheduledTime, startTreatment);
-		return duration;
+		return Duration.between(startTreatment, this.scheduledTime);
 	}
 
 	private int getPointPatient() {
 		Duration duration = getTimeInTreatment(this.patient.getStartTreatment());
 		Treatment treatment = this.patient.getTreatment();
 		Duration treatmentDuration = treatment.getDuration();
-		int point = (int) (treatmentDuration.toMinutes() * treatment.getMaxPoints() / duration.toMinutes());
-		return point;
+		return (int) Math.min(duration.toMinutes() * treatment.getMaxPoints() / treatmentDuration.toMinutes(), treatment.getMaxPoints());
 	}
 	
 	private void updateDoneTreatmentList() {

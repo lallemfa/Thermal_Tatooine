@@ -37,7 +37,7 @@ public class FailureEvent extends Event implements IEvent {
 		List<Patient> patientInTreatments = findPatientsInTreatment();
 		// TODO MANAGERS
 		while (!patientInTreatments.isEmpty()) {
-			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
+			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size() - 1));
 		}
 	}
 	

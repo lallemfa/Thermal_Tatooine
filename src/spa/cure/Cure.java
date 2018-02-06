@@ -70,37 +70,31 @@ public class Cure extends Entity {
             allTreatments.removeIf(t -> t.type == treatment.type);
             this.maxPointsPerDay += treatment.getMaxPoints();
         }
-        this.doneTreatments = new ArrayList<Boolean>(this.dailyTreatments.size());
+        this.doneTreatments = Arrays.asList(new Boolean[this.dailyTreatments.size()]);
         Collections.fill(this.doneTreatments, Boolean.FALSE);
-    }
-    
-    private void setAppointmentEvents(int startYear, int startWeek, IEventScheduler scheduler, SpaResort spa, Treatment treatment) {
-    	ZonedDateTime yearTime;
-    	ZonedDateTime eventTime;
-
-    	for (int i = 0; i < 3; i++) {
-    		int year = this.startYear + i;
-        	for (int j = 0; j < 3; j++) {
-        		int week = this.startWeek + j;
-        		eventTime = spa.weekToDay(year, week);
-            	for (int k = 0; k < 5; k++) {
-            		scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner, treatment));
-            		eventTime = eventTime.plusDays(1);
-            	}
-        	}
-    	}		
     }
     
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {
     	for (Treatment treatment : this.dailyTreatments) {
     		if (treatment.isWithAppointment()) {
     			LocalTime time = treatment.getAppointmentTime(startYear, startWeek);
+    			if (time == null) {
+    			    continue;
+                }
                 for (int w = 0; w < 3; w++) {
                     for (int y = 0; y < 3; y++) {
                         treatment.addAppointment(startYear + y, startWeek + w, time);
+                        ZonedDateTime eventTime = spa.weekToDay(startYear + y, startWeek + w);
+                        if (eventTime == null) {
+                            continue;
+                        }
+                        eventTime = eventTime.with(time);
+                        for (int k = 0; k < 5; k++) {
+                            scheduler.postEvent(new AppointmentTimeoutEvent(this, eventTime, spa, this.owner, treatment));
+                            eventTime = eventTime.plusDays(1);
+                        }
                     }
                 }
-    			setAppointmentEvents(startYear, startWeek, scheduler, spa, treatment);
     		}
     	}
     }

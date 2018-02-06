@@ -35,8 +35,7 @@ public class PatientArrivalEvent extends Event implements IEvent {
 		Cure patientCure = this.patient.getCure();
 		patientCure.resetDoneTreatments(); 
 		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " arrived");
-		IEvent searchEvent;
-		searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+		IEvent searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 		scheduler.postEvent(searchEvent);
 	}
 	

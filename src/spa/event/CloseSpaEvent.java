@@ -2,6 +2,7 @@ package spa.event;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import engine.event.Event;
@@ -33,13 +34,13 @@ public class CloseSpaEvent extends Event implements IEvent {
 		Treatment[] treatments = spa.getTreatments();
 		List<Patient> patientInTreatments = findPatientsInTreatments(treatments);
 		// TODO MANAGERS
-		while (!patientInTreatments.isEmpty()) {
-			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()));
-		}
-		List<Patient> patientWalking = spa.getPatient();
+//		while (!patientInTreatments.isEmpty()) {
+//			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size()-1));
+//		}
+		List<Patient> patientWalking = spa.getPatients();
 		patientWalking.removeAll(patientInTreatments);
 		while (!patientWalking.isEmpty()) {
-			addLeaveSpaEvent(scheduler, patientWalking.remove(patientWalking.size()));
+			addLeaveSpaEvent(scheduler, patientWalking.remove(patientWalking.size()-1));
 		}
 		Logger.Information(getParent(), "Process", "Spa closes");
 	}

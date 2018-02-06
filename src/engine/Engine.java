@@ -12,6 +12,7 @@ import enstabretagne.base.time.LogicalDateTime;
 import enstabretagne.simulation.components.IScenarioIdProvider;
 import enstabretagne.simulation.components.ScenarioId;
 import enstabretagne.simulation.core.ISimulationDateProvider;
+import spa.event.EndTreatmentEvent;
 import spa.scenario.Scenario;
 
 public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
@@ -56,14 +57,15 @@ public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
         IEvent currentEvent = scheduler.popNextEvent();
         while (currentEvent != null) {
             if (currentEvent.getScheduledTime().isBefore(currentTime)) {
-                throw new IllegalStateException("Trying to simulate an event from the past");
+                throw new IllegalStateException("Trying to simulate an event from the past\n" +
+                        "Current time: " + currentTime + "\n" +
+                        "Event time: " + currentEvent.getScheduledTime());
             }
-            currentTime = currentEvent.getScheduledTime();
-            currentEvent.process(scheduler);
+			currentTime = currentEvent.getScheduledTime();
+			currentEvent.process(scheduler);
             if (currentEvent == endEvent) break;
             currentEvent = scheduler.popNextEvent();
         }
-        
     }
 
     public void simulateFor(IScenario scenario, ZonedDateTime startTime, Duration duration) {
@@ -72,8 +74,7 @@ public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
 
 	@Override
 	public LogicalDateTime SimulationDate() {
-		LogicalDateTime time = new LogicalDateTime(getCurrentTime().toLocalDateTime());
-		return time;
+		return new LogicalDateTime(getCurrentTime().toLocalDateTime());
 	}
 
 	@Override

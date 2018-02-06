@@ -3,6 +3,7 @@ package spa.event;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class SearchForActionEvent extends Event implements IEvent {
 			scheduler.postEvent(leaveEvent);
 		} else {
 			Duration duration = selectDuration(state, choosenTreatment);
-			Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts looking for an available treatment");
+			Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts looking for an available treatment");
 			
 			this.patient.setPersonState(PersonState.Moving);
 			IEvent arrivedTreatmentEvent;
@@ -56,24 +57,21 @@ public class SearchForActionEvent extends Event implements IEvent {
 	private Treatment selectNextTreatment(PersonState state) {
 		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
 		List<Boolean> doneTreatments = this.patient.getCure().getDoneTreatments();
-		
-		List<Boolean> fullTrueList = new ArrayList<Boolean>(doneTreatments.size());
-        Collections.fill(fullTrueList, Boolean.TRUE);
-        
-		if (doneTreatments.equals(fullTrueList)) {
+
+		if (doneTreatments.stream().allMatch(t -> t)) {
 			return null;
-		} 
-		
+		}
+
 		Treatment choosenTreatment = null;
 		Duration durationMoving = Duration.ofMinutes(100);
-		
-		for(int i=0; i < dailyTreatments.size(); i++) {
-			Treatment tempTreatment = dailyTreatments.remove(dailyTreatments.size()-1);
+
+		for (int i = 0; i < dailyTreatments.size(); i++) {
+			Treatment tempTreatment = dailyTreatments.get(i);
 			boolean condition = !doneTreatments.get(i) && !tempTreatment.isWithAppointment() && !tempTreatment.getBrokenState();
-			if (condition && state != PersonState.Treatment) {
+			if (condition && state != PersonState.Treatment  && state != PersonState.WaitingQueue) {
 				return tempTreatment;
 			}
-			if (condition && state == PersonState.Treatment) {
+			if (condition) {
 				Treatment treatment = this.patient.getTreatment();
 				Duration duration = this.spa.distanceBetween(treatment, tempTreatment);
 				if (duration.compareTo(durationMoving) < 0) {
@@ -85,7 +83,7 @@ public class SearchForActionEvent extends Event implements IEvent {
 	}
 	
 	private Duration selectDuration(PersonState state,Treatment choosenTreatment) {
-		Duration duration = null;
+		Duration duration;
 		if (state != PersonState.Treatment) {
 			duration = this.spa.getMaxDistanceDuration();
 		} else {

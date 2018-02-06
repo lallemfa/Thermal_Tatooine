@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
+import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.IRecordable;
 import spa.cure.Cure;
@@ -27,6 +28,8 @@ public class Patient extends Person implements IRecordable {
     private ZonedDateTime startWaiting; 
     
     private Duration waitedDuration;
+
+    public IEvent nextEndTreatment;
 
     public Patient(int id, boolean isFair, int startYear, int startWeek) {
     	super();
@@ -73,7 +76,6 @@ public class Patient extends Person implements IRecordable {
     }
     
 	public void initEvents(IEventScheduler scheduler, SpaResort spa) {
-		ZonedDateTime yearTime;
     	ZonedDateTime eventTime;
     	
     	for (int i = 0; i < 3; i++) {
@@ -81,7 +83,11 @@ public class Patient extends Person implements IRecordable {
         	for (int j = 0; j < 3; j++) {
         		int week = this.startWeek + j;
         		eventTime = spa.weekToDay(year, week);
+        		if (eventTime == null) {
+        		    continue;
+                }
             	for (int k = 0; k < 5; k++) {
+            	    eventTime = eventTime.withHour(7).withMinute(15);
             		scheduler.postEvent(new PatientArrivalEvent(this, eventTime, spa, this));
             		eventTime = eventTime.plusDays(1);
             	}
@@ -93,16 +99,16 @@ public class Patient extends Person implements IRecordable {
     // Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe"};
+		return new String[] {"Classe", "Id"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName()};
+		return new String[] {this.getClass().getName(), String.valueOf(this.id)};
 	}
 
 	@Override
 	public String getClassement() {
-		return "Treatment";
+		return "Patient";
 	}
 }

@@ -33,21 +33,28 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		this.patient.setPersonState(PersonState.Treatment);
 		boolean availableWaitingQueue = (this.treatment.getWaitingQueue().size() < this.treatment.getMaxPatientsWaiting());
 		boolean availableWork = (this.treatment.getCurrentPatients().size() < this.treatment.getMaxPatientsWorking());
 		if (availableWork) {
+			this.patient.setPersonState(PersonState.Treatment);
+			this.patient.setTreatment(this.treatment);
 			this.treatment.addCurrentPatients(this.patient);
 			this.patient.setStartTreatment(this.scheduledTime);
-			Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts " + this.treatment.name);
+			Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts " + this.treatment.name);
 			IEvent endTreatmentEvent;
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
+			if (this.spa.getClosingHour(this.scheduledTime).compareTo(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime()) < 0) {
+				time = time.with(this.spa.getClosingHour(this.scheduledTime));
+			}
 			endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, this.patient);
+			this.patient.nextEndTreatment = endTreatmentEvent;
 			scheduler.postEvent(endTreatmentEvent);
 		} else if (availableWaitingQueue) {
+			this.patient.setPersonState(PersonState.WaitingQueue);
+			this.patient.setTreatment(this.treatment);
 			this.treatment.addWaitingQueuePatient(this.patient);
 			this.patient.setStartWaiting(this.scheduledTime);
-			Logger.Information(getParent(), "Process", "Patient" + this.patient.getId() + "starts waiting");
+			Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts waiting");
 		} else {
 			IEvent searchEvent;
 			searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
