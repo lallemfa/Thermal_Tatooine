@@ -1,19 +1,17 @@
 package spa.person;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.IRecordable;
+import logger.IRecordableWrapper;
 import spa.cure.Cure;
-import spa.event.AppointmentTimeoutEvent;
 import spa.event.PatientArrivalEvent;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
-public class Patient extends Person implements IRecordable {
+public class Patient extends Person implements IRecordableWrapper {
 
     boolean patient = true;
     private boolean isFair;
@@ -30,6 +28,8 @@ public class Patient extends Person implements IRecordable {
     private Duration waitedDuration;
 
     public IEvent nextEndTreatment;
+    
+    private String msg = "";
 
     public Patient(int id, boolean isFair, int startYear, int startWeek) {
     	super();
@@ -98,16 +98,21 @@ public class Patient extends Person implements IRecordable {
     // Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe", "Id"};
+		return new String[] {"Classe", "Id", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName(), String.valueOf(this.id)};
+		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.msg};
 	}
 
 	@Override
 	public String getClassement() {
 		return "Patient";
+	}
+	
+	@Override
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

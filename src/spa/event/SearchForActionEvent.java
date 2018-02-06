@@ -2,15 +2,14 @@ package spa.event;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -44,6 +43,7 @@ public class SearchForActionEvent extends Event implements IEvent {
 			scheduler.postEvent(leaveEvent);
 		} else {
 			Duration duration = selectDuration(state, chosenTreatment);
+			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts looking for an available treatment");
 			this.patient.setPersonState(PersonState.Moving);
 			ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
 			if (arrivedTime.toLocalTime().isAfter(this.spa.getClosingHour(arrivedTime))) {

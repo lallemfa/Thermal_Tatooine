@@ -5,7 +5,8 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.cure.Cure;
 import spa.person.Patient;
 import spa.person.PersonState;
@@ -34,7 +35,7 @@ public class PatientArrivalEvent extends Event implements IEvent {
 		this.patient.setPersonState(PersonState.Moving);
 		Cure patientCure = this.patient.getCure();
 		patientCure.resetDoneTreatments(); 
-		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " arrived");
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " arrived");
 		IEvent searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 		scheduler.postEvent(searchEvent);
 	}

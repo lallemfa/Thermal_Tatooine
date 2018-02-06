@@ -10,7 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.event.IEventScheduler;
+<<<<<<< HEAD
 import javafx.util.Pair;
+=======
+import logger.IRecordableWrapper;
+>>>>>>> 1197185a9be82dbb73425072c4eab586bf39bbca
 import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
 import spa.event.PatientArrivalEvent;
@@ -18,7 +22,7 @@ import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
-public class Cure extends Entity {
+public class Cure extends Entity implements IRecordableWrapper {
 
     private final double PROB_NB_TREATMENTS[] = {0.2, 0.35, 0.3, 0.15};
 
@@ -31,6 +35,8 @@ public class Cure extends Entity {
     private int currentPoints;
 	private final Patient owner;
 	private List<Pair<LocalTime, Duration>> appointmentTimes = new ArrayList<>();
+
+	private String msg = "";
 
     public Cure(Patient patient, int startYear, int startWeek) {
     	super();
@@ -129,4 +135,25 @@ public class Cure extends Entity {
     public int getPoints() {
         return this.currentPoints;
     }
+
+	@Override
+	public String[] getTitles() {
+		return new String[] {"Classe", "Message"};
+	}
+
+	@Override
+	public String[] getRecords() {
+		return new String[] {this.getClass().getName(), this.msg};
+	}
+
+	@Override
+	public String getClassement() {
+		return "Cure";
+	}
+
+	@Override
+	public void setMsg(String msg) {
+		this.msg = msg;
+		
+	}
 }

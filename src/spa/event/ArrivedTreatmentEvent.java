@@ -5,7 +5,8 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -45,7 +46,7 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			this.patient.setTreatment(this.treatment);
 			this.treatment.addCurrentPatients(this.patient);
 			this.patient.setStartTreatment(this.scheduledTime);
-			Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts " + this.treatment.name);
+			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts " + this.treatment.name);
 			IEvent endTreatmentEvent;
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
 			if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime())) {
@@ -59,7 +60,7 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			this.patient.setTreatment(this.treatment);
 			this.treatment.addWaitingQueuePatient(this.patient);
 			this.patient.setStartWaiting(this.scheduledTime);
-			Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " starts waiting");
+			LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " starts waiting");
 		} else {
 			IEvent searchEvent;
 			searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);

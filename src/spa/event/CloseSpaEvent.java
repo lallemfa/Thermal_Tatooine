@@ -2,14 +2,14 @@ package spa.event;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -43,6 +43,6 @@ public class CloseSpaEvent extends Event implements IEvent {
 			IEvent leaveEvent = new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, patient);
 			scheduler.postEvent(leaveEvent);
 		}
-		Logger.Information(getParent(), "Process", "Spa closes");
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Spa closes");
 	}
 }
