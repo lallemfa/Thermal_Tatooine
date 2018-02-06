@@ -1,5 +1,6 @@
 package spa.event;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -38,6 +39,11 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 			this.treatment.addCurrentPatients(nextPatient);
 			nextPatient.setStartTreatment(this.scheduledTime);
 			nextPatient.setPersonState(PersonState.Treatment);
+			
+			Duration durationWaited = Duration.between(nextPatient.getStartWaiting(), this.scheduledTime);
+
+			nextPatient.addWaitedTime(durationWaited);
+			
 			IEvent endTreatmentEvent;
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
 			if (this.spa.getClosingHour(this.scheduledTime).compareTo(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime()) < 0) {

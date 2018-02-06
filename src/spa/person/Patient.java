@@ -25,7 +25,7 @@ public class Patient extends Person implements IRecordableWrapper {
     private ZonedDateTime startTreatment; 
     private ZonedDateTime startWaiting; 
     
-    private Duration waitedDuration;
+    private Duration waitedDuration = Duration.ZERO;
 
     public IEvent nextEndTreatment;
     
@@ -71,6 +71,10 @@ public class Patient extends Person implements IRecordableWrapper {
         this.cure.addPoints(points);
     }
     
+    public void addWaitedTime(Duration duration) {
+        this.waitedDuration = this.waitedDuration.plus(duration);
+    }
+    
     public void setTreatment(Treatment treatment) {
     	this.treatment = treatment;
     }
@@ -99,12 +103,12 @@ public class Patient extends Person implements IRecordableWrapper {
     // Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe", "Id", "Message"};
+		return new String[] {"Classe", "Id", "Duration waited", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.msg};
+		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.waitedDuration + "", this.msg};
 	}
 
 	@Override
