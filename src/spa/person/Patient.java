@@ -37,7 +37,6 @@ public class Patient extends Person implements IRecordable {
         this.isFair = isFair;
         this.startYear = startYear;
         this.startWeek = startWeek;
-        // TODO: compute random time for cure start
         this.cure = new Cure(this, startYear, startWeek);
         super.endConstructor();
         super.addChildren(this.cure);

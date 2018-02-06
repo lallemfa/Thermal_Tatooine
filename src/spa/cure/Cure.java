@@ -1,6 +1,7 @@
 package spa.cure;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.event.IEventScheduler;
+import javafx.util.Pair;
 import spa.entity.Entity;
 import spa.event.AppointmentTimeoutEvent;
 import spa.event.PatientArrivalEvent;
@@ -28,6 +30,7 @@ public class Cure extends Entity {
     private int maxPoints;
     private int currentPoints;
 	private final Patient owner;
+	private List<Pair<LocalTime, Duration>> appointmentTimes = new ArrayList<>();
 
     public Cure(Patient patient, int startYear, int startWeek) {
     	super();
@@ -39,8 +42,6 @@ public class Cure extends Entity {
 
         setTreatments();
         this.maxPoints = maxPointsPerDay * 5 * 3 * 3;
-        // TODO: create events for patient arriving
-        // TODO: calculate startDate/endDate
         super.endConstructor();
     }
 
@@ -77,10 +78,11 @@ public class Cure extends Entity {
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {
     	for (Treatment treatment : this.dailyTreatments) {
     		if (treatment.isWithAppointment()) {
-    			LocalTime time = treatment.getAppointmentTime(startYear, startWeek);
+    			LocalTime time = treatment.getAppointmentTime(startYear, startWeek, appointmentTimes);
     			if (time == null) {
     			    continue;
                 }
+                appointmentTimes.add(new Pair<>(time, treatment.getDuration()));
                 for (int w = 0; w < 3; w++) {
                     for (int y = 0; y < 3; y++) {
                         treatment.addAppointment(startYear + y, startWeek + w, time);
