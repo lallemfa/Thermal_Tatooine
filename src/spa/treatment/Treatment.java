@@ -12,22 +12,25 @@ import spa.event.RepairEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
+import javax.xml.soap.SOAPPart;
+
 public enum Treatment implements IRecordable {
 
-	TerresChaudes	(0, "Terres Chaudes", 			TreatmentType.Terre, 		"07:15:00", "14:00:00", true,
-						6, 20, 20,  true, 10,  61, 10, 3),
-	Filiformes		(1, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
-						4,  5, 30, false, 10,  28,  4, 2),
-	Etuves			(2, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", true,
-						6, 15, 15,  true,  6,  21,  5, 3),
-	BainsModernes	(3, "Bain à jets modernes", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
-						8, 20, 15,  true, 10,  70, 10, 4),
-	BainsAnciens	(4, "Bain à jets anciens", 		TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
-						9, 20, 10,  true, 15,  35,  4, 2),
-	Douches			(5, "Douches", 					TreatmentType.Douche, 		"07:15:00", "14:00:00", false,
-						8, 10, 10, false,  8,  49,  2, 2),
-	SoinVisage		(6, "Soin du visage", 			TreatmentType.Visage, 		"07:15:00", "14:00:00", false,
-						8, 10,  5, false,  5, 365, 40, 1);
+	Filiformes		(0, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
+					4,  5, 30, false, 10,  28,  4, 2),
+	Douches			(1, "Douches", 					TreatmentType.Douche, 		"07:15:00", "14:00:00", false,
+					8, 10, 10, false,  8,  49,  2, 2),
+	BainsAnciens	(2, "Bain Ã  jets anciens", 		TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
+					9, 20, 10,  true, 15,  35,  4, 2),
+	SoinVisage		(3, "Soin du visage", 			TreatmentType.Visage, 		"07:15:00", "14:00:00", false,
+					8, 10,  5, false,  5, 365, 40, 1),
+	Etuves			(4, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", false,
+					6, 15, 15,  true,  6,  21,  5, 3),
+	BainsModernes	(5, "Bain Ã  jets modernes", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
+					8, 20, 15,  true, 10,  70, 10, 4),
+	TerresChaudes	(6, "Terres Chaudes", 			TreatmentType.Terre, 		"07:15:00", "14:00:00", false,
+					6, 20, 20,  true, 10,  61, 10, 3);
+
 	
 	public final String name;
 	public final TreatmentType type;
@@ -137,11 +140,7 @@ public enum Treatment implements IRecordable {
 	}
 	
 	public void removeCurrentPatients(Patient patient) {
-		for (int i = 0; i < this.currentPatients.size(); ++i) {
-            if (this.currentPatients.get(i) == patient) {
-            	this.currentPatients.remove(i);
-            }
-        }
+		this.currentPatients.remove(patient);
 	}
 	
 	public void removeWaitingQueuePatient(Patient patient) {
@@ -197,25 +196,30 @@ public enum Treatment implements IRecordable {
 	}
 
 	public void addAppointment(int year, int week, LocalTime time) {
+		createAppointmentNodeIfNotExists(year, week);
         int index = appointmentTimes.indexOf(time);
         appointments.get(year).get(week).set(index, appointments.get(year).get(week).get(index) + 1);
     }
 
 	public LocalTime getAppointmentTime(int year, int week) {
-        if (!appointments.containsKey(year)) {
-            appointments.put(year, new HashMap<>());
-        }
-        if (!appointments.get(year).containsKey(week)) {
-            List<Integer> emptyList = new ArrayList<>(appointmentTimes.size());
-            Collections.fill(emptyList, 0);
-            appointments.get(year).put(week, emptyList);
-        }
+		createAppointmentNodeIfNotExists(year, week);
         for (int i = 0; i < appointments.get(year).get(week).size(); i++) {
             if (appointments.get(year).get(week).get(i) < maxPatientsWorking) {
                 return appointmentTimes.get(i);
             }
         }
 		return null;
+	}
+
+	private void createAppointmentNodeIfNotExists(int year, int week) {
+		if (!appointments.containsKey(year)) {
+			appointments.put(year, new HashMap<>());
+		}
+		if (!appointments.get(year).containsKey(week)) {
+			List<Integer> emptyList = Arrays.asList(new Integer[appointmentTimes.size()]);
+			Collections.fill(emptyList, 0);
+			appointments.get(year).put(week, emptyList);
+		}
 	}
 	
 	// Next 3 methods for the Logger

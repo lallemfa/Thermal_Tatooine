@@ -23,8 +23,8 @@ public class ScenarioTest {
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);
-		openingMonths.add(Month.MAY);
-		openingMonths.add(Month.JUNE);
+//        openingMonths.add(Month.MAY);
+//        openingMonths.add(Month.JUNE);
 
 		List<DayOfWeek> openingDays = new ArrayList<DayOfWeek>();
 		openingDays.add(DayOfWeek.MONDAY);
@@ -32,7 +32,6 @@ public class ScenarioTest {
 		openingDays.add(DayOfWeek.WEDNESDAY);
 		openingDays.add(DayOfWeek.THURSDAY);
 		openingDays.add(DayOfWeek.FRIDAY);
-		openingDays.add(DayOfWeek.SATURDAY);
 
 		LocalTime openTime = LocalTime.parse("07:00:00");
 		LocalTime closureTime = LocalTime.parse("14:00:00");
@@ -44,15 +43,14 @@ public class ScenarioTest {
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
-		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 180, inflowMonth);
+		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 50, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
 
 		ZonedDateTime startTime = ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
-		ZonedDateTime endTime 	= ZonedDateTime.parse("2022-01-01T00:00:00+01:00[Europe/Paris]");
+		ZonedDateTime endTime 	= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
 		
-		scenario.initScenario(engine.getScheduler(), startTime, endTime);
-		engine.simulateUntil(startTime, endTime);
+		engine.simulateUntil(scenario, startTime, endTime);
 		Logger.Terminate();
 		
 	}

@@ -6,7 +6,9 @@ import java.util.List;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
+import enstabretagne.base.logger.Logger;
 import spa.person.Patient;
+import spa.person.PersonState;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
@@ -34,9 +36,15 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 			Patient nextPatient = findNextPatient();
 			this.treatment.addCurrentPatients(nextPatient);
 			nextPatient.setStartTreatment(this.scheduledTime);
+			nextPatient.setPersonState(PersonState.Treatment);
 			IEvent endTreatmentEvent;
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
+			if (this.spa.getClosingHour(this.scheduledTime).compareTo(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime()) < 0) {
+				time = time.with(this.spa.getClosingHour(this.scheduledTime));
+			}
+			Logger.Information(getParent(), "Process", "Patient " + nextPatient.getId() + " starts " + treatment.name);
 			endTreatmentEvent = new EndTreatmentEvent(getParent(), time, this.spa, nextPatient);
+			nextPatient.nextEndTreatment = endTreatmentEvent;
 			scheduler.postEvent(endTreatmentEvent);
 		}
 	}

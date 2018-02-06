@@ -34,10 +34,16 @@ public class AppointmentTimeoutEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + "got an appointment in " + this.treatment);
+		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " got an appointment in " + this.treatment);
 		Duration duration = selectDuration(this.patient.getPersonState(), this.treatment);
-		
-		this.patient.setPersonState(PersonState.Moving);
+
+		if (this.patient.getPersonState() == PersonState.Treatment) {
+			scheduler.removeEvent(this.patient.nextEndTreatment);
+			IEvent endTreatmentEvent = new EndTreatmentEvent(getParent(), this.scheduledTime, this.spa, this.patient);
+			scheduler.postEvent(endTreatmentEvent);
+		}
+
+		this.patient.setPersonState(PersonState.Appointment);
 		IEvent arrivedTreatmentEvent;
 		ZonedDateTime arrivedTime = this.scheduledTime.plus(duration);
 		arrivedTreatmentEvent = new ArrivedTreatmentEvent(getParent(), arrivedTime, this.spa, this.treatment, this.patient);
@@ -45,7 +51,7 @@ public class AppointmentTimeoutEvent extends Event implements IEvent {
 	}
 	
 	private Duration selectDuration(PersonState state,Treatment appointmentTreatment) {
-		Duration duration = null;
+		Duration duration;
 		if (state != PersonState.Treatment) {
 			duration = this.spa.getMaxDistanceDuration();
 		} else {

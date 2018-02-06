@@ -14,6 +14,7 @@ import enstabretagne.base.logger.IRecordable;
 import spa.entity.Entity;
 import spa.event.CloseSpaEvent;
 import spa.event.OpenSpaEvent;
+import spa.event.CreatePatientsEvent;
 import spa.person.Patient;
 import spa.treatment.Treatment;
 
@@ -99,7 +100,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	}
 	
 	@Override
-	public List<Patient> getPatient() {
+	public List<Patient> getPatients() {
 		return this.patients;
 	}
 
@@ -118,7 +119,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	
 	@Override
 	public int getNewPatientId() {
-		return this.newPatientId;
+		return this.newPatientId++;
 	}
 
 	@Override
@@ -224,17 +225,17 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		}
 		return -1;
 	}
-	
-	public ZonedDateTime weekToDay(int year, int week) {
-		for(List<ZonedDateTime> sublist : mondayOfOpenWeeksByYear) {
-			if(year == sublist.get(0).getYear()) {
-				if(week < sublist.size()) {
-					return sublist.get(week);
-				}
-			}
-		}
-		return null;
-	}
+
+    public ZonedDateTime weekToDay(int year, int week) {
+        for (List<ZonedDateTime> sublist : mondayOfOpenWeeksByYear) {
+            if (year == sublist.get(0).getYear()) {
+                if (week < sublist.size()) {
+                    return sublist.get(week);
+                }
+            }
+        }
+        return null;
+    }
 	
 	public ZonedDateTime nextOpenDay(ZonedDateTime time) {
 		ZonedDateTime nextDay = time.plusDays(1);
@@ -280,10 +281,15 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 		LocalTime closeHour;
 		IEvent openEvent;
 		IEvent closeSpaEvent;
-		
-		for(DayOfWeek day : openingDays) {
+		IEvent createPatientEvent;
+
+		// Create patient event
+		createPatientEvent = new CreatePatientsEvent(this, firstOpenDayOfWeek(currDay).minusDays(1), this);
+		scheduler.postEvent(createPatientEvent);
+
+		// Open and close events
+		for (DayOfWeek day : openingDays) {
 			currDay = currDay.with(day);
-			
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
 			openEvent 	= new OpenSpaEvent(this, currDay.with(openHour));
@@ -296,36 +302,30 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	@Override
 	public void initEvents(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime) {
 		ZonedDateTime currDay = startTime;
-		
 		int minWeek = minWeeksOpen(startTime, endTime);
-		int compteur = 0;
-		
-		List<ZonedDateTime> subList = new ArrayList<ZonedDateTime>();
-		
-		if( !isWeekOpen(currDay) ) {
+		int count = 0;
+		if (!isWeekOpen(currDay)) {
 			currDay = nextOpenableWeek(currDay);
 		}
-		
 		int currYear = currDay.getYear();
-		
-		while(currDay.compareTo(endTime) < 0) {
-			subList = new ArrayList<ZonedDateTime>();
-			while(compteur < minWeek && currDay.getYear() == currYear) {
+
+		List<ZonedDateTime> subList;
+		while (currDay.compareTo(endTime) < 0) {
+			subList = new ArrayList<>();
+			while (count < minWeek && currDay.getYear() == currYear) {
 				subList.add(currDay);
-				postEventForWeek (scheduler, currDay);
+				postEventForWeek(scheduler, currDay);
 				currDay = nextOpenableWeek(currDay);
-				compteur += 1;
+				count += 1;
 			}
-			
-			if(currDay.getYear() == currYear) {
+			if (currDay.getYear() == currYear) {
 				currDay = currDay.plusYears(1).withDayOfYear(1);
 			} else {
 				currDay = currDay.withDayOfYear(1);
 			}
-			
 			mondayOfOpenWeeksByYear.add(subList);
-			
-			compteur = 0;
+
+			count = 0;
 			currYear = currDay.getYear();
 			currDay = nextOpenableWeek(currDay);
 		}

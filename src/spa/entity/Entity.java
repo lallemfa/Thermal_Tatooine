@@ -1,5 +1,6 @@
 package spa.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import engine.event.IEventScheduler;
@@ -7,7 +8,7 @@ import engine.event.IEventScheduler;
 public abstract class Entity {
 	
 	private IEntityState state;
-	private List<Entity> children;
+	private List<Entity> children = new ArrayList<>();
 	
 	public Entity() {
 		this.state = IEntityState.NONE;
