@@ -7,6 +7,7 @@ import java.util.*;
 
 import engine.event.IEventScheduler;
 import enstabretagne.base.logger.IRecordable;
+import logger.IRecordableWrapper;
 import spa.event.FailureEvent;
 import spa.event.RepairEvent;
 import spa.person.Patient;
@@ -14,7 +15,7 @@ import spa.resort.SpaResort;
 
 import javax.xml.soap.SOAPPart;
 
-public enum Treatment implements IRecordable {
+public enum Treatment implements IRecordableWrapper {
 
 	Filiformes		(0, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
 					4,  5, 30, false, 10,  28,  4, 2),
@@ -59,6 +60,7 @@ public enum Treatment implements IRecordable {
     private List<LocalTime> appointmentTimes;
 	private HashMap<Integer, HashMap<Integer, List<Integer>>> appointments = new HashMap<>();
 
+	private String msg = "";
 	
 	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
@@ -225,16 +227,21 @@ public enum Treatment implements IRecordable {
 	// Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe"};
+		return new String[] {"Classe", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName()};
+		return new String[] {this.getClass().getName(), this.msg};
 	}
 
 	@Override
 	public String getClassement() {
 		return "Treatment";
+	}
+	
+	@Override
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

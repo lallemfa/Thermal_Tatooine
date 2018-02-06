@@ -6,7 +6,8 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -34,7 +35,7 @@ public class AppointmentTimeoutEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " got an appointment in " + this.treatment);
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " got an appointment in " + this.treatment);
 		Duration duration = selectDuration(this.patient.getPersonState(), this.treatment);
 
 		if (this.patient.getPersonState() == PersonState.Treatment) {

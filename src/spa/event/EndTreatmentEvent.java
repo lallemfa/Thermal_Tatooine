@@ -2,10 +2,12 @@ package spa.event;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
@@ -36,7 +38,7 @@ public class EndTreatmentEvent extends Event implements IEvent {
 		updateDoneTreatmentList();
 		Treatment treatment = this.patient.getTreatment();
 		treatment.removeCurrentPatients(this.patient);
-		Logger.Information(getParent(), "Process", "Patient " + this.patient.getId() + " finished " + treatment.name);
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " finished " + treatment.name);
 
 		if (this.patient.getPersonState() == PersonState.Appointment) {
 			return;

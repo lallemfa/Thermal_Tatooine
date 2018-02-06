@@ -5,7 +5,8 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.treatment.Treatment;
 
 public class RepairEvent extends Event implements IEvent {
@@ -26,7 +27,7 @@ public class RepairEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		Logger.Information(getParent(), "Process", "Repair of treatment: " + this.treatment.name);
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Repair of treatment: " + this.treatment.name);
 		this.treatment.setBrokenState(false);
 	}
 }

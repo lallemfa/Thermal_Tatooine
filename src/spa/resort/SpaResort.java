@@ -10,15 +10,15 @@ import java.util.List;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.IRecordable;
+import logger.IRecordableWrapper;
 import spa.entity.Entity;
 import spa.event.CloseSpaEvent;
-import spa.event.OpenSpaEvent;
 import spa.event.CreatePatientsEvent;
+import spa.event.OpenSpaEvent;
 import spa.person.Patient;
 import spa.treatment.Treatment;
 
-public class SpaResort extends Entity implements ISpaResort, IRecordable {
+public class SpaResort extends Entity implements ISpaResort, IRecordableWrapper {
 	
 	private static final int[][] distances = {{0, 1, 2, 4, 1, 2, 3},
 											{1, 0, 1, 2, 2, 2, 4},
@@ -37,6 +37,8 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	private final int maxClients;
 	private final float[] inflowMonth;
 
+	private String msg = "";
+	
 	private List<Patient> patients;
 	private int newPatientId;
 	
@@ -102,6 +104,14 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	@Override
 	public List<Patient> getPatients() {
 		return this.patients;
+	}
+	
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 
 	@Override
@@ -334,12 +344,12 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 	// Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe"};
+		return new String[] {"Classe", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName()};
+		return new String[] {this.getClass().getName(), this.getMsg()};
 	}
 
 	@Override

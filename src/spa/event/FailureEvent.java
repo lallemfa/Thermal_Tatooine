@@ -7,7 +7,8 @@ import java.util.List;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -32,7 +33,7 @@ public class FailureEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		Logger.Information(getParent(), "Process", "Failure of treatment: " + this.treatment.name);
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Failure of treatment: " + this.treatment.name);
 		this.treatment.setBrokenState(true);
 		List<Patient> patientInTreatments = findPatientsInTreatment();
 		// TODO MANAGERS

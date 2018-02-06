@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.Engine;
-import enstabretagne.base.logger.Logger;
+import logger.LoggerWrap;
 import spa.resort.SpaResort;
 import spa.scenario.Scenario;
 import spa.treatment.Treatment;
@@ -19,7 +19,7 @@ public class ScenarioTest {
 
 		Engine engine = new Engine();
 		
-		Logger.setDateProvider(engine);
+		LoggerWrap.setDateProvider(engine);
 		
 		List<Month> openingMonths = new ArrayList<Month>();
 		openingMonths.add(Month.APRIL);
@@ -43,7 +43,7 @@ public class ScenarioTest {
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 		
-		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 50, inflowMonth);
+		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 20, inflowMonth);
 		
 		Scenario scenario = new Scenario(spa);
 
@@ -51,7 +51,7 @@ public class ScenarioTest {
 		ZonedDateTime endTime 	= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
 		
 		engine.simulateUntil(scenario, startTime, endTime);
-		Logger.Terminate();
+		LoggerWrap.Terminate();
 		
 	}
 

@@ -2,13 +2,13 @@ package spa.event;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
@@ -42,7 +42,7 @@ public class CloseSpaEvent extends Event implements IEvent {
 		while (!patientWalking.isEmpty()) {
 			addLeaveSpaEvent(scheduler, patientWalking.remove(patientWalking.size()-1));
 		}
-		Logger.Information(getParent(), "Process", "Spa closes");
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Spa closes");
 	}
 	
 	private List<Patient> findPatientsInTreatments(Treatment[] treatments){

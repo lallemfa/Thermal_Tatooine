@@ -5,7 +5,8 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import enstabretagne.base.logger.Logger;
+import logger.IRecordableWrapper;
+import logger.LoggerWrap;
 
 public class OpenSpaEvent extends Event implements IEvent {
 
@@ -24,7 +25,7 @@ public class OpenSpaEvent extends Event implements IEvent {
 	@Override
 
 	public void process(IEventScheduler scheduler) {
-		Logger.Information(getParent(), "Process", "Spa opened");
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Spa opens");
 	}
 
 }
