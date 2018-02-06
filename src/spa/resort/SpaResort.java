@@ -10,10 +10,10 @@ import java.util.List;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import engine.event.MessageEvent;
 import enstabretagne.base.logger.IRecordable;
 import spa.entity.Entity;
 import spa.event.CloseSpaEvent;
+import spa.event.OpenSpaEvent;
 import spa.person.Patient;
 import spa.treatment.Treatment;
 
@@ -286,7 +286,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordable {
 			
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
-			openEvent 	= new MessageEvent(this, currDay.with(openHour), "Spa opens");
+			openEvent 	= new OpenSpaEvent(this, currDay.with(openHour));
 			closeSpaEvent = new CloseSpaEvent(this, currDay.with(closeHour), this);
 			scheduler.postEvent(openEvent);
 			scheduler.postEvent(closeSpaEvent);
