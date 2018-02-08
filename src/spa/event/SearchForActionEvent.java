@@ -2,6 +2,7 @@ package spa.event;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import engine.event.Event;
@@ -60,30 +61,20 @@ public class SearchForActionEvent extends Event implements IEvent {
 	private Treatment selectNextTreatment(PersonState state) {
 		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
 		List<Boolean> doneTreatments = this.patient.getCure().getDoneTreatments();
-
-		if (doneTreatments.stream().allMatch(t -> t)) {
-			return null;
-		}
-
-		Treatment chosenTreatment = null;
-		Duration durationMoving = Duration.ofMinutes(100);
+		List<Treatment> availableTreatments = new ArrayList<>();
+		Treatment lastTreatment = this.patient.getTreatment();
 
 		for (int i = 0; i < dailyTreatments.size(); i++) {
-			Treatment tempTreatment = dailyTreatments.get(i);
-			boolean condition = !doneTreatments.get(i) && !tempTreatment.isWithAppointment() && !tempTreatment.getBrokenState();
-			if (condition && state != PersonState.Treatment  && state != PersonState.WaitingQueue) {
-				return tempTreatment;
-			}
-			if (condition) {
-				Treatment treatment = this.patient.getTreatment();
-				Duration duration = this.spa.distanceBetween(treatment, tempTreatment);
-				if (treatment != tempTreatment && duration.compareTo(durationMoving) < 0) {
-                    durationMoving = duration;
-					chosenTreatment = tempTreatment;
-				}
+			Treatment treatment = dailyTreatments.get(i);
+			if (!doneTreatments.get(i) && !treatment.isWithAppointment() && !treatment.getBrokenState()
+				&& (lastTreatment == null || !lastTreatment.equals(treatment))) {
+					availableTreatments.add(treatment);
 			}
 		}
-		return chosenTreatment;
+		if (availableTreatments.size() == 0) {
+			return null;
+		}
+		return availableTreatments.get((int)Math.round(Math.random() * (availableTreatments.size() - 1)));
 	}
 	
 	private Duration selectDuration(PersonState state,Treatment choosenTreatment) {
