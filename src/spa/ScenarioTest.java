@@ -19,8 +19,6 @@ public class ScenarioTest {
 
 		Engine engine = new Engine();
 		
-		LoggerWrap.setDateProvider(engine);
-		
 		List<Month> openingMonths = new ArrayList<>();
 		openingMonths.add(Month.APRIL);
         openingMonths.add(Month.MAY);
@@ -40,19 +38,25 @@ public class ScenarioTest {
 		LocalTime[][] openingHours = {{openTime, openTime,  openTime, openTime, openTime, openTime,  openTime},
 										{closureTime, closureTime, closureTime, closureTime, closureTime, closureTime, closureTime}};
 
+		int maxPatients 	= 180;
 		float[] inflowMonth = new float[] {0f, 0f, 0.5f, 0.6f, 0.7f, 0.8f, 0.95f, 0.9f, 0.65f, 0f, 0f, 0f};
 
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
 				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
 
-		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, 50, inflowMonth);
+		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, maxPatients, inflowMonth);
 		
-		Scenario scenario = new Scenario(spa);
-
 		ZonedDateTime startTime = ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
 		ZonedDateTime endTime 	= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
 		
-		engine.simulateUntil(scenario, startTime, endTime);
+		Scenario scenario = new Scenario(spa, startTime, endTime);
+		
+		engine.addScenario(scenario);		
+		
+		LoggerWrap.setDateProvider(engine);
+		
+		engine.simulate();
+		
 		LoggerWrap.Terminate();
 		
 	}

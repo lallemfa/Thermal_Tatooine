@@ -6,6 +6,9 @@ import java.time.ZonedDateTime;
 
 public interface IScenario {
 
-	void initScenario(IEventScheduler scheduler, ZonedDateTime startTime, ZonedDateTime endTime);
+	void initScenario(IEventScheduler scheduler);
+	
+	ZonedDateTime getStartTime();
+	ZonedDateTime getEndTime();
 	
 }

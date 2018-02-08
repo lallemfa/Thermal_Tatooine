@@ -2,6 +2,8 @@ package engine;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import engine.event.EndEvent;
 import engine.event.IEvent;
@@ -20,14 +22,14 @@ public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
     private ScenarioId scenarioId;
     private MoreRandom rng;
     
+    private List<IScenario> scenarios = new ArrayList<IScenario>();
+    
     public Engine(IEventScheduler scheduler, MoreRandom rng) {
-    	scenarioId = new ScenarioId("Scenario1");
+    	scenarioId = new ScenarioId("Scenario 1");
         this.scheduler 		= scheduler;
         this.currentTime 	= null;
         this.rng = rng;
     }
-    
-    
     
     public Engine() {
     	this(new SortedListScheduler(), new MoreRandom());
@@ -37,8 +39,6 @@ public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
     	this(new SortedListScheduler(), new MoreRandom(seed));
     }
     
-
-    
     public ZonedDateTime getCurrentTime() {
         return currentTime;
     }
@@ -47,10 +47,23 @@ public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
         return scheduler;
     }
 
-    public void simulateUntil(IScenario scenario, ZonedDateTime startTime, ZonedDateTime endTime) {
-        scenario.initScenario(scheduler, startTime, endTime);
-        currentTime = startTime;
-        IEvent endEvent = new EndEvent(this, endTime);
+    public void addScenario(IScenario scenario) {
+    	this.scenarios.add(scenario);
+    }
+    
+    public void simulate() {
+    	int compteur = 1;
+    	for(IScenario scenario : scenarios) {
+    		scenarioId = new ScenarioId("Scenario " + compteur);
+    		this.simulate(scenario);
+    		compteur += 1;
+    	}
+    }
+    
+    public void simulate(IScenario scenario) {
+        scenario.initScenario(scheduler);
+        currentTime = scenario.getStartTime();
+        IEvent endEvent = new EndEvent(this, scenario.getEndTime());
         scheduler.postEvent(endEvent);
         IEvent currentEvent = scheduler.popNextEvent();
         while (currentEvent != null) {
@@ -64,10 +77,6 @@ public class Engine implements ISimulationDateProvider, IScenarioIdProvider {
             if (currentEvent == endEvent) break;
             currentEvent = scheduler.popNextEvent();
         }
-    }
-
-    public void simulateFor(IScenario scenario, ZonedDateTime startTime, Duration duration) {
-        simulateUntil(scenario, startTime, startTime.plus(duration));
     }
 
 	@Override
