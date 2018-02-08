@@ -65,7 +65,7 @@ public enum Treatment implements IRecordableWrapper {
 
 	private String msg = "";
 	
-	private Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
+	Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
 			int maxPatientsWorking, int duration, int maxPoints, boolean isOrganizedWaiting,
 			int maxPatientsWaiting, int failureMeanPerDay, int failureSTDD, int repairMeanDuration) {
 		this.id = id;
@@ -116,6 +116,11 @@ public enum Treatment implements IRecordableWrapper {
 	
 	public void setBrokenState(Boolean brokenState) {
 		this.broken = brokenState;
+	}
+
+	public void clearQueues() {
+		this.waitingQueue.clear();
+		this.currentPatients.clear();
 	}
 
 	public int getMaxPoints() {
