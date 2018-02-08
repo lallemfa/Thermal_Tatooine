@@ -1,5 +1,6 @@
 package spa.event;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import engine.event.Event;
@@ -42,7 +43,7 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 		if (availableWork) {
 			this.patient.setPersonState(PersonState.Treatment);
 			this.patient.setTreatment(this.treatment);
-			this.treatment.addCurrentPatients(this.patient);
+			this.treatment.addCurrentPatients(this.patient, Duration.ZERO);
 			this.patient.setStartTreatment(this.scheduledTime);
 			LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts " + this.treatment.name);
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
