@@ -2,6 +2,7 @@ package spa.person;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
@@ -104,12 +105,13 @@ public class Patient extends Person implements IRecordableWrapper {
     // Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe", "Id", "Duration waited", "Message"};
+		return new String[] {"Classe", "Id", "Duration waited", "Points Earned", "Treatments done", "Treatments to do", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.waitedDuration + "", this.msg};
+		int doneTreatments = this.cure.getDoneTreatments().stream().filter(t -> t).collect(Collectors.toList()).size();
+		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.waitedDuration + "", this.cure.getPoints() + "", doneTreatments + "", this.cure.getDailyTreatments().size() + "", this.msg};
 	}
 
 	@Override
