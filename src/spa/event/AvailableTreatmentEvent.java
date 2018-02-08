@@ -44,16 +44,20 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 			nextPatient.setPersonState(PersonState.Treatment);
 			
 			nextPatient.addWaitedTime(durationWaited);
-			
-			IEvent endTreatmentEvent;
-			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
+
+			float ratio = nextPatient.getCure().getDoneTreatmentRatio(this.treatment);
+			if (ratio < 0f || ratio > 1f) {
+				throw new IllegalStateException("Shit yo: " + ratio);
+			}
+			Duration treatmentDurationWithRatio = Duration.ofMinutes((long)Math.round(this.treatment.getDuration().toMinutes() * (1f - ratio)));
+			ZonedDateTime time = this.scheduledTime.plus(treatmentDurationWithRatio);
 			if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime())) {
 				time = time.with(this.spa.getClosingHour(this.scheduledTime));
 			}
 			
 			LoggerWrap.Log(nextPatient, "Patient " + nextPatient.getId() + " starts " + treatment.name);
-			
-			endTreatmentEvent = new EndTreatmentEvent(nextPatient, time, this.spa, nextPatient);
+
+			IEvent endTreatmentEvent = new EndTreatmentEvent(nextPatient, time, this.spa, nextPatient);
 			nextPatient.nextEndTreatment = endTreatmentEvent;
 			scheduler.postEvent(endTreatmentEvent);
 		}

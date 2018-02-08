@@ -12,6 +12,8 @@ import spa.person.PersonState;
 import spa.resort.SpaResort;
 import spa.treatment.Treatment;
 
+import javax.management.RuntimeErrorException;
+
 public class ArrivedTreatmentEvent extends Event implements IEvent {
 	
 	private ZonedDateTime scheduledTime;
@@ -48,7 +50,14 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 
 			this.patient.setStartTreatment(this.scheduledTime);
 			LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts " + this.treatment.name);
-			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
+
+			// End treatment event
+			float ratio = this.patient.getCure().getDoneTreatmentRatio(this.treatment);
+			if (ratio < 0f || ratio > 1f) {
+				throw new IllegalStateException("Shit yo: " + ratio);
+			}
+			Duration treatmentDurationWithRatio = Duration.ofMinutes((long)Math.round(this.treatment.getDuration().toMinutes() * (1f - ratio)));
+			ZonedDateTime time = this.scheduledTime.plus(treatmentDurationWithRatio);
 			if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.plus(this.treatment.getDuration()).toLocalTime())) {
 				time = time.with(this.spa.getClosingHour(this.scheduledTime));
 			}

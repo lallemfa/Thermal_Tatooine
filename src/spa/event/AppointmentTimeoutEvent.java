@@ -43,6 +43,8 @@ public class AppointmentTimeoutEvent extends Event implements IEvent {
 			scheduler.postEvent(endTreatmentEvent);
 		} else if (this.patient.getPersonState() == PersonState.Moving || this.patient.getPersonState() == PersonState.Rest) {
 			scheduler.removeEvent(this.patient.nextMovingEvent);
+		} else if (this.patient.getPersonState() == PersonState.WaitingQueue) {
+			this.patient.getTreatment().removeWaitingQueuePatient(this.patient);
 		}
 
 		this.patient.setPersonState(PersonState.Appointment);

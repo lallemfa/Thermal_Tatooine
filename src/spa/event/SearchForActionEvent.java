@@ -37,9 +37,13 @@ public class SearchForActionEvent extends Event implements IEvent {
 		PersonState state = this.patient.getPersonState();
 		Treatment chosenTreatment = selectNextTreatment(state);
 		if (chosenTreatment == null) {
-			IEvent leaveEvent;
-			leaveEvent = new LeaveSpaEvent(this.patient, this.scheduledTime, this.spa, this.patient);
-			scheduler.postEvent(leaveEvent);
+			if (this.patient.getCure().hasAppointmentsAfter(this.scheduledTime.toLocalTime())) {
+				this.patient.setPersonState(PersonState.Rest);
+				LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " rests");
+			} else {
+				IEvent leaveEvent = new LeaveSpaEvent(this.patient, this.scheduledTime, this.spa, this.patient);
+				scheduler.postEvent(leaveEvent);
+			}
 		} else {
 			Duration duration = selectDuration(state, chosenTreatment);
 			this.patient.setPersonState(PersonState.Moving);
@@ -58,13 +62,13 @@ public class SearchForActionEvent extends Event implements IEvent {
 	
 	private Treatment selectNextTreatment(PersonState state) {
 		List<Treatment> dailyTreatments = this.patient.getCure().getDailyTreatments();
-		List<Boolean> doneTreatments = this.patient.getCure().getDoneTreatments();
+		List<Float> doneTreatments = this.patient.getCure().getDoneTreatments();
 		List<Treatment> availableTreatments = new ArrayList<>();
 		Treatment lastTreatment = this.patient.getTreatment();
 
 		for (int i = 0; i < dailyTreatments.size(); i++) {
 			Treatment treatment = dailyTreatments.get(i);
-			if (!doneTreatments.get(i) && !treatment.isWithAppointment() && !treatment.getBrokenState()
+			if (doneTreatments.get(i) < 1f && !treatment.isWithAppointment() && !treatment.getBrokenState()
 				&& (lastTreatment == null || !lastTreatment.equals(treatment))) {
 					availableTreatments.add(treatment);
 			}

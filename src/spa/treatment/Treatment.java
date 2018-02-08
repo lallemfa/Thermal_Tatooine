@@ -185,7 +185,7 @@ public enum Treatment implements IRecordableWrapper {
 				currentTime = spa.nextOpenDay(currentTime);
 			}
 			LocalTime openingTime = spa.getOpeningHour(currentTime);
-			currentTime = currentTime.with(openingTime);
+			currentTime = currentTime.with(openingTime).minusHours(1);
 			scheduler.postEvent(new FailureEvent(this, currentTime, spa, this));
 			
 			
@@ -196,7 +196,7 @@ public enum Treatment implements IRecordableWrapper {
 				currentTime = spa.nextOpenDay(currentTime);
 			}
 			LocalTime closingTime = spa.getClosingHour(currentTime);
-			currentTime = currentTime.with(closingTime);
+			currentTime = currentTime.with(closingTime).plusHours(1);
 			scheduler.postEvent(new RepairEvent(this, currentTime, this));
 			currentTime = currentTime.plusDays(1);
 		}
@@ -268,7 +268,7 @@ public enum Treatment implements IRecordableWrapper {
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName(), this.durationWaitedPerDay + "", this.patientsCuredPerDay + "", broken + "", this.msg};
+		return new String[] {this.getClass().getName(), (this.durationWaitedPerDay/60f) + "", this.patientsCuredPerDay + "", broken + "", this.msg};
 	}
 
 	@Override
