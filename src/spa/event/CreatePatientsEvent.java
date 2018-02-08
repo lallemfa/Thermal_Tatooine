@@ -50,7 +50,7 @@ public class CreatePatientsEvent extends Event implements IEvent {
                 sb.append(treatment.name);
                 sb.append(", ");
             }
-            sb.delete(sb.length() - 3, sb.length() - 1);
+            sb.delete(sb.length() - 2, sb.length() - 1);
             LoggerWrap.Log(patient, sb.toString());
 
     		this.spa.addPatient(patient);
