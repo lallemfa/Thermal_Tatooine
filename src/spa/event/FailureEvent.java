@@ -33,30 +33,7 @@ public class FailureEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
+		this.treatment.setBrokenState(true);
 		LoggerWrap.Log((IRecordableWrapper) getParent(), "Failure of treatment: " + this.treatment.name);
-//		this.treatment.setBrokenState(true);
-//		List<Patient> patientInTreatments = findPatientsInTreatment();
-//		while (!patientInTreatments.isEmpty()) {
-//			addEndTreatmentEvent(scheduler, patientInTreatments.remove(patientInTreatments.size() - 1));
-//		}
-	}
-	
-	private List<Patient> findPatientsInTreatment(){
-		List<Patient> patientInTreatments = new ArrayList<>();
-		List<Patient> waitingQueue = this.treatment.getWaitingQueue();
-		List<Patient> currentPatients = this.treatment.getCurrentPatients();
-		if (!waitingQueue.isEmpty()) {
-			patientInTreatments.addAll(waitingQueue);
-		}
-		if (!currentPatients.isEmpty()) {
-			patientInTreatments.addAll(currentPatients);
-		}
-		return patientInTreatments;
-	}
-	
-	private void addEndTreatmentEvent(IEventScheduler scheduler, Patient patient) {
-		IEvent endTreatEvent;
-		endTreatEvent = new EndTreatmentEvent(patient, this.scheduledTime, this.spa, patient);
-		scheduler.postEvent(endTreatEvent);
 	}
 }

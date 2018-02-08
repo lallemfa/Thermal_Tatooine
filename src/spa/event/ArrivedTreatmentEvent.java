@@ -38,12 +38,14 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			return;
 		}
 
+		this.patient.setTreatment(this.treatment);
 		boolean availableWaitingQueue = this.treatment.getWaitingQueue().size() < this.treatment.getMaxPatientsWaiting();
 		boolean availableWork = this.treatment.getCurrentPatients().size() < this.treatment.getMaxPatientsWorking();
 		if (availableWork) {
 			this.patient.setPersonState(PersonState.Treatment);
 			this.patient.setTreatment(this.treatment);
 			this.treatment.addCurrentPatients(this.patient, Duration.ZERO);
+
 			this.patient.setStartTreatment(this.scheduledTime);
 			LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts " + this.treatment.name);
 			ZonedDateTime time = this.scheduledTime.plus(this.treatment.getDuration());
@@ -55,7 +57,6 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 			scheduler.postEvent(endTreatmentEvent);
 		} else if (availableWaitingQueue) {
 			this.patient.setPersonState(PersonState.WaitingQueue);
-			this.patient.setTreatment(this.treatment);
 			this.treatment.addWaitingQueuePatient(this.patient);
 			this.patient.setStartWaiting(this.scheduledTime);
 			LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " starts waiting for " + this.treatment.name);

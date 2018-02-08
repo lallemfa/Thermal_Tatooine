@@ -27,7 +27,7 @@ public class RepairEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		LoggerWrap.Log((IRecordableWrapper) getParent(), "Repair of treatment: " + this.treatment.name);
 		this.treatment.setBrokenState(false);
+		LoggerWrap.Log((IRecordableWrapper) getParent(), "Repair of treatment: " + this.treatment.name);
 	}
 }
