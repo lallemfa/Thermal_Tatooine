@@ -302,7 +302,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordableWrapper 
 			currDay = currDay.with(day);
 			openHour 	= getOpeningHour(currDay);
 			closeHour 	= getClosingHour(currDay);
-			openEvent 	= new OpenSpaEvent(this, currDay.with(openHour));
+			openEvent 	= new OpenSpaEvent(this, currDay.with(openHour), this);
 			closeSpaEvent = new CloseSpaEvent(this, currDay.with(closeHour), this);
 			scheduler.postEvent(openEvent);
 			scheduler.postEvent(closeSpaEvent);
