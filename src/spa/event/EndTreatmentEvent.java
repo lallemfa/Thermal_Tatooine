@@ -33,11 +33,19 @@ public class EndTreatmentEvent extends Event implements IEvent {
 	@Override
 	public void process(IEventScheduler scheduler) {
 		this.patient.nextEndTreatment = null;
-		this.patient.addCurePoints(getPointPatient());
-		updateDoneTreatmentList();
+
+		Duration duration = getTimeInTreatment(this.patient.getStartTreatment());
 		Treatment treatment = this.patient.getTreatment();
+		Duration treatmentDuration = treatment.getDuration();
+		float ratio = (float)duration.toMinutes() / (float)treatmentDuration.toMinutes();
+		float newRatio = this.patient.getCure().getDoneTreatmentRatio(treatment) + ratio;
+		this.patient.getCure().setDoneTreatments(treatment, newRatio);
+
+		int points = (int)Math.floor(Math.min(ratio * treatment.getMaxPoints(), treatment.getMaxPoints()));
+		this.patient.addCurePoints(points);
+
 		treatment.removeCurrentPatients(this.patient);
-		LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " finished " + treatment.name);
+		LoggerWrap.Log(this.patient, "Patient " + this.patient.getId() + " finished " + treatment.name + " and earned " + points + " points");
 
 		if (this.patient.getPersonState() == PersonState.Appointment) {
 			return;
@@ -55,17 +63,5 @@ public class EndTreatmentEvent extends Event implements IEvent {
 	
 	private Duration getTimeInTreatment(ZonedDateTime startTreatment) {
 		return Duration.between(startTreatment, this.scheduledTime);
-	}
-
-	private int getPointPatient() {
-		Duration duration = getTimeInTreatment(this.patient.getStartTreatment());
-		Treatment treatment = this.patient.getTreatment();
-		Duration treatmentDuration = treatment.getDuration();
-		return (int) Math.min(duration.toMinutes() * treatment.getMaxPoints() / treatmentDuration.toMinutes(), treatment.getMaxPoints());
-	}
-	
-	private void updateDoneTreatmentList() {
-		Treatment patientTreatment = this.patient.getTreatment();
-		this.patient.getCure().setDoneTreatments(patientTreatment);
 	}
 }

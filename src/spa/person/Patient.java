@@ -1,6 +1,8 @@
 package spa.person;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
@@ -21,7 +23,6 @@ public class Patient extends Person implements IRecordableWrapper {
     private int startWeek;
     
     private Cure cure;
-    private ZonedDateTime maxArrivingTime; // TODO
 
     private ZonedDateTime startTreatment; 
     private ZonedDateTime startWaiting; 
@@ -82,24 +83,31 @@ public class Patient extends Person implements IRecordableWrapper {
     }
     
 	public void initEvents(IEventScheduler scheduler, SpaResort spa) {
-    	ZonedDateTime eventTime;
-    	
+        this.cure.findAppointments(scheduler, spa);
+
     	for (int i = 0; i < 3; i++) {
     		int year = this.startYear + i;
         	for (int j = 0; j < 3; j++) {
         		int week = this.startWeek + j;
-        		eventTime = spa.weekToDay(year, week);
+                ZonedDateTime eventTime = spa.weekToDay(year, week);
         		if (eventTime == null) {
         		    continue;
                 }
-            	for (int k = 0; k < 5; k++) {
-            	    eventTime = eventTime.withHour(7).withMinute(15);
-            		scheduler.postEvent(new PatientArrivalEvent(this, eventTime, spa, this));
-            		eventTime = eventTime.plusDays(1);
-            	}
+                LocalTime minSpaTime = spa.getOpeningHour(eventTime).plusMinutes(10);
+                LocalTime maxSpaTime = spa.getOpeningHour(eventTime).plusHours(3);
+                LocalTime maxTime = cure.getEarliestAppointment().minusMinutes(10);
+                if (maxTime.isAfter(maxSpaTime)) {
+                    maxTime = maxSpaTime;
+                }
+                for (DayOfWeek dow : spa.getOpeningDays()) {
+        		    Duration delta = Duration.between(minSpaTime, maxTime);
+        		    long random = (long)Math.floor(Math.random() * delta.toMinutes());
+        		    LocalTime arrivalTime = minSpaTime.plusMinutes(random);
+                    eventTime = eventTime.with(dow).with(arrivalTime);
+                    scheduler.postEvent(new PatientArrivalEvent(this, eventTime, spa, this));
+                }
         	}
     	}
-		this.cure.findAppointments(scheduler, spa);
 	}
     
     // Next 3 methods for the Logger
@@ -110,8 +118,8 @@ public class Patient extends Person implements IRecordableWrapper {
 
 	@Override
 	public String[] getRecords() {
-		int doneTreatments = this.cure.getDoneTreatments().stream().filter(t -> t).collect(Collectors.toList()).size();
-		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.waitedDuration + "", this.cure.getPoints() + "", doneTreatments + "", this.cure.getDailyTreatments().size() + "", this.msg};
+		int doneTreatments = this.cure.getDoneTreatments().stream().filter(t -> t == 1f).collect(Collectors.toList()).size();
+		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.waitedDuration.toMinutes() + "", this.cure.getPoints() + "", doneTreatments + "", this.cure.getDailyTreatments().size() + "", this.msg};
 	}
 
 	@Override

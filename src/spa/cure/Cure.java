@@ -1,5 +1,6 @@
 package spa.cure;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -24,9 +25,7 @@ public class Cure extends Entity implements IRecordableWrapper {
     private int startYear;
     private int startWeek;
     private List<Treatment> dailyTreatments;
-    private List<Boolean> doneTreatments;
-    private int maxPointsPerDay;
-    private int maxPoints;
+    private List<Float> doneTreatments;
     private int currentPoints;
 	private final Patient owner;
 	private List<Pair<LocalTime, Duration>> appointmentTimes = new ArrayList<>();
@@ -39,10 +38,8 @@ public class Cure extends Entity implements IRecordableWrapper {
     	this.startYear = startYear;
     	this.startWeek = startWeek;
     	this.currentPoints = 0;
-    	this.maxPointsPerDay = 0;
 
         setTreatments();
-        this.maxPoints = maxPointsPerDay * 5 * 3 * 3;
         super.endConstructor();
     }
 
@@ -70,10 +67,9 @@ public class Cure extends Entity implements IRecordableWrapper {
             Treatment treatment = allTreatments.remove(randomIndex);
             this.dailyTreatments.add(treatment);
             allTreatments.removeIf(t -> t.type == treatment.type);
-            this.maxPointsPerDay += treatment.getMaxPoints();
         }
-        this.doneTreatments = Arrays.asList(new Boolean[this.dailyTreatments.size()]);
-        Collections.fill(this.doneTreatments, Boolean.FALSE);
+        this.doneTreatments = Arrays.asList(new Float[this.dailyTreatments.size()]);
+        Collections.fill(this.doneTreatments, 0f);
     }
     
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {
@@ -92,9 +88,9 @@ public class Cure extends Entity implements IRecordableWrapper {
                             continue;
                         }
                         eventTime = eventTime.with(time);
-                        for (int k = 0; k < 5; k++) {
+                        for (DayOfWeek dow : spa.getOpeningDays()) {
+                            eventTime = eventTime.with(dow);
                             scheduler.postEvent(new AppointmentTimeoutEvent(this.owner, eventTime, spa, this.owner, treatment));
-                            eventTime = eventTime.plusDays(1);
                         }
                     }
                 }
@@ -102,24 +98,52 @@ public class Cure extends Entity implements IRecordableWrapper {
     	}
     }
 
+    public LocalTime getEarliestAppointment() {
+        LocalTime time = LocalTime.MAX;
+        for (Pair<LocalTime, Duration> appointmentTime : this.appointmentTimes) {
+            if (appointmentTime.getKey().isBefore(time)) {
+                time = appointmentTime.getKey();
+            }
+        }
+        return time;
+    }
+
     public List<Treatment> getDailyTreatments() {
         return this.dailyTreatments;
     }
     
-    public List<Boolean> getDoneTreatments() {
+    public List<Float> getDoneTreatments() {
         return this.doneTreatments;
     }
     
     public void resetDoneTreatments() {
-        Collections.fill(doneTreatments, Boolean.FALSE);
+        Collections.fill(doneTreatments, 0f);
     }
     
-    public void setDoneTreatments(Treatment treatment) {
+    public void setDoneTreatments(Treatment treatment, float ratio) {
     	for (int i = 0; i < this.dailyTreatments.size(); ++i) {
             if (this.dailyTreatments.get(i) == treatment) {
-            	this.doneTreatments.set(i, Boolean.TRUE);
+            	this.doneTreatments.set(i, Math.min(Math.max(0f, ratio), 1f));
             }
-        }        
+        }
+    }
+
+    public boolean hasAppointmentsAfter(LocalTime time) {
+        for (Pair<LocalTime, Duration> appointmentTime : this.appointmentTimes) {
+            if (appointmentTime.getKey().isAfter(time)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public float getDoneTreatmentRatio(Treatment treatment) {
+        for (int i = 0; i < this.dailyTreatments.size(); ++i) {
+            if (this.dailyTreatments.get(i) == treatment) {
+                return this.doneTreatments.get(i);
+            }
+        }
+        return 0f;
     }
 
 
