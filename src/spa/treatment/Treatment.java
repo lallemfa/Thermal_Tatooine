@@ -63,6 +63,8 @@ public enum Treatment implements IRecordableWrapper {
     private List<LocalTime> appointmentTimes;
 	private HashMap<Integer, HashMap<Integer, List<Integer>>> appointments = new HashMap<>();
 
+	private int durationWaitedPerDay = 0;
+	private int patientsCuredPerDay = 0;
 	private String msg = "";
 	
 	Treatment(int id, String name, TreatmentType type, String openHour, String closeHour, boolean withAppointment,
@@ -143,7 +145,9 @@ public enum Treatment implements IRecordableWrapper {
 		return this.waitingQueue;
 	}
 	
-	public void addCurrentPatients(Patient patient) {
+	public void addCurrentPatients(Patient patient, Duration durationWaited) {
+		this.patientsCuredPerDay 	+= 1;
+		this.durationWaitedPerDay 	+= durationWaited.getSeconds();
 		this.currentPatients.add(patient);
 	}
 	
@@ -248,15 +252,23 @@ public enum Treatment implements IRecordableWrapper {
 		}
 	}
 	
+	public void setDurationWaitedPerDay(int durationWaitedPerDay) {
+		this.durationWaitedPerDay = durationWaitedPerDay;
+	}
+
+	public void setPatientsCuredPerDay(int patientsCuredPerDay) {
+		this.patientsCuredPerDay = patientsCuredPerDay;
+	}
+
 	// Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe", "Message"};
+		return new String[] {"Classe", "Duration Waited", "Patients Cured", "isBroken", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
-		return new String[] {this.getClass().getName(), this.msg};
+		return new String[] {this.getClass().getName(), this.durationWaitedPerDay + "", this.patientsCuredPerDay + "", broken + "", this.msg};
 	}
 
 	@Override

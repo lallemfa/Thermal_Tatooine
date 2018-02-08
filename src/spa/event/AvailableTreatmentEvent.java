@@ -35,11 +35,14 @@ public class AvailableTreatmentEvent extends Event implements IEvent {
 	public void process(IEventScheduler scheduler) {
 		if (!this.treatment.getWaitingQueue().isEmpty()) {
 			Patient nextPatient = findNextPatient();
-			this.treatment.addCurrentPatients(nextPatient);
+			
+			Duration durationWaited = Duration.between(nextPatient.getStartWaiting(), this.scheduledTime);
+			
+			this.treatment.addCurrentPatients(nextPatient, durationWaited);
+			
 			nextPatient.setStartTreatment(this.scheduledTime);
 			nextPatient.setPersonState(PersonState.Treatment);
 			
-			Duration durationWaited = Duration.between(nextPatient.getStartWaiting(), this.scheduledTime);
 			nextPatient.addWaitedTime(durationWaited);
 			
 			IEvent endTreatmentEvent;

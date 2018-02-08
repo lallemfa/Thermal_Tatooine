@@ -12,6 +12,7 @@ import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
+import spa.treatment.Treatment;
 
 public class CloseSpaEvent extends Event implements IEvent {
 
@@ -40,6 +41,11 @@ public class CloseSpaEvent extends Event implements IEvent {
 			patient.setPersonState(PersonState.Out);
 			IEvent leaveEvent = new LeaveSpaEvent(patient, this.scheduledTime, this.spa, patient);
 			scheduler.postEvent(leaveEvent);
+		}
+		for (Treatment treatment : this.spa.getTreatments()) {
+			LoggerWrap.Log((IRecordableWrapper) treatment, "Spa closes");
+			treatment.setDurationWaitedPerDay(0);
+			treatment.setPatientsCuredPerDay(0);
 		}
 		LoggerWrap.Log((IRecordableWrapper) getParent(), "Spa closes");
 	}
