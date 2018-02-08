@@ -3,7 +3,12 @@ package spa.treatment;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import engine.event.IEventScheduler;
 import javafx.util.Pair;
@@ -13,15 +18,13 @@ import spa.event.RepairEvent;
 import spa.person.Patient;
 import spa.resort.SpaResort;
 
-import javax.xml.soap.SOAPPart;
-
 public enum Treatment implements IRecordableWrapper {
 
 	Filiformes		(0, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
 					4, 5, 30, false, 10,  28,  4, 2),
 	Douches			(1, "Douches", 					TreatmentType.Douche, 		"07:15:00", "14:00:00", false,
 					8, 10, 10, false,  8,  49,  2, 2),
-	BainsAnciens	(2, "Bain à jets anciens", 		TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
+	BainsAnciens	(2, "Bain à jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
 					9, 20, 10,  true, 15,  35,  4, 2),
 	SoinVisage		(3, "Soin du visage", 			TreatmentType.Visage, 		"07:15:00", "14:00:00", false,
 					8, 10,  5, false,  5, 365, 40, 1),

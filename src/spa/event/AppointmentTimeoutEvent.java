@@ -6,7 +6,6 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;

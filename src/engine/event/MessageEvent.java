@@ -2,7 +2,6 @@ package engine.event;
 
 import java.time.ZonedDateTime;
 
-import enstabretagne.base.logger.Logger;
 import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 

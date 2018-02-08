@@ -1,9 +1,7 @@
 package spa.person;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.Random;
 
 import engine.event.IEvent;
 import engine.event.IEventScheduler;

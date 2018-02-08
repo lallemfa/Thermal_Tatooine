@@ -1,7 +1,6 @@
 package spa.event;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
 import spa.resort.SpaResort;
-import spa.treatment.Treatment;
 
 public class CloseSpaEvent extends Event implements IEvent {
 

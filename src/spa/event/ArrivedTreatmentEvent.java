@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import engine.event.Event;
 import engine.event.IEvent;
 import engine.event.IEventScheduler;
-import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;
 import spa.person.PersonState;
@@ -35,7 +34,6 @@ public class ArrivedTreatmentEvent extends Event implements IEvent {
 	@Override
 	public void process(IEventScheduler scheduler) {
 		if (patient.getPersonState() == PersonState.Out) {
-			System.out.println("Escaped arrived treatment for patient: " + patient.getId());
 			return;
 		}
 

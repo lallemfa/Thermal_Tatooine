@@ -1,6 +1,5 @@
 package spa.person;
 
-import engine.event.IEventScheduler;
 import spa.entity.Entity;
 import spa.treatment.Treatment;
 

@@ -33,9 +33,9 @@ public class Cure extends Entity implements IRecordableWrapper {
 
 	private String msg = "";
 
-    public Cure(Patient patient, int startYear, int startWeek) {
+    public Cure(Patient owner, int startYear, int startWeek) {
     	super();
-    	this.owner = patient;
+    	this.owner = owner;
     	this.startYear = startYear;
     	this.startWeek = startWeek;
     	this.currentPoints = 0;
