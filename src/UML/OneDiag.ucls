@@ -3,7 +3,7 @@
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="spa.scenario.Scenario" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
     file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/scenario/Scenario.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="561" y="374"/>    
+    <position height="-1" width="-1" x="561" y="403"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -12,7 +12,7 @@
   </class>  
   <interface id="2" language="java" name="engine.scenario.IScenario" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
     file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/engine/scenario/IScenario.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="561" y="209"/>    
+    <position height="-1" width="-1" x="560" y="209"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      

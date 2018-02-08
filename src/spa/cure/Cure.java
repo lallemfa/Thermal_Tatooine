@@ -38,6 +38,7 @@ public class Cure extends Entity implements IRecordableWrapper {
     	this.owner = owner;
     	this.startYear = startYear;
     	this.startWeek = startWeek;
+    	
     	this.currentPoints = 0;
     	this.maxPointsPerDay = 0;
 
