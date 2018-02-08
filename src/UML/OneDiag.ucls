@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="spa.person.Patient" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
-    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/person/Patient.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="626" width="412" x="401" y="83"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+  <class id="1" language="java" name="spa.scenario.Scenario" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/scenario/Scenario.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="561" y="374"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
+  <interface id="2" language="java" name="engine.scenario.IScenario" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/engine/scenario/IScenario.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="561" y="209"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <realization id="3">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    
