@@ -1,186 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <enumeration id="1" language="java" name="spa.person.PersonState" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/person/PersonState.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="114" y="592"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+  <class id="1" language="java" name="spa.person.Patient" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/person/Patient.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="74" width="126" x="601" y="365"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
-  </enumeration>  
-  <class id="2" language="java" name="spa.person.Patient" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/person/Patient.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="352" y="507"/>    
+  </class>  
+  <class id="2" language="java" name="spa.event.CreatePatientsEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/CreatePatientsEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="661" y="149"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="spa.person.Person" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/person/Person.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="107" y="357"/>    
+  <class id="3" language="java" name="spa.event.SearchForActionEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/SearchForActionEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1046" y="149"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="spa.event.CreatePatientsEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/CreatePatientsEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="155" y="103"/>    
+  <class id="4" language="java" name="spa.event.ArrivedTreatmentEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/ArrivedTreatmentEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="283" y="402"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="spa.event.LeaveSpaEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/LeaveSpaEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="166" y="874"/>    
+  <class id="5" language="java" name="spa.event.PatientArrivalEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/PatientArrivalEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="283" y="149"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="spa.event.EndTreatmentEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/EndTreatmentEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="760" y="678"/>    
+  <class id="6" language="java" name="spa.event.LeaveSpaEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/LeaveSpaEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="874" y="608"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="spa.event.SearchForActionEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/SearchForActionEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="677" y="277"/>    
+  <class id="7" language="java" name="spa.event.EndTreatmentEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/EndTreatmentEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="468" y="608"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="spa.event.ArrivedTreatmentEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/ArrivedTreatmentEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="747" y="472"/>    
+  <class id="8" language="java" name="spa.event.AppointmentTimeoutEvent" project="BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL" 
+    file="/BE_Tatooine_LALLEMENT_RAMUZAT_RIGAL/src/spa/event/AppointmentTimeoutEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1046" y="402"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="spa.event.AppointmentTimeoutEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/AppointmentTimeoutEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="533" y="909"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="10" language="java" name="spa.event.PatientArrivalEvent" project="Thermal_Tatooine" 
-    file="/Thermal_Tatooine/src/spa/event/PatientArrivalEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="484" y="97"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <dependency id="11">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <generalization id="12">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="3"/>  
-  </generalization>  
-  <association id="13">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="14" name="patient">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </attribute>      
-      <multiplicity id="15" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </multiplicity>    
+  <association id="9">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="10" name="patient"/>      
+      <multiplicity id="11" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
+    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <association id="12">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="13" name="patient"/>      
+      <multiplicity id="14" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="15">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
   <association id="16">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="17" name="state">        
-        <position height="0" width="0" x="-340" y="-2"/>      
-      </attribute>      
-      <multiplicity id="18" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-340" y="-2"/>      
-      </multiplicity>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="17" name="patient"/>      
+      <multiplicity id="18" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="19">    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="20" name="patient">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </attribute>      
-      <multiplicity id="21" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </multiplicity>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="20" name="patient"/>      
+      <multiplicity id="21" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
+    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="22">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="23" name="patient">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </attribute>      
-      <multiplicity id="24" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </multiplicity>    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="23" name="patient"/>      
+      <multiplicity id="24" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
+    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="25">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="26" name="patient">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </attribute>      
-      <multiplicity id="27" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </multiplicity>    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="26" name="patient"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="28">    
-    <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="29" name="patient">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </attribute>      
-      <multiplicity id="30" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="31">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="32" name="patient">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </attribute>      
-      <multiplicity id="33" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-338" y="-258"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
+    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

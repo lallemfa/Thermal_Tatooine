@@ -15,18 +15,20 @@ import spa.entity.Entity;
 import spa.event.CloseSpaEvent;
 import spa.event.CreatePatientsEvent;
 import spa.event.OpenSpaEvent;
+import spa.event.StatsByYearEvent;
 import spa.person.Patient;
 import spa.treatment.Treatment;
 
 public class SpaResort extends Entity implements ISpaResort, IRecordableWrapper {
 	
-	private static final int[][] distances = {{0, 1, 2, 4, 1, 2, 3},
-											{1, 0, 1, 2, 2, 2, 4},
-											{2, 1, 0, 1, 3, 3, 3},
-											{4, 2, 1, 0, 4, 4, 2},
-											{1, 2, 3, 4, 0, 1, 2},
-											{2, 2, 3, 4, 1, 0, 1},
-											{3, 4, 3, 2, 2, 1, 0}};
+	private static final int[][] distances = {{0, 1, 2, 4, 1, 2, 3, 7},
+											{1, 0, 1, 2, 2, 2, 4, 6},
+											{2, 1, 0, 1, 3, 3, 3, 5},
+											{4, 2, 1, 0, 4, 4, 2, 6},
+											{1, 2, 3, 4, 0, 1, 2, 8},
+											{2, 2, 3, 4, 1, 0, 1, 8},
+											{3, 4, 3, 2, 2, 1, 0, 8},
+											{7, 6, 5, 6, 8, 8, 8, 0}};
 										
 	private final List<Month> openingMonths;
 	private final List<DayOfWeek> openingDays;
@@ -338,6 +340,7 @@ public class SpaResort extends Entity implements ISpaResort, IRecordableWrapper 
 			count = 0;
 			currYear = currDay.getYear();
 			currDay = nextOpenableWeek(currDay);
+			scheduler.postEvent(new StatsByYearEvent(this, currDay, this));
 		}
 	}
 

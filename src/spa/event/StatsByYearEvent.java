@@ -8,18 +8,17 @@ import engine.event.IEventScheduler;
 import logger.IRecordableWrapper;
 import logger.LoggerWrap;
 import spa.person.Patient;
-import spa.person.PersonState;
 import spa.resort.SpaResort;
 
-public class LeaveSpaEvent extends Event implements IEvent {
+public class StatsByYearEvent extends Event implements IEvent {
 
-	private ZonedDateTime scheduledTime;
-	private Patient patient;
-
-	public LeaveSpaEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa, Patient patient) {
+    private ZonedDateTime scheduledTime;
+    private SpaResort spa;
+    
+	public StatsByYearEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa) {
 		super(parent);
         this.scheduledTime = scheduledTime;
-        this.patient = patient;
+        this.spa = spa;
 	}
 
 	@Override
@@ -29,8 +28,9 @@ public class LeaveSpaEvent extends Event implements IEvent {
 
 	@Override
 	public void process(IEventScheduler scheduler) {
-		LoggerWrap.Log((IRecordableWrapper) getParent(), "Patient " + this.patient.getId() + " leaves Spa");
-		this.patient.setPersonState(PersonState.Out);
-		this.patient.resetPointsByDay();
+		for(Patient patient : this.spa.getPatients()) {
+			LoggerWrap.Log((IRecordableWrapper) patient, "Happy New Year");
+			patient.resetPointsByYear();
+		}
 	}
 }

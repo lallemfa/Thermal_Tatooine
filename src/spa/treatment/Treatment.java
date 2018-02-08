@@ -20,20 +20,22 @@ import spa.resort.SpaResort;
 
 public enum Treatment implements IRecordableWrapper {
 
-	Filiformes		(0, "Jets filiformes", 			TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
+	Filiformes		(0, "Jets filiformes", 					TreatmentType.Filiforme, 	"10:00:00", "13:00:00", false,
 					4, 5, 30, false, 10,  28,  4, 2),
-	Douches			(1, "Douches", 					TreatmentType.Douche, 		"07:15:00", "14:00:00", false,
+	Douches			(1, "Douches", 							TreatmentType.Douche, 		"07:15:00", "14:00:00", false,
 					8, 10, 10, false,  8,  49,  2, 2),
-	BainsAnciens	(2, "Bain à jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
+	BainsAnciens	(2, "Bain à jets anciens", 			TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
 					9, 20, 10,  true, 15,  35,  4, 2),
-	SoinVisage		(3, "Soin du visage", 			TreatmentType.Visage, 		"07:15:00", "14:00:00", false,
+	SoinVisage		(3, "Soin du visage", 					TreatmentType.Visage, 		"07:15:00", "14:00:00", false,
 					8, 10,  5, false,  5, 365, 40, 1),
-	Etuves			(4, "Etuves", 					TreatmentType.Etuve, 		"07:15:00", "14:00:00", true,
+	Etuves			(4, "Etuves", 							TreatmentType.Etuve, 		"07:15:00", "14:00:00", true,
 					6, 15, 15,  true,  6,  21,  5, 3),
-	BainsModernes	(5, "Bain à jets modernes", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
+	BainsModernes	(5, "Bain à jets modernes", 			TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
 					8, 20, 15,  true, 10,  70, 10, 4),
-	TerresChaudes	(6, "Terres Chaudes", 			TreatmentType.Terre, 		"07:15:00", "14:00:00", true,
-					6, 20, 20,  true, 10,  61, 10, 3);
+	TerresChaudes	(6, "Terres Chaudes", 					TreatmentType.Terre, 		"07:15:00", "14:00:00", true,
+					6, 20, 20,  true, 10,  61, 10, 3),
+	Bains			(7, "Nouveau bain à jets anciens", 	TreatmentType.Bain, 		"07:15:00", "14:00:00", false,
+					6, 20, 10,  true, 15,  35,  4, 2);
 
 	
 	public final String name;

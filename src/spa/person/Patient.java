@@ -74,6 +74,14 @@ public class Patient extends Person implements IRecordableWrapper {
         this.cure.addPoints(points);
     }
     
+    public void resetPointsByDay() {
+    	this.cure.resetPointsThisDay();
+    }
+    
+    public void resetPointsByYear() {
+    	this.cure.resetPointsByYear();
+    }
+    
     public void addWaitedTime(Duration duration) {
         this.waitedDuration = this.waitedDuration.plus(duration);
     }
@@ -113,13 +121,19 @@ public class Patient extends Person implements IRecordableWrapper {
     // Next 3 methods for the Logger
 	@Override
 	public String[] getTitles() {
-		return new String[] {"Classe", "Id", "Duration waited", "Points Earned", "Treatments done", "Treatments to do", "Message"};
+		return new String[] {"Id", "Duration waited", "Total Points Earned",
+							"Points Earned / Day", "Points Earned / Year",
+							"Max Points/Day", "Max Points/Year",
+							"Treatments done", "Treatments to do", "Message"};
 	}
 
 	@Override
 	public String[] getRecords() {
 		int doneTreatments = this.cure.getDoneTreatments().stream().filter(t -> t == 1f).collect(Collectors.toList()).size();
-		return new String[] {this.getClass().getName(), String.valueOf(this.id), this.waitedDuration.toMinutes() + "", this.cure.getPoints() + "", doneTreatments + "", this.cure.getDailyTreatments().size() + "", this.msg};
+		return new String[] {String.valueOf(this.id), this.waitedDuration.toMinutes() + "", this.cure.getPoints() + "",
+							this.cure.getPointsThisDay() + "", this.cure.getPointsThisYear() + "",
+							this.cure.getMaxPointsPerDay() + "", this.cure.getMaxPointsPerYear() + "",
+							doneTreatments + "", this.cure.getDailyTreatments().size() + "", this.msg};
 	}
 
 	@Override

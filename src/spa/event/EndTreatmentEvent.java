@@ -51,11 +51,13 @@ public class EndTreatmentEvent extends Event implements IEvent {
 			return;
 		}
 
+		this.patient.setPersonState(PersonState.Moving);
 		if (this.spa.getClosingHour(this.scheduledTime).isBefore(this.scheduledTime.toLocalTime())) {
 			scheduler.postEvent(new LeaveSpaEvent(getParent(), this.scheduledTime, this.spa, this.patient));
 		} else {
 			IEvent searchEvent = new SearchForActionEvent(getParent(), this.scheduledTime, this.spa, this.patient);
 			scheduler.postEvent(searchEvent);
+			this.patient.nextMovingEvent = searchEvent;
 			IEvent availableTreatmentEvent = new AvailableTreatmentEvent(treatment, this.scheduledTime, spa, treatment);
 			scheduler.postEvent(availableTreatmentEvent);
 		}

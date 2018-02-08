@@ -25,6 +25,7 @@ public class ScenarioTest {
         openingMonths.add(Month.JUNE);
 		openingMonths.add(Month.JULY);
 		openingMonths.add(Month.AUGUST);
+		openingMonths.add(Month.SEPTEMBER);
 
 		List<DayOfWeek> openingDays = new ArrayList<>();
 		openingDays.add(DayOfWeek.MONDAY);
@@ -32,6 +33,7 @@ public class ScenarioTest {
 		openingDays.add(DayOfWeek.WEDNESDAY);
 		openingDays.add(DayOfWeek.THURSDAY);
 		openingDays.add(DayOfWeek.FRIDAY);
+		openingDays.add(DayOfWeek.SATURDAY);
 
 		LocalTime openTime = LocalTime.parse("07:00:00");
 		LocalTime closureTime = LocalTime.parse("14:00:00");
@@ -42,12 +44,12 @@ public class ScenarioTest {
 		float[] inflowMonth = new float[] {0f, 0f, 0.5f, 0.6f, 0.7f, 0.8f, 0.95f, 0.9f, 0.65f, 0f, 0f, 0f};
 
 		Treatment[] treatments = {Treatment.BainsAnciens, Treatment.BainsModernes, Treatment.Douches, Treatment.Etuves,
-				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes};
+				Treatment.Filiformes, Treatment.SoinVisage, Treatment.TerresChaudes, Treatment.Bains};
 
 		SpaResort spa = new SpaResort(openingMonths, openingDays, openingHours, treatments, maxPatients, inflowMonth);
 		
 		ZonedDateTime startTime = ZonedDateTime.parse("2018-01-01T00:00:00+01:00[Europe/Paris]");
-		ZonedDateTime endTime 	= ZonedDateTime.parse("2019-01-01T00:00:00+01:00[Europe/Paris]");
+		ZonedDateTime endTime 	= ZonedDateTime.parse("2020-01-01T00:00:00+01:00[Europe/Paris]");
 		
 		Scenario scenario = new Scenario(spa, startTime, endTime);
 		

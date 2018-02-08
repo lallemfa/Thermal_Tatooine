@@ -26,10 +26,15 @@ public class Cure extends Entity implements IRecordableWrapper {
     private int startWeek;
     private List<Treatment> dailyTreatments;
     private List<Float> doneTreatments;
+    private int currentPointsThisYear;
+    private int currentPointsThisDay;
     private int currentPoints;
 	private final Patient owner;
 	private List<Pair<LocalTime, Duration>> appointmentTimes = new ArrayList<>();
 
+	private int maxPointsPerDay;
+	private int maxPointsPerYear;
+	
 	private String msg = "";
 
     public Cure(Patient owner, int startYear, int startWeek) {
@@ -38,7 +43,9 @@ public class Cure extends Entity implements IRecordableWrapper {
     	this.startYear = startYear;
     	this.startWeek = startWeek;
     	
-    	this.currentPoints = 0;
+    	this.currentPointsThisYear 	= 0;
+    	this.currentPointsThisDay 	= 0;
+    	this.currentPoints 			= 0;
 
         setTreatments();
         super.endConstructor();
@@ -67,6 +74,7 @@ public class Cure extends Entity implements IRecordableWrapper {
             int randomIndex = (int) Math.floor(allTreatments.size() * Math.random());
             Treatment treatment = allTreatments.remove(randomIndex);
             this.dailyTreatments.add(treatment);
+            this.maxPointsPerDay += treatment.getMaxPoints();
             allTreatments.removeIf(t -> t.type == treatment.type);
         }
         this.doneTreatments = Arrays.asList(new Float[this.dailyTreatments.size()]);
@@ -74,6 +82,7 @@ public class Cure extends Entity implements IRecordableWrapper {
     }
     
     public void findAppointments(IEventScheduler scheduler, SpaResort spa) {
+    	this.maxPointsPerYear = this.maxPointsPerDay * spa.getOpeningDays().size() * 3;
     	for (Treatment treatment : this.dailyTreatments) {
     		if (treatment.isWithAppointment()) {
     			LocalTime time = treatment.getAppointmentTime(startYear, startWeek, appointmentTimes);
@@ -121,7 +130,15 @@ public class Cure extends Entity implements IRecordableWrapper {
         Collections.fill(doneTreatments, 0f);
     }
     
-    public void setDoneTreatments(Treatment treatment, float ratio) {
+    public int getMaxPointsPerDay() {
+		return this.maxPointsPerDay;
+	}
+
+    public int getMaxPointsPerYear() {
+		return this.maxPointsPerYear;
+	}
+    
+	public void setDoneTreatments(Treatment treatment, float ratio) {
     	for (int i = 0; i < this.dailyTreatments.size(); ++i) {
             if (this.dailyTreatments.get(i) == treatment) {
             	this.doneTreatments.set(i, Math.min(Math.max(0f, ratio), 1f));
@@ -149,11 +166,29 @@ public class Cure extends Entity implements IRecordableWrapper {
 
 
     public void addPoints(int points) {
-        this.currentPoints += points;
+        this.currentPoints 			+= points;
+        this.currentPointsThisDay 	+= points;
+        this.currentPointsThisYear 	+= points;
     }
 
     public int getPoints() {
         return this.currentPoints;
+    }
+
+    public int getPointsThisDay() {
+        return this.currentPointsThisDay;
+    }
+    
+    public int getPointsThisYear() {
+        return this.currentPointsThisYear;
+    }
+
+    public void resetPointsThisDay() {
+        this.currentPointsThisDay = 0;
+    }
+    
+    public void resetPointsByYear() {
+    	this.currentPointsThisYear = 0;
     }
 
 	@Override

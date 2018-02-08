@@ -15,6 +15,7 @@ public class CreatePatientsEvent extends Event implements IEvent {
 
     private ZonedDateTime scheduledTime;
     private SpaResort spa;
+    
 
     public CreatePatientsEvent(Object parent, ZonedDateTime scheduledTime, SpaResort spa) {
         super(parent);
@@ -29,7 +30,8 @@ public class CreatePatientsEvent extends Event implements IEvent {
 
     @Override
     public void process(IEventScheduler scheduler) {
-        ZonedDateTime time = this.spa.nextOpenDay(this.scheduledTime);
+    	
+    	ZonedDateTime time = this.spa.nextOpenDay(this.scheduledTime);
     	int inFlowMonth = (int)this.spa.getInflowMonth(time);
     	int nbrPatientWeek = this.spa.getNbPatientsOfWeek(time);
     	int nbrPatientToAdd = inFlowMonth - nbrPatientWeek;
